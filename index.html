@@ -156,9 +156,9 @@
                         <label class="block text-[11px] font-bold uppercase tracking-wider text-gray-400 mb-1">Category Filter</label>
                         <select id="category-filter" onchange="populateExerciseSelect()" class="w-full bg-surface-950 border border-gray-800 rounded-xl px-3 py-2 text-sm font-semibold text-white focus:outline-none focus:border-brand-500">
                             <option value="ALL">All Categories</option>
-                            <option value="Barbell / Compound">Barbell / Compound</option>
-                            <option value="Upper / Hypertrophy">Upper / Hypertrophy</option>
-                            <option value="Armwrestling / Forearm">Armwrestling / Wrist</option>
+                            <option value="Upper / Push">Upper / Push</option>
+                            <option value="Upper / Pull & Arms">Upper / Pull & Arms</option>
+                            <option value="Lower Body">Lower Body</option>
                             <option value="Custom">Custom</option>
                         </select>
                     </div>
@@ -202,14 +202,14 @@
                             <button onclick="stepWeight(10)" class="px-2 py-0.5 rounded bg-surface-800 text-[11px] font-mono text-gray-400 hover:text-white">+10</button>
                         </div>
                     </div>
-                    <div class="flex items-center gap-2">
-                        <button onclick="stepWeight(-2.5)" class="w-14 h-14 rounded-2xl bg-surface-800 active:bg-gray-700 border border-gray-700/70 flex items-center justify-center text-base font-mono font-bold text-gray-200 shadow">-2.5</button>
-                        <button onclick="stepWeight(-1)" class="w-11 h-14 rounded-2xl bg-surface-800/70 active:bg-gray-700 border border-gray-800 flex items-center justify-center text-xs font-mono font-bold text-gray-300">-1</button>
+                    <div class="grid grid-cols-12 gap-1.5 items-center">
+                        <button onclick="stepWeight(-2.5)" class="col-span-2 h-12 rounded-xl bg-surface-800 active:bg-gray-700 border border-gray-700/70 flex items-center justify-center text-xs font-mono font-bold text-gray-200 shadow">-2.5</button>
+                        <button onclick="stepWeight(-1)" class="col-span-2 h-12 rounded-xl bg-surface-800/70 active:bg-gray-700 border border-gray-800 flex items-center justify-center text-xs font-mono font-bold text-gray-300">-1</button>
                         
-                        <input type="number" id="input-weight" step="0.5" min="0" value="60" oninput="updateLiveSetMetrics()" class="flex-1 h-14 bg-surface-950 border-2 border-gray-700 focus:border-brand-500 rounded-2xl text-center font-mono text-2xl font-extrabold text-white focus:outline-none">
+                        <input type="number" id="input-weight" step="0.5" min="0" value="60" oninput="updateLiveSetMetrics()" class="col-span-4 w-full min-w-0 h-12 bg-surface-950 border-2 border-gray-700 focus:border-brand-500 rounded-xl text-center font-mono text-xl font-extrabold text-white focus:outline-none px-1">
                         
-                        <button onclick="stepWeight(1)" class="w-11 h-14 rounded-2xl bg-surface-800/70 active:bg-gray-700 border border-gray-800 flex items-center justify-center text-xs font-mono font-bold text-gray-300">+1</button>
-                        <button onclick="stepWeight(2.5)" class="w-14 h-14 rounded-2xl bg-surface-800 active:bg-gray-700 border border-gray-700/70 flex items-center justify-center text-base font-mono font-bold text-brand-400 shadow">+2.5</button>
+                        <button onclick="stepWeight(1)" class="col-span-2 h-12 rounded-xl bg-surface-800/70 active:bg-gray-700 border border-gray-800 flex items-center justify-center text-xs font-mono font-bold text-gray-300">+1</button>
+                        <button onclick="stepWeight(2.5)" class="col-span-2 h-12 rounded-xl bg-surface-800 active:bg-gray-700 border border-gray-700/70 flex items-center justify-center text-xs font-mono font-bold text-brand-400 shadow">+2.5</button>
                     </div>
                 </div>
 
@@ -224,14 +224,14 @@
                             <button onclick="setExactReps(12)" class="px-2 py-0.5 rounded bg-surface-800 text-[11px] font-mono text-gray-400 hover:text-white">12</button>
                         </div>
                     </div>
-                    <div class="flex items-center gap-2">
-                        <button onclick="stepReps(-2)" class="w-12 h-14 rounded-2xl bg-surface-800/70 active:bg-gray-700 border border-gray-800 flex items-center justify-center text-sm font-mono font-bold text-gray-300">-2</button>
-                        <button onclick="stepReps(-1)" class="w-16 h-14 rounded-2xl bg-surface-800 active:bg-gray-700 border border-gray-700/70 flex items-center justify-center text-lg font-mono font-bold text-gray-200 shadow">-1</button>
+                    <div class="grid grid-cols-12 gap-1.5 items-center">
+                        <button onclick="stepReps(-2)" class="col-span-2 h-12 rounded-xl bg-surface-800/70 active:bg-gray-700 border border-gray-800 flex items-center justify-center text-xs font-mono font-bold text-gray-300">-2</button>
+                        <button onclick="stepReps(-1)" class="col-span-2 h-12 rounded-xl bg-surface-800 active:bg-gray-700 border border-gray-700/70 flex items-center justify-center text-sm font-mono font-bold text-gray-200 shadow">-1</button>
                         
-                        <input type="number" id="input-reps" step="1" min="1" value="8" oninput="updateLiveSetMetrics()" class="flex-1 h-14 bg-surface-950 border-2 border-gray-700 focus:border-brand-500 rounded-2xl text-center font-mono text-2xl font-extrabold text-white focus:outline-none">
+                        <input type="number" id="input-reps" step="1" min="1" value="8" oninput="updateLiveSetMetrics()" class="col-span-4 w-full min-w-0 h-12 bg-surface-950 border-2 border-gray-700 focus:border-brand-500 rounded-xl text-center font-mono text-xl font-extrabold text-white focus:outline-none px-1">
                         
-                        <button onclick="stepReps(1)" class="w-16 h-14 rounded-2xl bg-surface-800 active:bg-gray-700 border border-gray-700/70 flex items-center justify-center text-lg font-mono font-bold text-brand-400 shadow">+1</button>
-                        <button onclick="stepReps(2)" class="w-12 h-14 rounded-2xl bg-surface-800/70 active:bg-gray-700 border border-gray-800 flex items-center justify-center text-sm font-mono font-bold text-gray-300">+2</button>
+                        <button onclick="stepReps(1)" class="col-span-2 h-12 rounded-xl bg-surface-800 active:bg-gray-700 border border-gray-700/70 flex items-center justify-center text-sm font-mono font-bold text-brand-400 shadow">+1</button>
+                        <button onclick="stepReps(2)" class="col-span-2 h-12 rounded-xl bg-surface-800/70 active:bg-gray-700 border border-gray-800 flex items-center justify-center text-xs font-mono font-bold text-gray-300">+2</button>
                     </div>
                 </div>
 
@@ -298,31 +298,62 @@
             <div class="bg-surface-900 border border-gray-800/90 rounded-2xl p-4 shadow-lg space-y-3">
                 <div class="flex items-center justify-between">
                     <label class="text-xs font-bold uppercase tracking-wider text-gray-400">Analyze Lift</label>
-                    <span class="text-[11px] text-brand-400 font-semibold">Epley 1RM & Volume</span>
+                    <span id="analytics-mode-pill" class="text-[11px] text-brand-400 font-semibold">Global % Improvement & Volume</span>
                 </div>
-                <select id="analytics-exercise-select" onchange="renderAnalytics()" class="w-full bg-surface-950 border border-gray-700 rounded-xl px-3.5 py-2.5 text-sm font-bold text-white focus:outline-none focus:border-brand-500">
+                <select id="analytics-exercise-select" onchange="onAnalyticsExerciseChange()" class="w-full bg-surface-950 border border-gray-700 rounded-xl px-3.5 py-2.5 text-sm font-bold text-white focus:outline-none focus:border-brand-500">
                     <!-- Populated by JS -->
                 </select>
+
+                <!-- Date Range Presets & Custom Pickers -->
+                <div class="pt-1 space-y-2 border-t border-gray-800/80">
+                    <div class="flex items-center justify-between gap-2">
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-gray-400">Date Range</span>
+                        <div class="flex bg-surface-950 p-1 rounded-xl border border-gray-800 gap-1">
+                            <button id="range-btn-12w" onclick="setAnalyticsDatePreset('12w')" class="px-2.5 py-1 rounded-lg text-[11px] font-bold text-gray-400 hover:text-white transition">12 Weeks</button>
+                            <button id="range-btn-12m" onclick="setAnalyticsDatePreset('12m')" class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-brand-500 text-surface-950 transition">12 Months</button>
+                            <button id="range-btn-all" onclick="setAnalyticsDatePreset('all')" class="px-2.5 py-1 rounded-lg text-[11px] font-bold text-gray-400 hover:text-white transition">All Time</button>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="block text-[10px] uppercase text-gray-500 font-semibold mb-0.5">Start Date</label>
+                            <input type="date" id="analytics-start-date" onchange="onCustomAnalyticsDateChange()" class="w-full bg-surface-950 border border-gray-800 rounded-xl px-2.5 py-1.5 text-xs font-mono text-gray-200 focus:outline-none focus:border-brand-500">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] uppercase text-gray-500 font-semibold mb-0.5">End Date</label>
+                            <input type="date" id="analytics-end-date" onchange="onCustomAnalyticsDateChange()" class="w-full bg-surface-950 border border-gray-800 rounded-xl px-2.5 py-1.5 text-xs font-mono text-gray-200 focus:outline-none focus:border-brand-500">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Interval Aggregation Toggle (Weekly vs Monthly) -->
+                <div class="flex items-center justify-between pt-1 border-t border-gray-800/80">
+                    <span class="text-[10px] font-bold uppercase tracking-wider text-gray-400">Aggregation Interval</span>
+                    <div class="flex bg-surface-950 p-1 rounded-xl border border-gray-800 gap-1">
+                        <button id="interval-btn-weekly" onclick="setAnalyticsInterval('weekly')" class="px-3 py-1 rounded-lg text-[11px] font-bold bg-brand-500 text-surface-950 transition">Weekly</button>
+                        <button id="interval-btn-monthly" onclick="setAnalyticsInterval('monthly')" class="px-3 py-1 rounded-lg text-[11px] font-bold text-gray-400 hover:text-white transition">Monthly</button>
+                    </div>
+                </div>
 
                 <!-- 4 Key Metric Cards -->
                 <div class="grid grid-cols-2 gap-2.5 pt-1">
                     <div class="bg-surface-950 border border-gray-800/80 rounded-xl p-3">
-                        <span class="text-[10px] font-bold uppercase tracking-wider text-gray-400 block">Heaviest Weight</span>
+                        <span id="stat-card1-label" class="text-[10px] font-bold uppercase tracking-wider text-gray-400 block">Heaviest Weight</span>
                         <span id="stat-max-weight" class="font-mono text-lg font-extrabold text-white mt-0.5 block">—</span>
                         <span id="stat-max-weight-sub" class="text-[11px] text-gray-400">All-time top weight</span>
                     </div>
                     <div class="bg-surface-950 border border-gray-800/80 rounded-xl p-3">
-                        <span class="text-[10px] font-bold uppercase tracking-wider text-gray-400 block">Best Est. 1RM</span>
+                        <span id="stat-card2-label" class="text-[10px] font-bold uppercase tracking-wider text-gray-400 block">Best Est. 1RM</span>
                         <span id="stat-best-1rm" class="font-mono text-lg font-extrabold text-amber-400 mt-0.5 block">—</span>
                         <span id="stat-best-1rm-sub" class="text-[11px] text-gray-400">Calculated peak</span>
                     </div>
                     <div class="bg-surface-950 border border-gray-800/80 rounded-xl p-3">
-                        <span class="text-[10px] font-bold uppercase tracking-wider text-gray-400 block">Best Set Volume</span>
+                        <span id="stat-card3-label" class="text-[10px] font-bold uppercase tracking-wider text-gray-400 block">Peak Interval Vol</span>
                         <span id="stat-max-vol" class="font-mono text-lg font-extrabold text-brand-400 mt-0.5 block">—</span>
-                        <span id="stat-max-vol-sub" class="text-[11px] text-gray-400">Single set tonnage</span>
+                        <span id="stat-max-vol-sub" class="text-[11px] text-gray-400">Best week/month</span>
                     </div>
                     <div class="bg-surface-950 border border-gray-800/80 rounded-xl p-3">
-                        <span class="text-[10px] font-bold uppercase tracking-wider text-gray-400 block">Total Lift Tonnage</span>
+                        <span id="stat-card4-label" class="text-[10px] font-bold uppercase tracking-wider text-gray-400 block">Range Tonnage</span>
                         <span id="stat-cum-vol" class="font-mono text-lg font-extrabold text-sky-400 mt-0.5 block">—</span>
                         <span id="stat-cum-sets" class="text-[11px] text-gray-400">0 total sets</span>
                     </div>
@@ -331,11 +362,15 @@
 
             <!-- Interactive Chart Card -->
             <div class="bg-surface-900 border border-gray-800/90 rounded-2xl p-4 shadow-lg space-y-3">
-                <div class="flex items-center justify-between gap-2">
-                    <h3 class="text-xs font-extrabold uppercase tracking-wider text-white">Progression Chart</h3>
+                <div class="flex flex-wrap items-center justify-between gap-2">
+                    <div>
+                        <h3 id="chart-title-heading" class="text-xs font-extrabold uppercase tracking-wider text-white">Progression & Volume</h3>
+                        <p id="chart-subtitle-desc" class="text-[11px] text-gray-400">Aggregated by week across selected date range</p>
+                    </div>
                     <div class="flex bg-surface-950 p-1 rounded-xl border border-gray-800">
-                        <button id="chart-mode-1rm" onclick="setChartMode('1rm')" class="px-2.5 py-1 rounded-lg text-xs font-bold bg-brand-500 text-surface-950 transition">1RM & Top Set</button>
-                        <button id="chart-mode-vol" onclick="setChartMode('volume')" class="px-2.5 py-1 rounded-lg text-xs font-bold text-gray-400 hover:text-white transition">Session Volume</button>
+                        <button id="chart-mode-combined" onclick="setChartMode('combined')" class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-brand-500 text-surface-950 transition">Progression + Vol</button>
+                        <button id="chart-mode-1rm" onclick="setChartMode('1rm')" class="px-2.5 py-1 rounded-lg text-[11px] font-bold text-gray-400 hover:text-white transition"><span id="chart-mode-1rm-label">Avg % Gain</span></button>
+                        <button id="chart-mode-vol" onclick="setChartMode('volume')" class="px-2.5 py-1 rounded-lg text-[11px] font-bold text-gray-400 hover:text-white transition">Volume Only</button>
                     </div>
                 </div>
                 <div class="relative h-64 w-full">
@@ -441,9 +476,9 @@
                     <label class="block text-xs font-bold uppercase text-gray-400 mb-1">Category</label>
                     <select id="custom-ex-cat" class="w-full bg-surface-950 border border-gray-700 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-brand-500">
                         <option value="Custom">Custom</option>
-                        <option value="Barbell / Compound">Barbell / Compound</option>
-                        <option value="Upper / Hypertrophy">Upper / Hypertrophy</option>
-                        <option value="Armwrestling / Forearm">Armwrestling / Wrist</option>
+                        <option value="Upper / Push">Upper / Push</option>
+                        <option value="Upper / Pull & Arms">Upper / Pull & Arms</option>
+                        <option value="Lower Body">Lower Body</option>
                     </select>
                 </div>
             </div>
@@ -499,29 +534,30 @@
          * 1. STORAGE KEYS & DEFAULT EXERCISE LIBRARY
          **************************************************************/
         const STORAGE_LOGS_KEY = 'ironpulse_workout_sets_v1';
-        const STORAGE_EXERCISES_KEY = 'ironpulse_exercises_v1';
+        const STORAGE_EXERCISES_KEY = 'ironpulse_exercises_v2';
 
         const DEFAULT_EXERCISES = [
-            { name: 'Barbell Squat', category: 'Barbell / Compound' },
-            { name: 'Bench Press', category: 'Barbell / Compound' },
-            { name: 'Deadlift', category: 'Barbell / Compound' },
-            { name: 'Overhead Press', category: 'Barbell / Compound' },
-            { name: 'Barbell Row', category: 'Barbell / Compound' },
-            { name: 'Romanian Deadlift', category: 'Barbell / Compound' },
-            { name: 'Pull-Up (Weighted)', category: 'Upper / Hypertrophy' },
-            { name: 'Incline DB Press', category: 'Upper / Hypertrophy' },
-            { name: 'Seated Cable Row', category: 'Upper / Hypertrophy' },
-            { name: 'EZ-Bar Bicep Curl', category: 'Upper / Hypertrophy' },
-            { name: 'Tricep Rope Pushdown', category: 'Upper / Hypertrophy' },
-            { name: 'Pronation Lift (Belt/Cable)', category: 'Armwrestling / Forearm' },
-            { name: 'Cupping / Wrist Wrench', category: 'Armwrestling / Forearm' },
-            { name: 'Back Pressure Cable', category: 'Armwrestling / Forearm' }
+            { name: 'BB Incline BenchPress', category: 'Upper / Push' },
+            { name: 'DB Incline BenchPress', category: 'Upper / Push' },
+            { name: 'DB Decline BenchPress', category: 'Upper / Push' },
+            { name: 'DB Shoulder Press', category: 'Upper / Push' },
+            { name: 'Pull-up', category: 'Upper / Pull & Arms' },
+            { name: 'Row', category: 'Upper / Pull & Arms' },
+            { name: 'Bicep Curl', category: 'Upper / Pull & Arms' },
+            { name: 'Tricep Extension', category: 'Upper / Pull & Arms' },
+            { name: 'Lateral Raise', category: 'Upper / Push' },
+            { name: 'Leg Press', category: 'Lower Body' },
+            { name: 'Leg Extension', category: 'Lower Body' },
+            { name: 'Hamstring Curl', category: 'Lower Body' },
+            { name: 'Romainian Deadlift', category: 'Lower Body' }
         ];
 
         // Application State
         let workoutLogs = [];
         let exercises = [];
-        let currentChartMode = '1rm'; // '1rm' or 'volume'
+        let currentChartMode = 'combined'; // 'combined', '1rm', or 'volume'
+        let analyticsDatePreset = '12m';   // '12w', '12m', 'all', or 'custom'
+        let analyticsInterval = 'weekly';  // 'weekly' or 'monthly'
         let progressionChartInstance = null;
 
         // Rest Timer State
@@ -542,6 +578,7 @@
             document.getElementById('log-date').value = todayStr;
 
             populateExerciseSelect();
+            setAnalyticsDatePreset('12m', false);
             onDateOrExerciseChange();
             updateStorageSummary();
         });
@@ -1035,123 +1072,399 @@
         /**************************************************************
          * 7. ANALYTICS, CHART.JS & ALL-TIME PR LEADERBOARD
          **************************************************************/
-        function setChartMode(mode) {
-            currentChartMode = mode;
-            const btn1rm = document.getElementById('chart-mode-1rm');
-            const btnVol = document.getElementById('chart-mode-vol');
+        function formatLocalDate(dateObj) {
+            const offsetMs = dateObj.getTimezoneOffset() * 60000;
+            return new Date(dateObj.getTime() - offsetMs).toISOString().split('T')[0];
+        }
 
-            if (mode === '1rm') {
-                btn1rm.className = 'px-2.5 py-1 rounded-lg text-xs font-bold bg-brand-500 text-surface-950 transition';
-                btnVol.className = 'px-2.5 py-1 rounded-lg text-xs font-bold text-gray-400 hover:text-white transition';
+        function setAnalyticsDatePreset(preset, shouldRender = true) {
+            analyticsDatePreset = preset;
+            const today = new Date();
+            const endStr = formatLocalDate(today);
+            let startStr = '';
+
+            if (preset === '12w') {
+                const start = new Date(today.getTime() - 84 * 86400000);
+                startStr = formatLocalDate(start);
+            } else if (preset === '12m') {
+                const start = new Date(today);
+                start.setFullYear(start.getFullYear() - 1);
+                startStr = formatLocalDate(start);
+            } else if (preset === 'all') {
+                if (workoutLogs.length > 0) {
+                    const earliest = workoutLogs.reduce((min, s) => s.date < min ? s.date : min, workoutLogs[0].date);
+                    startStr = earliest;
+                } else {
+                    const start = new Date(today);
+                    start.setFullYear(start.getFullYear() - 1);
+                    startStr = formatLocalDate(start);
+                }
+            }
+
+            document.getElementById('analytics-start-date').value = startStr;
+            document.getElementById('analytics-end-date').value = endStr;
+
+            updateDatePresetButtonsUI();
+            if (shouldRender) renderAnalytics();
+        }
+
+        function onCustomAnalyticsDateChange() {
+            analyticsDatePreset = 'custom';
+            updateDatePresetButtonsUI();
+            renderAnalytics();
+        }
+
+        function updateDatePresetButtonsUI() {
+            const presets = ['12w', '12m', 'all'];
+            presets.forEach(p => {
+                const btn = document.getElementById(`range-btn-${p}`);
+                if (!btn) return;
+                if (analyticsDatePreset === p) {
+                    btn.className = 'px-2.5 py-1 rounded-lg text-[11px] font-bold bg-brand-500 text-surface-950 transition';
+                } else {
+                    btn.className = 'px-2.5 py-1 rounded-lg text-[11px] font-bold text-gray-400 hover:text-white transition';
+                }
+            });
+        }
+
+        function setAnalyticsInterval(interval) {
+            analyticsInterval = interval;
+            const btnW = document.getElementById('interval-btn-weekly');
+            const btnM = document.getElementById('interval-btn-monthly');
+
+            if (interval === 'weekly') {
+                btnW.className = 'px-3 py-1 rounded-lg text-[11px] font-bold bg-brand-500 text-surface-950 transition';
+                btnM.className = 'px-3 py-1 rounded-lg text-[11px] font-bold text-gray-400 hover:text-white transition';
             } else {
-                btnVol.className = 'px-2.5 py-1 rounded-lg text-xs font-bold bg-brand-500 text-surface-950 transition';
-                btn1rm.className = 'px-2.5 py-1 rounded-lg text-xs font-bold text-gray-400 hover:text-white transition';
+                btnM.className = 'px-3 py-1 rounded-lg text-[11px] font-bold bg-brand-500 text-surface-950 transition';
+                btnW.className = 'px-3 py-1 rounded-lg text-[11px] font-bold text-gray-400 hover:text-white transition';
             }
             renderAnalytics();
         }
 
-        function renderAnalytics() {
+        function onAnalyticsExerciseChange() {
             const selectedEx = document.getElementById('analytics-exercise-select').value;
-            const filteredLogs = (selectedEx === 'ALL')
+            const label1rm = document.getElementById('chart-mode-1rm-label');
+            const modePill = document.getElementById('analytics-mode-pill');
+
+            if (selectedEx === 'ALL') {
+                label1rm.textContent = 'Avg % Gain';
+                modePill.textContent = 'Global % Improvement & Volume';
+            } else {
+                label1rm.textContent = '1RM & Weight';
+                modePill.textContent = 'Epley 1RM & Volume';
+            }
+            renderAnalytics();
+        }
+
+        function setChartMode(mode) {
+            currentChartMode = mode;
+            const modes = [
+                { id: 'chart-mode-combined', key: 'combined' },
+                { id: 'chart-mode-1rm', key: '1rm' },
+                { id: 'chart-mode-vol', key: 'volume' }
+            ];
+            modes.forEach(m => {
+                const btn = document.getElementById(m.id);
+                if (!btn) return;
+                if (m.key === mode) {
+                    btn.className = 'px-2.5 py-1 rounded-lg text-[11px] font-bold bg-brand-500 text-surface-950 transition';
+                } else {
+                    btn.className = 'px-2.5 py-1 rounded-lg text-[11px] font-bold text-gray-400 hover:text-white transition';
+                }
+            });
+            renderAnalytics();
+        }
+
+        // Returns ISO Monday YYYY-MM-DD for Weekly or YYYY-MM for Monthly
+        function getIntervalBucketKey(dateStr, intervalType) {
+            if (intervalType === 'monthly') {
+                return dateStr.slice(0, 7); // YYYY-MM
+            }
+            const [y, m, d] = dateStr.split('-').map(Number);
+            const dt = new Date(y, m - 1, d);
+            const day = dt.getDay();
+            const diffToMon = (day === 0 ? -6 : 1) - day;
+            dt.setDate(dt.getDate() + diffToMon);
+            return formatLocalDate(dt);
+        }
+
+        function formatBucketLabel(bucketKey, intervalType) {
+            if (intervalType === 'monthly') {
+                const [y, m] = bucketKey.split('-');
+                const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+                return `${months[parseInt(m, 10) - 1]} '${y.slice(2)}`;
+            }
+            // Weekly: MM/DD
+            return bucketKey.slice(5).replace('-', '/');
+        }
+
+        function renderAnalytics() {
+            const selectedEx = document.getElementById('analytics-exercise-select').value || 'ALL';
+            if (analyticsDatePreset === 'all' && workoutLogs.length > 0) {
+                const earliest = workoutLogs.reduce((min, s) => s.date < min ? s.date : min, workoutLogs[0].date);
+                document.getElementById('analytics-start-date').value = earliest;
+            }
+
+            const startDate = document.getElementById('analytics-start-date').value || '1970-01-01';
+            const endDate = document.getElementById('analytics-end-date').value || '2099-12-31';
+
+            //Filter by exercise and date range
+            const exerciseLogsAllTime = (selectedEx === 'ALL')
                 ? workoutLogs
                 : workoutLogs.filter(s => s.exercise === selectedEx);
 
-            // Populate 4 summary cards
-            if (filteredLogs.length === 0) {
-                document.getElementById('stat-max-weight').textContent = '—';
-                document.getElementById('stat-max-weight-sub').textContent = 'No sets logged';
-                document.getElementById('stat-best-1rm').textContent = '—';
-                document.getElementById('stat-best-1rm-sub').textContent = 'No sets logged';
-                document.getElementById('stat-max-vol').textContent = '—';
-                document.getElementById('stat-max-vol-sub').textContent = 'No sets logged';
-                document.getElementById('stat-cum-vol').textContent = '0 kg';
-                document.getElementById('stat-cum-sets').textContent = '0 total sets';
-            } else {
-                let maxW = filteredLogs[0];
-                let max1RM = filteredLogs[0];
-                let maxVol = filteredLogs[0];
-                let totalVol = 0;
+            const filteredLogs = exerciseLogsAllTime.filter(s => s.date >= startDate && s.date <= endDate);
 
-                filteredLogs.forEach(s => {
-                    if (s.weight > maxW.weight) maxW = s;
-                    if (s.e1rm > max1RM.e1rm) max1RM = s;
-                    if (s.volume > maxVol.volume) maxVol = s;
-                    totalVol += s.volume;
+            // Establish baseline e1RM for each exercise within the selected window (or earliest recorded set)
+            const baselineByEx = {};
+            const sortedWindowLogs = [...filteredLogs].sort((a, b) => a.date.localeCompare(b.date) || a.timestamp - b.timestamp);
+            sortedWindowLogs.forEach(s => {
+                const bKey = getIntervalBucketKey(s.date, analyticsInterval);
+                if (!baselineByEx[s.exercise]) {
+                    baselineByEx[s.exercise] = { firstBucket: bKey, max1RM: s.e1rm };
+                } else if (baselineByEx[s.exercise].firstBucket === bKey) {
+                    if (s.e1rm > baselineByEx[s.exercise].max1RM) {
+                        baselineByEx[s.exercise].max1RM = s.e1rm;
+                    }
+                }
+            });
+
+            // Group filtered logs into Weekly or Monthly buckets
+            const buckets = {};
+            filteredLogs.forEach(s => {
+                const key = getIntervalBucketKey(s.date, analyticsInterval);
+                if (!buckets[key]) {
+                    buckets[key] = {
+                        volume: 0,
+                        max1RM: 0,
+                        topWeight: 0,
+                        exercisesMax1RM: {}
+                    };
+                }
+                const b = buckets[key];
+                b.volume += s.volume;
+                if (s.e1rm > b.max1RM) b.max1RM = s.e1rm;
+                if (s.weight > b.topWeight) b.topWeight = s.weight;
+
+                if (!b.exercisesMax1RM[s.exercise] || s.e1rm > b.exercisesMax1RM[s.exercise]) {
+                    b.exercisesMax1RM[s.exercise] = s.e1rm;
+                }
+            });
+
+            const sortedKeys = Object.keys(buckets).sort();
+
+            // Calculate average % improvement per bucket across all exercises performed in that bucket
+            sortedKeys.forEach(k => {
+                const b = buckets[k];
+                const exNames = Object.keys(b.exercisesMax1RM);
+                if (exNames.length === 0) {
+                    b.avgPctImprovement = 0;
+                } else {
+                    let sumPct = 0;
+                    exNames.forEach(ex => {
+                        const base1RM = (baselineByEx[ex] && baselineByEx[ex].max1RM > 0)
+                            ? baselineByEx[ex].max1RM
+                            : b.exercisesMax1RM[ex];
+                        const pct = base1RM > 0 ? ((b.exercisesMax1RM[ex] - base1RM) / base1RM) * 100 : 0;
+                        sumPct += pct;
+                    });
+                    b.avgPctImprovement = +(sumPct / exNames.length).toFixed(2);
+                }
+            });
+
+            // Update 4 Summary Metric Cards
+            const c1Label = document.getElementById('stat-card1-label');
+            const c2Label = document.getElementById('stat-card2-label');
+            const c3Label = document.getElementById('stat-card3-label');
+            const c4Label = document.getElementById('stat-card4-label');
+
+            c3Label.textContent = analyticsInterval === 'weekly' ? 'Peak Weekly Vol' : 'Peak Monthly Vol';
+            c4Label.textContent = 'Range Tonnage';
+
+            if (filteredLogs.length === 0) {
+                c1Label.textContent = selectedEx === 'ALL' ? 'Active Lifts' : 'Heaviest Weight';
+                c2Label.textContent = selectedEx === 'ALL' ? 'Latest Avg % Gain' : 'Best Est. 1RM';
+                document.getElementById('stat-max-weight').textContent = '—';
+                document.getElementById('stat-max-weight-sub').textContent = 'No sets in range';
+                document.getElementById('stat-best-1rm').textContent = '—';
+                document.getElementById('stat-best-1rm-sub').textContent = 'No sets in range';
+                document.getElementById('stat-max-vol').textContent = '—';
+                document.getElementById('stat-max-vol-sub').textContent = 'No sets in range';
+                document.getElementById('stat-cum-vol').textContent = '0 kg';
+                document.getElementById('stat-cum-sets').textContent = '0 sets in range';
+            } else {
+                let totalVol = 0;
+                filteredLogs.forEach(s => { totalVol += s.volume; });
+
+                // Peak interval volume
+                let peakBucketKey = sortedKeys[0];
+                sortedKeys.forEach(k => {
+                    if (buckets[k].volume > buckets[peakBucketKey].volume) peakBucketKey = k;
                 });
 
-                document.getElementById('stat-max-weight').textContent = `${maxW.weight} kg`;
-                document.getElementById('stat-max-weight-sub').textContent = `${maxW.reps} reps (${maxW.date})`;
+                if (selectedEx === 'ALL') {
+                    const uniqueExCount = new Set(filteredLogs.map(s => s.exercise)).size;
+                    const latestKey = sortedKeys[sortedKeys.length - 1];
+                    const latestPct = buckets[latestKey].avgPctImprovement;
+                    const peakPct = Math.max(...sortedKeys.map(k => buckets[k].avgPctImprovement));
 
-                document.getElementById('stat-best-1rm').textContent = `${max1RM.e1rm} kg`;
-                document.getElementById('stat-best-1rm-sub').textContent = `${max1RM.weight}kg × ${max1RM.reps} (${max1RM.date})`;
+                    c1Label.textContent = 'Active Lifts';
+                    document.getElementById('stat-max-weight').textContent = `${uniqueExCount} Lifts`;
+                    document.getElementById('stat-max-weight-sub').textContent = `Across ${sortedKeys.length} ${analyticsInterval === 'weekly' ? 'weeks' : 'months'}`;
 
-                document.getElementById('stat-max-vol').textContent = `${maxVol.volume.toLocaleString()} kg`;
-                document.getElementById('stat-max-vol-sub').textContent = `${maxVol.weight}kg × ${maxVol.reps}`;
+                    c2Label.textContent = 'Avg % Improvement';
+                    const sign = latestPct >= 0 ? '+' : '';
+                    document.getElementById('stat-best-1rm').textContent = `${sign}${latestPct}%`;
+                    document.getElementById('stat-best-1rm-sub').textContent = `Peak interval: +${peakPct.toFixed(1)}%`;
+                } else {
+                    let maxW = filteredLogs[0];
+                    let max1RM = filteredLogs[0];
+                    filteredLogs.forEach(s => {
+                        if (s.weight > maxW.weight) maxW = s;
+                        if (s.e1rm > max1RM.e1rm) max1RM = s;
+                    });
+
+                    c1Label.textContent = 'Heaviest Weight';
+                    document.getElementById('stat-max-weight').textContent = `${maxW.weight} kg`;
+                    document.getElementById('stat-max-weight-sub').textContent = `${maxW.reps} reps (${maxW.date})`;
+
+                    c2Label.textContent = 'Best Est. 1RM';
+                    document.getElementById('stat-best-1rm').textContent = `${max1RM.e1rm} kg`;
+                    document.getElementById('stat-best-1rm-sub').textContent = `${max1RM.weight}kg × ${max1RM.reps} (${max1RM.date})`;
+                }
+
+                document.getElementById('stat-max-vol').textContent = `${Math.round(buckets[peakBucketKey].volume).toLocaleString()} kg`;
+                document.getElementById('stat-max-vol-sub').textContent = `${formatBucketLabel(peakBucketKey, analyticsInterval)} (${analyticsInterval})`;
 
                 document.getElementById('stat-cum-vol').textContent = `${Math.round(totalVol).toLocaleString()} kg`;
-                document.getElementById('stat-cum-sets').textContent = `${filteredLogs.length} total sets`;
+                document.getElementById('stat-cum-sets').textContent = `${filteredLogs.length} sets in range`;
             }
 
-            renderProgressionChart(filteredLogs, selectedEx);
+            renderProgressionChart(sortedKeys, buckets, selectedEx);
             renderPRLeaderboard();
         }
 
-        function renderProgressionChart(logs, selectedEx) {
+        function renderProgressionChart(sortedKeys, buckets, selectedEx) {
             const ctx = document.getElementById('progressionChart').getContext('2d');
             if (progressionChartInstance) {
                 progressionChartInstance.destroy();
             }
 
-            // Aggregate by Date
-            const byDate = {};
-            logs.forEach(s => {
-                if (!byDate[s.date]) {
-                    byDate[s.date] = { volume: 0, max1RM: 0, topWeight: 0 };
-                }
-                byDate[s.date].volume += s.volume;
-                if (s.e1rm > byDate[s.date].max1RM) byDate[s.date].max1RM = s.e1rm;
-                if (s.weight > byDate[s.date].topWeight) byDate[s.date].topWeight = s.weight;
-            });
+            const intervalLabel = analyticsInterval === 'weekly' ? 'Weekly' : 'Monthly';
+            const titleEl = document.getElementById('chart-title-heading');
+            const subEl = document.getElementById('chart-subtitle-desc');
 
-            const sortedDates = Object.keys(byDate).sort();
-            const labels = sortedDates.map(d => d.slice(5)); // MM-DD format
+            if (selectedEx === 'ALL') {
+                titleEl.textContent = `Global Overview: Avg % Gain & ${intervalLabel} Volume`;
+                subEl.textContent = `Avg % e1RM improvement across active lifts per ${analyticsInterval === 'weekly' ? 'week' : 'month'}`;
+            } else {
+                titleEl.textContent = `${selectedEx}: ${intervalLabel} Progression`;
+                subEl.textContent = `${intervalLabel} volume tonnage & peak strength trend`;
+            }
 
-            const datasets = (currentChartMode === '1rm')
-                ? [
-                    {
+            const labels = sortedKeys.map(k => formatBucketLabel(k, analyticsInterval));
+            const volumeData = sortedKeys.map(k => Math.round(buckets[k].volume));
+
+            const datasets = [];
+            const showProgression = (currentChartMode === 'combined' || currentChartMode === '1rm');
+            const showVolume = (currentChartMode === 'combined' || currentChartMode === 'volume');
+
+            if (showVolume) {
+                datasets.push({
+                    type: 'bar',
+                    label: `${intervalLabel} Volume (kg)`,
+                    data: volumeData,
+                    backgroundColor: 'rgba(56, 189, 248, 0.35)',
+                    borderColor: '#38bdf8',
+                    borderWidth: 1.5,
+                    borderRadius: 6,
+                    yAxisID: 'yVolume',
+                    order: 2
+                });
+            }
+
+            if (showProgression) {
+                if (selectedEx === 'ALL') {
+                    datasets.push({
+                        type: 'line',
+                        label: 'Avg % Improvement (All Active Lifts)',
+                        data: sortedKeys.map(k => buckets[k].avgPctImprovement),
+                        borderColor: '#10b981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.18)',
+                        borderWidth: 2.5,
+                        tension: 0.3,
+                        fill: currentChartMode === '1rm',
+                        pointRadius: 4,
+                        pointBackgroundColor: '#10b981',
+                        yAxisID: 'yPrimary',
+                        order: 1
+                    });
+                } else {
+                    datasets.push({
+                        type: 'line',
                         label: 'Best Est. 1RM (kg)',
-                        data: sortedDates.map(d => byDate[d].max1RM),
+                        data: sortedKeys.map(k => buckets[k].max1RM),
                         borderColor: '#10b981',
                         backgroundColor: 'rgba(16, 185, 129, 0.15)',
                         borderWidth: 2.5,
                         tension: 0.3,
-                        fill: true,
-                        pointRadius: 4
-                    },
-                    {
+                        fill: currentChartMode === '1rm',
+                        pointRadius: 4,
+                        yAxisID: 'yPrimary',
+                        order: 1
+                    });
+                    datasets.push({
+                        type: 'line',
                         label: 'Heaviest Weight (kg)',
-                        data: sortedDates.map(d => byDate[d].topWeight),
+                        data: sortedKeys.map(k => buckets[k].topWeight),
                         borderColor: '#f59e0b',
                         borderDash: [5, 5],
                         borderWidth: 2,
                         tension: 0.3,
                         fill: false,
-                        pointRadius: 3
-                    }
-                ]
-                : [
-                    {
-                        label: selectedEx === 'ALL' ? 'Total Session Tonnage (kg)' : `${selectedEx} Volume (kg)`,
-                        data: sortedDates.map(d => Math.round(byDate[d].volume)),
-                        backgroundColor: 'rgba(56, 189, 248, 0.65)',
-                        borderColor: '#38bdf8',
-                        borderWidth: 1.5,
-                        borderRadius: 6
-                    }
-                ];
+                        pointRadius: 3,
+                        yAxisID: 'yPrimary',
+                        order: 1
+                    });
+                }
+            }
+
+            const scalesConfig = {
+                x: {
+                    ticks: { color: '#9ca3af', font: { size: 10 }, maxRotation: 45 },
+                    grid: { color: 'rgba(255,255,255,0.04)' }
+                }
+            };
+
+            if (showProgression) {
+                scalesConfig.yPrimary = {
+                    type: 'linear',
+                    position: 'left',
+                    ticks: {
+                        color: '#10b981',
+                        font: { size: 10 },
+                        callback: (val) => selectedEx === 'ALL' ? `${val > 0 ? '+' : ''}${val}%` : `${val}kg`
+                    },
+                    grid: { color: 'rgba(255,255,255,0.06)' }
+                };
+            }
+
+            if (showVolume) {
+                scalesConfig.yVolume = {
+                    type: 'linear',
+                    position: showProgression ? 'right' : 'left',
+                    beginAtZero: true,
+                    ticks: {
+                        color: '#38bdf8',
+                        font: { size: 10 },
+                        callback: (val) => val >= 1000 ? `${(val / 1000).toFixed(1)}k` : `${val}`
+                    },
+                    grid: { drawOnChartArea: !showProgression, color: 'rgba(255,255,255,0.06)' }
+                };
+            }
 
             progressionChartInstance = new Chart(ctx, {
-                type: currentChartMode === '1rm' ? 'line' : 'bar',
                 data: { labels, datasets },
                 options: {
                     responsive: true,
@@ -1159,19 +1472,22 @@
                     interaction: { mode: 'index', intersect: false },
                     plugins: {
                         legend: {
-                            labels: { color: '#d1d5db', font: { size: 11, family: 'Inter' } }
+                            labels: { color: '#d1d5db', font: { size: 10, family: 'Inter' }, boxWidth: 12 }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const lbl = context.dataset.label || '';
+                                    const val = context.parsed.y;
+                                    if (lbl.includes('Avg %')) {
+                                        return `${lbl}: ${val >= 0 ? '+' : ''}${val}%`;
+                                    }
+                                    return `${lbl}: ${val.toLocaleString()} kg`;
+                                }
+                            }
                         }
                     },
-                    scales: {
-                        x: {
-                            ticks: { color: '#9ca3af', font: { size: 10 } },
-                            grid: { color: 'rgba(255,255,255,0.04)' }
-                        },
-                        y: {
-                            ticks: { color: '#9ca3af', font: { size: 10 } },
-                            grid: { color: 'rgba(255,255,255,0.06)' }
-                        }
-                    }
+                    scales: scalesConfig
                 }
             });
         }
@@ -1214,7 +1530,7 @@
         function inspectExerciseInChart(exerciseName) {
             const select = document.getElementById('analytics-exercise-select');
             select.value = exerciseName;
-            renderAnalytics();
+            onAnalyticsExerciseChange();
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
@@ -1355,47 +1671,76 @@
         }
 
         function loadDemoWorkoutData() {
-            // Generates 6 realistic progressive sessions over the last 3 weeks
-            const baseDate = new Date();
-            const sampleSessions = [
-                { daysAgo: 18, sets: [
-                    { ex: 'Bench Press', cat: 'Barbell / Compound', w: 80, r: 8, n: 'RPE 7.5' },
-                    { ex: 'Bench Press', cat: 'Barbell / Compound', w: 85, r: 6, n: 'RPE 8' },
-                    { ex: 'Seated Cable Row', cat: 'Upper / Hypertrophy', w: 70, r: 10, n: '' },
-                    { ex: 'Pronation Lift (Belt/Cable)', cat: 'Armwrestling / Forearm', w: 32.5, r: 8, n: 'Strict thumb' }
-                ]},
-                { daysAgo: 14, sets: [
-                    { ex: 'Barbell Squat', cat: 'Barbell / Compound', w: 110, r: 6, n: 'Belt' },
-                    { ex: 'Barbell Squat', cat: 'Barbell / Compound', w: 115, r: 5, n: 'RPE 8.5' },
-                    { ex: 'Romanian Deadlift', cat: 'Barbell / Compound', w: 100, r: 8, n: 'Straps' }
-                ]},
-                { daysAgo: 10, sets: [
-                    { ex: 'Bench Press', cat: 'Barbell / Compound', w: 85, r: 7, n: 'Moving fast' },
-                    { ex: 'Bench Press', cat: 'Barbell / Compound', w: 90, r: 5, n: 'RPE 8.5' },
-                    { ex: 'Pronation Lift (Belt/Cable)', cat: 'Armwrestling / Forearm', w: 35, r: 8, n: 'Strong' },
-                    { ex: 'Cupping / Wrist Wrench', cat: 'Armwrestling / Forearm', w: 30, r: 10, n: '50mm handle' }
-                ]},
-                { daysAgo: 6, sets: [
-                    { ex: 'Barbell Squat', cat: 'Barbell / Compound', w: 120, r: 5, n: 'Solid depth' },
-                    { ex: 'Deadlift', cat: 'Barbell / Compound', w: 150, r: 5, n: 'Hook grip' },
-                    { ex: 'Seated Cable Row', cat: 'Upper / Hypertrophy', w: 75, r: 10, n: '' }
-                ]},
-                { daysAgo: 2, sets: [
-                    { ex: 'Bench Press', cat: 'Barbell / Compound', w: 92.5, r: 5, n: 'PR triple + 2!' },
-                    { ex: 'Bench Press', cat: 'Barbell / Compound', w: 95, r: 3, n: 'RPE 9' },
-                    { ex: 'Pronation Lift (Belt/Cable)', cat: 'Armwrestling / Forearm', w: 37.5, r: 6, n: 'New PR' },
-                    { ex: 'Back Pressure Cable', cat: 'Armwrestling / Forearm', w: 42.5, r: 8, n: '' }
-                ]}
-            ];
+            // Generates 10 months of progressive multi-lift history using the exact 13 default exercises
+            const today = new Date();
+            const weeksBack = [40, 36, 32, 28, 24, 20, 16, 12, 10, 8, 6, 4, 2, 1, 0];
 
-            sampleSessions.forEach((sess, sIdx) => {
-                const d = new Date(baseDate.getTime() - sess.daysAgo * 86400000);
-                const dateStr = d.toISOString().split('T')[0];
-                sess.sets.forEach((item, idx) => {
+            weeksBack.forEach((wk, idx) => {
+                const progressFactor = idx / (weeksBack.length - 1); // 0.0 -> 1.0 progressive overload
+
+                // Session A (Upper Push & Pull)
+                const d1 = new Date(today.getTime() - (wk * 7 + 2) * 86400000);
+                const dateStr1 = formatLocalDate(d1);
+
+                const bbIncW = +(65 + Math.round(progressFactor * 20 * 2) / 2).toFixed(1);
+                const dbIncW = +(28 + Math.round(progressFactor * 10 * 2) / 2).toFixed(1);
+                const dbDecW = +(30 + Math.round(progressFactor * 10 * 2) / 2).toFixed(1);
+                const dbShldW = +(24 + Math.round(progressFactor * 8 * 2) / 2).toFixed(1);
+                const pullupW = +(10 + Math.round(progressFactor * 12.5 * 2) / 2).toFixed(1);
+                const rowW = +(70 + Math.round(progressFactor * 22.5 * 2) / 2).toFixed(1);
+                const curlW = +(16 + Math.round(progressFactor * 6 * 2) / 2).toFixed(1);
+                const triW = +(25 + Math.round(progressFactor * 10 * 2) / 2).toFixed(1);
+                const latW = +(12 + Math.round(progressFactor * 4 * 2) / 2).toFixed(1);
+
+                const sessionASets = [
+                    { ex: 'BB Incline BenchPress', cat: 'Upper / Push', w: bbIncW, r: 6, n: 'Working set' },
+                    { ex: 'BB Incline BenchPress', cat: 'Upper / Push', w: +(bbIncW + 2.5).toFixed(1), r: 5, n: 'Top set' },
+                    { ex: 'DB Incline BenchPress', cat: 'Upper / Push', w: dbIncW, r: 8, n: 'Full ROM' },
+                    { ex: 'DB Decline BenchPress', cat: 'Upper / Push', w: dbDecW, r: 8, n: 'Controlled' },
+                    { ex: 'DB Shoulder Press', cat: 'Upper / Push', w: dbShldW, r: 8, n: 'Seated' },
+                    { ex: 'Pull-up', cat: 'Upper / Pull & Arms', w: pullupW, r: 8, n: 'Weighted belt' },
+                    { ex: 'Row', cat: 'Upper / Pull & Arms', w: rowW, r: 8, n: 'Strict pause' },
+                    { ex: 'Bicep Curl', cat: 'Upper / Pull & Arms', w: curlW, r: 10, n: 'Supinated' },
+                    { ex: 'Tricep Extension', cat: 'Upper / Pull & Arms', w: triW, r: 12, n: 'Overhead cable' },
+                    { ex: 'Lateral Raise', cat: 'Upper / Push', w: latW, r: 12, n: 'Strict' }
+                ];
+
+                sessionASets.forEach((item, sIdx) => {
                     workoutLogs.push({
-                        id: `demo_${Date.now()}_${sIdx}_${idx}`,
-                        timestamp: d.getTime() + idx * 60000,
-                        date: dateStr,
+                        id: `demo_A_${Date.now()}_${idx}_${sIdx}`,
+                        timestamp: d1.getTime() + sIdx * 60000,
+                        date: dateStr1,
+                        exercise: item.ex,
+                        category: item.cat,
+                        weight: item.w,
+                        reps: item.r,
+                        notes: item.n,
+                        volume: calculateSetVolume(item.w, item.r),
+                        e1rm: calculateEpley1RM(item.w, item.r)
+                    });
+                });
+
+                // Session B (Lower Body)
+                const d2 = new Date(today.getTime() - (wk * 7) * 86400000);
+                const dateStr2 = formatLocalDate(d2);
+
+                const legPressW = +(160 + Math.round(progressFactor * 50 * 2) / 2).toFixed(1);
+                const legExtW = +(55 + Math.round(progressFactor * 20 * 2) / 2).toFixed(1);
+                const hamCurlW = +(50 + Math.round(progressFactor * 17.5 * 2) / 2).toFixed(1);
+                const rdlW = +(95 + Math.round(progressFactor * 30 * 2) / 2).toFixed(1);
+
+                const sessionBSets = [
+                    { ex: 'Leg Press', cat: 'Lower Body', w: legPressW, r: 10, n: 'Deep sled' },
+                    { ex: 'Leg Extension', cat: 'Lower Body', w: legExtW, r: 12, n: 'Top hold' },
+                    { ex: 'Hamstring Curl', cat: 'Lower Body', w: hamCurlW, r: 10, n: 'Slow eccentric' },
+                    { ex: 'Romainian Deadlift', cat: 'Lower Body', w: rdlW, r: 8, n: 'Straps' }
+                ];
+
+                sessionBSets.forEach((item, sIdx) => {
+                    workoutLogs.push({
+                        id: `demo_B_${Date.now()}_${idx}_${sIdx}`,
+                        timestamp: d2.getTime() + sIdx * 60000,
+                        date: dateStr2,
                         exercise: item.ex,
                         category: item.cat,
                         weight: item.w,
@@ -1408,9 +1753,10 @@
             });
 
             saveToLocalStorage();
+            setAnalyticsDatePreset('12m', false);
             onDateOrExerciseChange();
             renderHistoryList();
-            showToast('Loaded 5 progressive demo workouts!');
+            showToast('Loaded 10 months of demo data for all 13 lifts!');
             switchTab('analytics');
         }
 
