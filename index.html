@@ -1,0 +1,1488 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#090d16">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>IronPulse — Gym & PR Tracker</title>
+
+    <!-- Dynamic Embedded Web App Manifest for Android / Samsung "Add to Home Screen" -->
+    <link rel="manifest" id="pwa-manifest">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace']
+                    },
+                    colors: {
+                        surface: {
+                            950: '#090d16',
+                            900: '#111827',
+                            800: '#1f2937',
+                            700: '#374151'
+                        },
+                        brand: {
+                            400: '#34d399',
+                            500: '#10b981',
+                            600: '#059669'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Chart.js for Volume & PR Progression -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+    <style>
+        /* Mobile-first smooth UX & no double-tap zoom on fast stepper buttons */
+        * {
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
+        body {
+            background-color: #090d16;
+            color: #f3f4f6;
+            overscroll-behavior-y: none;
+        }
+        /* Hide number input spinners */
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type="number"] {
+            -moz-appearance: textfield;
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 5px;
+            height: 5px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #090d16;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1f2937;
+            border-radius: 9999px;
+        }
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
+            50% { box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
+        }
+        .timer-active-glow {
+            animation: pulseGlow 2s infinite;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between pb-24 select-none">
+
+    <!-- ================= TOP STICKY BAR & REST TIMER ================= -->
+    <header class="sticky top-0 z-30 bg-surface-950/90 backdrop-blur-md border-b border-gray-800/80 px-4 py-2.5">
+        <div class="max-w-lg mx-auto flex items-center justify-between gap-2">
+            <!-- App Brand -->
+            <div class="flex items-center gap-2.5">
+                <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-brand-400 to-brand-600 flex items-center justify-center shadow-lg shadow-brand-500/20">
+                    <i class="fa-solid fa-dumbbell text-surface-950 text-base"></i>
+                </div>
+                <div>
+                    <h1 class="font-extrabold text-base tracking-tight leading-none text-white">IRON<span class="text-brand-400">PULSE</span></h1>
+                    <p id="header-status" class="text-[11px] text-gray-400 font-medium mt-0.5">Local-First PWA</p>
+                </div>
+            </div>
+
+            <!-- Compact Interactive Rest Timer Pill -->
+            <div class="flex items-center gap-1.5 bg-surface-900 border border-gray-800 rounded-2xl p-1.5">
+                <button id="timer-toggle-btn" onclick="toggleTimerDrawer()" class="flex items-center gap-2 px-2.5 py-1 rounded-xl bg-surface-800 hover:bg-gray-700 transition text-xs font-mono font-bold text-gray-200">
+                    <i id="timer-icon" class="fa-regular fa-clock text-brand-400"></i>
+                    <span id="timer-display">01:30</span>
+                </button>
+                <button id="timer-play-btn" onclick="startPauseTimer()" class="w-7 h-7 rounded-xl bg-brand-500 hover:bg-brand-400 text-surface-950 flex items-center justify-center transition shadow">
+                    <i id="timer-play-icon" class="fa-solid fa-play text-xs"></i>
+                </button>
+                <button onclick="resetTimer()" class="w-7 h-7 rounded-xl bg-surface-800 hover:bg-gray-700 text-gray-400 hover:text-white flex items-center justify-center transition" title="Reset Timer">
+                    <i class="fa-solid fa-rotate-left text-xs"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Expandable Rest Timer Presets Drawer -->
+        <div id="timer-drawer" class="hidden max-w-lg mx-auto pt-2.5 mt-2.5 border-t border-gray-800/80">
+            <div class="flex items-center justify-between gap-1.5">
+                <span class="text-[11px] uppercase tracking-wider font-semibold text-gray-400">Rest Presets:</span>
+                <div class="flex items-center gap-1.5">
+                    <button onclick="setTimerPreset(60)" class="px-2.5 py-1 rounded-lg bg-surface-800 hover:bg-gray-700 text-xs font-mono font-semibold text-gray-200">60s</button>
+                    <button onclick="setTimerPreset(90)" class="px-2.5 py-1 rounded-lg bg-surface-800 hover:bg-gray-700 text-xs font-mono font-semibold text-gray-200">90s</button>
+                    <button onclick="setTimerPreset(120)" class="px-2.5 py-1 rounded-lg bg-surface-800 hover:bg-gray-700 text-xs font-mono font-semibold text-gray-200">2m</button>
+                    <button onclick="setTimerPreset(180)" class="px-2.5 py-1 rounded-lg bg-surface-800 hover:bg-gray-700 text-xs font-mono font-semibold text-gray-200">3m</button>
+                    <button onclick="adjustTimerSeconds(15)" class="px-2 py-1 rounded-lg bg-brand-500/20 text-brand-400 border border-brand-500/30 text-xs font-mono font-semibold">+15s</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ================= MAIN CONTAINER ================= -->
+    <main class="flex-1 max-w-lg w-full mx-auto px-4 pt-4 space-y-5">
+
+        <!-- ========================================================= -->
+        <!-- TAB 1: WORKOUT LOGGER                                     -->
+        <!-- ========================================================= -->
+        <section id="tab-logger" class="space-y-4">
+            
+            <!-- Date & Exercise Selector Card -->
+            <div class="bg-surface-900 border border-gray-800/90 rounded-2xl p-4 shadow-lg space-y-3.5">
+                <div class="flex items-center justify-between gap-3">
+                    <div class="flex-1">
+                        <label class="block text-[11px] font-bold uppercase tracking-wider text-gray-400 mb-1">Workout Date</label>
+                        <input type="date" id="log-date" onchange="onDateOrExerciseChange()" class="w-full bg-surface-950 border border-gray-800 rounded-xl px-3 py-2 text-sm font-semibold text-white focus:outline-none focus:border-brand-500">
+                    </div>
+                    <div class="flex-1">
+                        <label class="block text-[11px] font-bold uppercase tracking-wider text-gray-400 mb-1">Category Filter</label>
+                        <select id="category-filter" onchange="populateExerciseSelect()" class="w-full bg-surface-950 border border-gray-800 rounded-xl px-3 py-2 text-sm font-semibold text-white focus:outline-none focus:border-brand-500">
+                            <option value="ALL">All Categories</option>
+                            <option value="Barbell / Compound">Barbell / Compound</option>
+                            <option value="Upper / Hypertrophy">Upper / Hypertrophy</option>
+                            <option value="Armwrestling / Forearm">Armwrestling / Wrist</option>
+                            <option value="Custom">Custom</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Exercise Dropdown + New Custom Exercise Button -->
+                <div>
+                    <div class="flex items-center justify-between mb-1">
+                        <label class="text-[11px] font-bold uppercase tracking-wider text-gray-400">Select Exercise</label>
+                        <button onclick="openCustomExerciseModal()" class="text-xs font-semibold text-brand-400 hover:text-brand-300 flex items-center gap-1">
+                            <i class="fa-solid fa-plus-circle"></i> Add Custom Lift
+                        </button>
+                    </div>
+                    <select id="log-exercise" onchange="onDateOrExerciseChange()" class="w-full bg-surface-950 border border-gray-700 rounded-xl px-3.5 py-3 text-base font-bold text-white focus:outline-none focus:border-brand-500">
+                        <!-- Dynamically Populated -->
+                    </select>
+                </div>
+
+                <!-- Previous Best & Last Set Context Banner -->
+                <div id="exercise-context-bar" class="bg-surface-950/90 border border-gray-800/80 rounded-xl p-2.5 flex items-center justify-between text-xs">
+                    <div class="space-y-0.5">
+                        <div class="text-gray-400">Last Logged: <span id="ctx-last-set" class="font-mono font-semibold text-gray-200">No history</span></div>
+                        <div class="text-gray-400">All-Time PR: <span id="ctx-best-pr" class="font-mono font-semibold text-amber-400">—</span></div>
+                    </div>
+                    <button onclick="copyLastSetToInputs()" id="btn-copy-last" class="px-2.5 py-1.5 rounded-lg bg-surface-800 hover:bg-gray-700 text-gray-200 font-semibold text-xs flex items-center gap-1.5 transition">
+                        <i class="fa-solid fa-wand-magic-sparkles text-brand-400"></i> Fill Last
+                    </button>
+                </div>
+            </div>
+
+            <!-- Weight & Reps Fast Thumb Controls Card -->
+            <div class="bg-surface-900 border border-gray-800/90 rounded-2xl p-4 shadow-lg space-y-4">
+                
+                <!-- WEIGHT (KG) CONTROL -->
+                <div>
+                    <div class="flex items-center justify-between mb-1.5">
+                        <label class="text-xs font-bold uppercase tracking-wider text-gray-300">Weight (kg)</label>
+                        <div class="flex gap-1">
+                            <button onclick="stepWeight(-5)" class="px-2 py-0.5 rounded bg-surface-800 text-[11px] font-mono text-gray-400 hover:text-white">-5</button>
+                            <button onclick="stepWeight(5)" class="px-2 py-0.5 rounded bg-surface-800 text-[11px] font-mono text-gray-400 hover:text-white">+5</button>
+                            <button onclick="stepWeight(10)" class="px-2 py-0.5 rounded bg-surface-800 text-[11px] font-mono text-gray-400 hover:text-white">+10</button>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button onclick="stepWeight(-2.5)" class="w-14 h-14 rounded-2xl bg-surface-800 active:bg-gray-700 border border-gray-700/70 flex items-center justify-center text-base font-mono font-bold text-gray-200 shadow">-2.5</button>
+                        <button onclick="stepWeight(-1)" class="w-11 h-14 rounded-2xl bg-surface-800/70 active:bg-gray-700 border border-gray-800 flex items-center justify-center text-xs font-mono font-bold text-gray-300">-1</button>
+                        
+                        <input type="number" id="input-weight" step="0.5" min="0" value="60" oninput="updateLiveSetMetrics()" class="flex-1 h-14 bg-surface-950 border-2 border-gray-700 focus:border-brand-500 rounded-2xl text-center font-mono text-2xl font-extrabold text-white focus:outline-none">
+                        
+                        <button onclick="stepWeight(1)" class="w-11 h-14 rounded-2xl bg-surface-800/70 active:bg-gray-700 border border-gray-800 flex items-center justify-center text-xs font-mono font-bold text-gray-300">+1</button>
+                        <button onclick="stepWeight(2.5)" class="w-14 h-14 rounded-2xl bg-surface-800 active:bg-gray-700 border border-gray-700/70 flex items-center justify-center text-base font-mono font-bold text-brand-400 shadow">+2.5</button>
+                    </div>
+                </div>
+
+                <!-- REPS CONTROL -->
+                <div>
+                    <div class="flex items-center justify-between mb-1.5">
+                        <label class="text-xs font-bold uppercase tracking-wider text-gray-300">Repetitions</label>
+                        <div class="flex gap-1">
+                            <button onclick="setExactReps(5)" class="px-2 py-0.5 rounded bg-surface-800 text-[11px] font-mono text-gray-400 hover:text-white">5</button>
+                            <button onclick="setExactReps(8)" class="px-2 py-0.5 rounded bg-surface-800 text-[11px] font-mono text-gray-400 hover:text-white">8</button>
+                            <button onclick="setExactReps(10)" class="px-2 py-0.5 rounded bg-surface-800 text-[11px] font-mono text-gray-400 hover:text-white">10</button>
+                            <button onclick="setExactReps(12)" class="px-2 py-0.5 rounded bg-surface-800 text-[11px] font-mono text-gray-400 hover:text-white">12</button>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button onclick="stepReps(-2)" class="w-12 h-14 rounded-2xl bg-surface-800/70 active:bg-gray-700 border border-gray-800 flex items-center justify-center text-sm font-mono font-bold text-gray-300">-2</button>
+                        <button onclick="stepReps(-1)" class="w-16 h-14 rounded-2xl bg-surface-800 active:bg-gray-700 border border-gray-700/70 flex items-center justify-center text-lg font-mono font-bold text-gray-200 shadow">-1</button>
+                        
+                        <input type="number" id="input-reps" step="1" min="1" value="8" oninput="updateLiveSetMetrics()" class="flex-1 h-14 bg-surface-950 border-2 border-gray-700 focus:border-brand-500 rounded-2xl text-center font-mono text-2xl font-extrabold text-white focus:outline-none">
+                        
+                        <button onclick="stepReps(1)" class="w-16 h-14 rounded-2xl bg-surface-800 active:bg-gray-700 border border-gray-700/70 flex items-center justify-center text-lg font-mono font-bold text-brand-400 shadow">+1</button>
+                        <button onclick="stepReps(2)" class="w-12 h-14 rounded-2xl bg-surface-800/70 active:bg-gray-700 border border-gray-800 flex items-center justify-center text-sm font-mono font-bold text-gray-300">+2</button>
+                    </div>
+                </div>
+
+                <!-- Optional Notes / RPE & Auto-Start Rest Timer Checkbox -->
+                <div class="grid grid-cols-12 gap-2.5 pt-1">
+                    <div class="col-span-8">
+                        <input type="text" id="input-notes" placeholder="Notes / RPE (e.g. RPE 8.5, belt, strict)" class="w-full bg-surface-950 border border-gray-800 rounded-xl px-3 py-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-brand-500">
+                    </div>
+                    <label class="col-span-4 bg-surface-950 border border-gray-800 rounded-xl px-2.5 py-2 flex items-center justify-center gap-1.5 cursor-pointer">
+                        <input type="checkbox" id="auto-rest-toggle" checked class="accent-brand-500 w-3.5 h-3.5 rounded">
+                        <span class="text-[11px] font-semibold text-gray-300">Auto Timer</span>
+                    </label>
+                </div>
+
+                <!-- Live Set Preview & Potential PR Detection Banner -->
+                <div class="bg-surface-950 rounded-xl p-3 border border-gray-800/90 flex items-center justify-between">
+                    <div class="flex items-center gap-4">
+                        <div>
+                            <span class="text-[10px] uppercase tracking-wider text-gray-400 block">Set Volume</span>
+                            <span id="live-volume" class="font-mono text-sm font-bold text-white">480 kg</span>
+                        </div>
+                        <div class="h-6 w-px bg-gray-800"></div>
+                        <div>
+                            <span class="text-[10px] uppercase tracking-wider text-gray-400 block">Est. 1RM (Epley)</span>
+                            <span id="live-1rm" class="font-mono text-sm font-bold text-brand-400">76.0 kg</span>
+                        </div>
+                    </div>
+                    <div id="live-pr-badge" class="hidden px-2.5 py-1 rounded-full bg-amber-500/20 border border-amber-400/40 text-amber-300 text-[11px] font-extrabold tracking-wide flex items-center gap-1">
+                        <i class="fa-solid fa-trophy text-amber-400"></i> <span id="live-pr-text">NEW PR!</span>
+                    </div>
+                </div>
+
+                <!-- Primary Log Set CTA Button -->
+                <button onclick="logWorkoutSet()" class="w-full py-4 rounded-2xl bg-gradient-to-r from-brand-500 to-brand-600 hover:from-brand-400 hover:to-brand-500 active:scale-[0.99] text-surface-950 font-extrabold text-base tracking-wide shadow-lg shadow-brand-500/25 flex items-center justify-center gap-2 transition">
+                    <i class="fa-solid fa-check-double"></i> LOG SET
+                </button>
+            </div>
+
+            <!-- Today's Session Summary & Logged Sets List -->
+            <div class="bg-surface-900 border border-gray-800/90 rounded-2xl p-4 shadow-lg space-y-3">
+                <div class="flex items-center justify-between border-b border-gray-800 pb-2.5">
+                    <div>
+                        <h2 class="text-sm font-extrabold uppercase tracking-wider text-white">Session Log (<span id="session-date-label">Today</span>)</h2>
+                        <p class="text-[11px] text-gray-400">Tap trash icon to remove a mistaken set</p>
+                    </div>
+                    <div class="text-right">
+                        <span id="session-total-volume" class="font-mono text-base font-extrabold text-brand-400">0 kg</span>
+                        <span id="session-total-sets" class="block text-[11px] text-gray-400 font-semibold">0 sets</span>
+                    </div>
+                </div>
+
+                <div id="session-sets-container" class="space-y-2.5">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================================= -->
+        <!-- TAB 2: ANALYTICS, CHARTS & PERSONAL RECORDS               -->
+        <!-- ========================================================= -->
+        <section id="tab-analytics" class="hidden space-y-4">
+            
+            <!-- Filter Bar -->
+            <div class="bg-surface-900 border border-gray-800/90 rounded-2xl p-4 shadow-lg space-y-3">
+                <div class="flex items-center justify-between">
+                    <label class="text-xs font-bold uppercase tracking-wider text-gray-400">Analyze Lift</label>
+                    <span class="text-[11px] text-brand-400 font-semibold">Epley 1RM & Volume</span>
+                </div>
+                <select id="analytics-exercise-select" onchange="renderAnalytics()" class="w-full bg-surface-950 border border-gray-700 rounded-xl px-3.5 py-2.5 text-sm font-bold text-white focus:outline-none focus:border-brand-500">
+                    <!-- Populated by JS -->
+                </select>
+
+                <!-- 4 Key Metric Cards -->
+                <div class="grid grid-cols-2 gap-2.5 pt-1">
+                    <div class="bg-surface-950 border border-gray-800/80 rounded-xl p-3">
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-gray-400 block">Heaviest Weight</span>
+                        <span id="stat-max-weight" class="font-mono text-lg font-extrabold text-white mt-0.5 block">—</span>
+                        <span id="stat-max-weight-sub" class="text-[11px] text-gray-400">All-time top weight</span>
+                    </div>
+                    <div class="bg-surface-950 border border-gray-800/80 rounded-xl p-3">
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-gray-400 block">Best Est. 1RM</span>
+                        <span id="stat-best-1rm" class="font-mono text-lg font-extrabold text-amber-400 mt-0.5 block">—</span>
+                        <span id="stat-best-1rm-sub" class="text-[11px] text-gray-400">Calculated peak</span>
+                    </div>
+                    <div class="bg-surface-950 border border-gray-800/80 rounded-xl p-3">
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-gray-400 block">Best Set Volume</span>
+                        <span id="stat-max-vol" class="font-mono text-lg font-extrabold text-brand-400 mt-0.5 block">—</span>
+                        <span id="stat-max-vol-sub" class="text-[11px] text-gray-400">Single set tonnage</span>
+                    </div>
+                    <div class="bg-surface-950 border border-gray-800/80 rounded-xl p-3">
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-gray-400 block">Total Lift Tonnage</span>
+                        <span id="stat-cum-vol" class="font-mono text-lg font-extrabold text-sky-400 mt-0.5 block">—</span>
+                        <span id="stat-cum-sets" class="text-[11px] text-gray-400">0 total sets</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Interactive Chart Card -->
+            <div class="bg-surface-900 border border-gray-800/90 rounded-2xl p-4 shadow-lg space-y-3">
+                <div class="flex items-center justify-between gap-2">
+                    <h3 class="text-xs font-extrabold uppercase tracking-wider text-white">Progression Chart</h3>
+                    <div class="flex bg-surface-950 p-1 rounded-xl border border-gray-800">
+                        <button id="chart-mode-1rm" onclick="setChartMode('1rm')" class="px-2.5 py-1 rounded-lg text-xs font-bold bg-brand-500 text-surface-950 transition">1RM & Top Set</button>
+                        <button id="chart-mode-vol" onclick="setChartMode('volume')" class="px-2.5 py-1 rounded-lg text-xs font-bold text-gray-400 hover:text-white transition">Session Volume</button>
+                    </div>
+                </div>
+                <div class="relative h-64 w-full">
+                    <canvas id="progressionChart"></canvas>
+                </div>
+            </div>
+
+            <!-- All-Time PR Leaderboard Table across All Exercises -->
+            <div class="bg-surface-900 border border-gray-800/90 rounded-2xl p-4 shadow-lg space-y-3">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="text-sm font-extrabold uppercase tracking-wider text-white flex items-center gap-1.5">
+                            <i class="fa-solid fa-trophy text-amber-400"></i> All-Time PR Board
+                        </h3>
+                        <p class="text-[11px] text-gray-400">Tap any exercise row to inspect its progression chart</p>
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="border-b border-gray-800 text-[10px] font-bold uppercase tracking-wider text-gray-400">
+                                <th class="py-2 pr-2">Exercise</th>
+                                <th class="py-2 px-2 text-right">Max Weight</th>
+                                <th class="py-2 px-2 text-right">Best e1RM</th>
+                                <th class="py-2 pl-2 text-right">Max Set Vol</th>
+                            </tr>
+                        </thead>
+                        <tbody id="pr-leaderboard-body" class="divide-y divide-gray-800/60 text-xs">
+                            <!-- Populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================================= -->
+        <!-- TAB 3: WORKOUT HISTORY & BACKUP                           -->
+        <!-- ========================================================= -->
+        <section id="tab-history" class="hidden space-y-4">
+            
+            <!-- Data Management & Backup Card -->
+            <div class="bg-surface-900 border border-gray-800/90 rounded-2xl p-4 shadow-lg space-y-3">
+                <div>
+                    <h2 class="text-sm font-extrabold uppercase tracking-wider text-white">Data Ownership & Backup</h2>
+                    <p class="text-xs text-gray-400 mt-0.5">All sets are saved locally on your Samsung device. Export regularly or load demo data to explore analytics.</p>
+                </div>
+
+                <div class="grid grid-cols-2 gap-2.5">
+                    <button onclick="exportDataJSON()" class="py-2.5 px-3 rounded-xl bg-surface-800 hover:bg-gray-700 border border-gray-700 text-xs font-bold text-white flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-download text-brand-400"></i> Export JSON
+                    </button>
+                    <button onclick="exportDataCSV()" class="py-2.5 px-3 rounded-xl bg-surface-800 hover:bg-gray-700 border border-gray-700 text-xs font-bold text-white flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-file-csv text-sky-400"></i> Export CSV
+                    </button>
+                    <label class="py-2.5 px-3 rounded-xl bg-surface-800 hover:bg-gray-700 border border-gray-700 text-xs font-bold text-white flex items-center justify-center gap-2 cursor-pointer">
+                        <i class="fa-solid fa-upload text-amber-400"></i> Import JSON
+                        <input type="file" id="import-json-input" accept=".json" onchange="importDataJSON(event)" class="hidden">
+                    </label>
+                    <button onclick="loadDemoWorkoutData()" class="py-2.5 px-3 rounded-xl bg-brand-500/15 hover:bg-brand-500/25 border border-brand-500/30 text-xs font-bold text-brand-300 flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-bolt"></i> Load Demo Data
+                    </button>
+                </div>
+
+                <div class="pt-1 flex justify-between items-center border-t border-gray-800/80 text-xs">
+                    <span id="storage-summary" class="text-gray-400 font-mono">0 total sets stored</span>
+                    <button onclick="openConfirmClearModal()" class="text-rose-400 hover:text-rose-300 font-semibold py-1">
+                        <i class="fa-solid fa-trash-can mr-1"></i> Wipe All Data
+                    </button>
+                </div>
+            </div>
+
+            <!-- Filterable Full Workout History -->
+            <div class="bg-surface-900 border border-gray-800/90 rounded-2xl p-4 shadow-lg space-y-3">
+                <div class="flex items-center justify-between gap-2">
+                    <h3 class="text-sm font-extrabold uppercase tracking-wider text-white">Workout Log Archive</h3>
+                    <input type="text" id="history-search" oninput="renderHistoryList()" placeholder="Search exercise or note..." class="bg-surface-950 border border-gray-800 rounded-xl px-3 py-1.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-brand-500">
+                </div>
+
+                <div id="history-archive-container" class="space-y-3">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ================= CUSTOM EXERCISE MODAL ================= -->
+    <div id="custom-exercise-modal" class="fixed inset-0 z-50 hidden bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-surface-900 border border-gray-700 rounded-2xl max-w-sm w-full p-5 space-y-4 shadow-2xl">
+            <div class="flex items-center justify-between">
+                <h3 class="font-extrabold text-base text-white">Add Custom Exercise</h3>
+                <button onclick="closeCustomExerciseModal()" class="text-gray-400 hover:text-white">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+            <div class="space-y-3">
+                <div>
+                    <label class="block text-xs font-bold uppercase text-gray-400 mb-1">Exercise Name</label>
+                    <input type="text" id="custom-ex-name" placeholder="e.g. Seated Calf Raise, JM Press" class="w-full bg-surface-950 border border-gray-700 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-brand-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase text-gray-400 mb-1">Category</label>
+                    <select id="custom-ex-cat" class="w-full bg-surface-950 border border-gray-700 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-brand-500">
+                        <option value="Custom">Custom</option>
+                        <option value="Barbell / Compound">Barbell / Compound</option>
+                        <option value="Upper / Hypertrophy">Upper / Hypertrophy</option>
+                        <option value="Armwrestling / Forearm">Armwrestling / Wrist</option>
+                    </select>
+                </div>
+            </div>
+            <div class="flex gap-2 pt-1">
+                <button onclick="closeCustomExerciseModal()" class="flex-1 py-2.5 rounded-xl bg-surface-800 text-gray-300 font-bold text-xs">Cancel</button>
+                <button onclick="saveCustomExercise()" class="flex-1 py-2.5 rounded-xl bg-brand-500 text-surface-950 font-extrabold text-xs">Save Lift</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= CONFIRM WIPE MODAL ================= -->
+    <div id="confirm-clear-modal" class="fixed inset-0 z-50 hidden bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-surface-900 border border-rose-500/40 rounded-2xl max-w-sm w-full p-5 space-y-4 shadow-2xl">
+            <div class="flex items-center gap-2.5 text-rose-400">
+                <i class="fa-solid fa-triangle-exclamation text-xl"></i>
+                <h3 class="font-extrabold text-base text-white">Delete All Workout Logs?</h3>
+            </div>
+            <p class="text-xs text-gray-300 leading-relaxed">This will permanently remove all logged sets and custom exercises stored in your browser. Consider exporting a JSON backup first.</p>
+            <div class="flex gap-2 pt-1">
+                <button onclick="closeConfirmClearModal()" class="flex-1 py-2.5 rounded-xl bg-surface-800 text-gray-300 font-bold text-xs">Cancel</button>
+                <button onclick="confirmClearAllData()" class="flex-1 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-extrabold text-xs">Yes, Wipe Everything</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= TOAST NOTIFICATION ================= -->
+    <div id="toast-banner" class="fixed bottom-20 left-1/2 -translate-x-1/2 z-40 hidden px-4 py-2.5 rounded-2xl bg-surface-800/95 border border-brand-500/50 text-white text-xs font-bold shadow-2xl flex items-center gap-2 whitespace-nowrap">
+        <i id="toast-icon" class="fa-solid fa-circle-check text-brand-400"></i>
+        <span id="toast-text">Set logged!</span>
+    </div>
+
+    <!-- ================= BOTTOM NAVIGATION BAR ================= -->
+    <nav class="fixed bottom-0 left-0 right-0 z-30 bg-surface-950/95 backdrop-blur-md border-t border-gray-800/90 px-4 py-2">
+        <div class="max-w-lg mx-auto grid grid-cols-3 gap-2">
+            <button id="nav-logger" onclick="switchTab('logger')" class="flex flex-col items-center justify-center py-1.5 rounded-xl text-brand-400 bg-brand-500/10 font-bold transition">
+                <i class="fa-solid fa-Plus-square fa-dumbbell text-base mb-0.5"></i>
+                <span class="text-[11px]">Log Workout</span>
+            </button>
+            <button id="nav-analytics" onclick="switchTab('analytics')" class="flex flex-col items-center justify-center py-1.5 rounded-xl text-gray-400 hover:text-gray-200 font-semibold transition">
+                <i class="fa-solid fa-chart-line text-base mb-0.5"></i>
+                <span class="text-[11px]">Volume & PRs</span>
+            </button>
+            <button id="nav-history" onclick="switchTab('history')" class="flex flex-col items-center justify-center py-1.5 rounded-xl text-gray-400 hover:text-gray-200 font-semibold transition">
+                <i class="fa-solid fa-database text-base mb-0.5"></i>
+                <span class="text-[11px]">History & Data</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- ================= APPLICATION LOGIC ================= -->
+    <script>
+        /**************************************************************
+         * 1. STORAGE KEYS & DEFAULT EXERCISE LIBRARY
+         **************************************************************/
+        const STORAGE_LOGS_KEY = 'ironpulse_workout_sets_v1';
+        const STORAGE_EXERCISES_KEY = 'ironpulse_exercises_v1';
+
+        const DEFAULT_EXERCISES = [
+            { name: 'Barbell Squat', category: 'Barbell / Compound' },
+            { name: 'Bench Press', category: 'Barbell / Compound' },
+            { name: 'Deadlift', category: 'Barbell / Compound' },
+            { name: 'Overhead Press', category: 'Barbell / Compound' },
+            { name: 'Barbell Row', category: 'Barbell / Compound' },
+            { name: 'Romanian Deadlift', category: 'Barbell / Compound' },
+            { name: 'Pull-Up (Weighted)', category: 'Upper / Hypertrophy' },
+            { name: 'Incline DB Press', category: 'Upper / Hypertrophy' },
+            { name: 'Seated Cable Row', category: 'Upper / Hypertrophy' },
+            { name: 'EZ-Bar Bicep Curl', category: 'Upper / Hypertrophy' },
+            { name: 'Tricep Rope Pushdown', category: 'Upper / Hypertrophy' },
+            { name: 'Pronation Lift (Belt/Cable)', category: 'Armwrestling / Forearm' },
+            { name: 'Cupping / Wrist Wrench', category: 'Armwrestling / Forearm' },
+            { name: 'Back Pressure Cable', category: 'Armwrestling / Forearm' }
+        ];
+
+        // Application State
+        let workoutLogs = [];
+        let exercises = [];
+        let currentChartMode = '1rm'; // '1rm' or 'volume'
+        let progressionChartInstance = null;
+
+        // Rest Timer State
+        let timerDefaultSeconds = 90;
+        let timerRemainingSeconds = 90;
+        let timerInterval = null;
+        let isTimerRunning = false;
+
+        /**************************************************************
+         * 2. INITIALIZATION & PWA MANIFEST SETUP
+         **************************************************************/
+        window.addEventListener('DOMContentLoaded', () => {
+            setupPWAManifest();
+            loadFromLocalStorage();
+
+            // Set today's date in YYYY-MM-DD local format
+            const todayStr = getLocalTodayDateString();
+            document.getElementById('log-date').value = todayStr;
+
+            populateExerciseSelect();
+            onDateOrExerciseChange();
+            updateStorageSummary();
+        });
+
+        function getLocalTodayDateString() {
+            const now = new Date();
+            const offsetMs = now.getTimezoneOffset() * 60000;
+            return new Date(now.getTime() - offsetMs).toISOString().split('T')[0];
+        }
+
+        function setupPWAManifest() {
+            // Embeds a valid Web App Manifest via Data URI so Samsung Internet / Chrome installs cleanly
+            const manifestObj = {
+                name: "IronPulse Workout & PR Tracker",
+                short_name: "IronPulse",
+                description: "Offline-first gym workout logger, volume tracker, and PR analyzer.",
+                start_url: ".",
+                display: "standalone",
+                background_color: "#090d16",
+                theme_color: "#090d16",
+                orientation: "portrait",
+                icons: [
+                    {
+                        src: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%2310b981'/><text x='50%' y='56%' dominant-baseline='middle' text-anchor='middle' font-size='52'>🏋️</text></svg>",
+                        sizes: "192x192",
+                        type: "image/svg+xml"
+                    }
+                ]
+            };
+            const manifestStr = encodeURIComponent(JSON.stringify(manifestObj));
+            document.getElementById('pwa-manifest').setAttribute('href', `data:application/manifest+json,${manifestStr}`);
+        }
+
+        /**************************************************************
+         * 3. LOCAL STORAGE PERSISTENCE & CORE FORMULAS
+         **************************************************************/
+        function loadFromLocalStorage() {
+            try {
+                const rawLogs = localStorage.getItem(STORAGE_LOGS_KEY);
+                workoutLogs = rawLogs ? JSON.parse(rawLogs) : [];
+
+                const rawEx = localStorage.getItem(STORAGE_EXERCISES_KEY);
+                exercises = rawEx ? JSON.parse(rawEx) : [...DEFAULT_EXERCISES];
+            } catch (e) {
+                console.error('Error reading localStorage:', e);
+                workoutLogs = [];
+                exercises = [...DEFAULT_EXERCISES];
+            }
+        }
+
+        function saveToLocalStorage() {
+            try {
+                localStorage.setItem(STORAGE_LOGS_KEY, JSON.stringify(workoutLogs));
+                localStorage.setItem(STORAGE_EXERCISES_KEY, JSON.stringify(exercises));
+                updateStorageSummary();
+            } catch (e) {
+                showToast('Storage error: Check browser quota', true);
+            }
+        }
+
+        // Epley Formula: Weight * (1 + Reps / 30)
+        function calculateEpley1RM(weight, reps) {
+            const w = parseFloat(weight) || 0;
+            const r = parseInt(reps, 10) || 0;
+            if (w <= 0 || r <= 0) return 0;
+            if (r === 1) return w;
+            return +(w * (1 + r / 30)).toFixed(1);
+        }
+
+        function calculateSetVolume(weight, reps) {
+            const w = parseFloat(weight) || 0;
+            const r = parseInt(reps, 10) || 0;
+            return +(w * r).toFixed(1);
+        }
+
+        /**************************************************************
+         * 4. EXERCISE SELECTORS & CUSTOM LIFT CREATION
+         **************************************************************/
+        function populateExerciseSelect(selectedExerciseName = null) {
+            const filterCat = document.getElementById('category-filter').value;
+            const logSelect = document.getElementById('log-exercise');
+            const analyticsSelect = document.getElementById('analytics-exercise-select');
+
+            const currentSelected = selectedExerciseName || logSelect.value;
+
+            const filteredExercises = filterCat === 'ALL'
+                ? exercises
+                : exercises.filter(ex => ex.category === filterCat);
+
+            logSelect.innerHTML = '';
+            filteredExercises.forEach(ex => {
+                const opt = document.createElement('option');
+                opt.value = ex.name;
+                opt.textContent = ex.name;
+                logSelect.appendChild(opt);
+            });
+
+            if (currentSelected && filteredExercises.some(e => e.name === currentSelected)) {
+                logSelect.value = currentSelected;
+            }
+
+            // Populate Analytics Selector with all exercises
+            const currentAnalyticsVal = analyticsSelect.value;
+            analyticsSelect.innerHTML = '<option value="ALL">All Exercises (Global Overview)</option>';
+            exercises.forEach(ex => {
+                const opt = document.createElement('option');
+                opt.value = ex.name;
+                opt.textContent = `${ex.name} (${ex.category})`;
+                analyticsSelect.appendChild(opt);
+            });
+            if (currentAnalyticsVal) {
+                analyticsSelect.value = currentAnalyticsVal;
+            }
+        }
+
+        function openCustomExerciseModal() {
+            document.getElementById('custom-ex-name').value = '';
+            document.getElementById('custom-exercise-modal').classList.remove('hidden');
+            document.getElementById('custom-ex-name').focus();
+        }
+
+        function closeCustomExerciseModal() {
+            document.getElementById('custom-exercise-modal').classList.add('hidden');
+        }
+
+        function saveCustomExercise() {
+            const nameInput = document.getElementById('custom-ex-name').value.trim();
+            const catInput = document.getElementById('custom-ex-cat').value;
+
+            if (!nameInput) {
+                showToast('Please enter an exercise name', true);
+                return;
+            }
+
+            const exists = exercises.some(e => e.name.toLowerCase() === nameInput.toLowerCase());
+            if (!exists) {
+                exercises.push({ name: nameInput, category: catInput });
+                saveToLocalStorage();
+            }
+
+            document.getElementById('category-filter').value = 'ALL';
+            populateExerciseSelect(nameInput);
+            closeCustomExerciseModal();
+            onDateOrExerciseChange();
+            showToast(`Added "${nameInput}"`);
+        }
+
+        /**************************************************************
+         * 5. LOGGER INPUTS, PR DETECTION & SESSION RENDERING
+         **************************************************************/
+        function stepWeight(delta) {
+            const input = document.getElementById('input-weight');
+            let current = parseFloat(input.value) || 0;
+            current = Math.max(0, +(current + delta).toFixed(2));
+            input.value = current;
+            updateLiveSetMetrics();
+        }
+
+        function stepReps(delta) {
+            const input = document.getElementById('input-reps');
+            let current = parseInt(input.value, 10) || 1;
+            current = Math.max(1, current + delta);
+            input.value = current;
+            updateLiveSetMetrics();
+        }
+
+        function setExactReps(val) {
+            document.getElementById('input-reps').value = val;
+            updateLiveSetMetrics();
+        }
+
+        function getExerciseRecords(exerciseName) {
+            const sets = workoutLogs.filter(s => s.exercise === exerciseName);
+            if (sets.length === 0) {
+                return { hasHistory: false, maxWeight: 0, max1RM: 0, maxVolume: 0, lastSet: null };
+            }
+            let maxWeight = 0;
+            let max1RM = 0;
+            let maxVolume = 0;
+
+            sets.forEach(s => {
+                if (s.weight > maxWeight) maxWeight = s.weight;
+                if (s.e1rm > max1RM) max1RM = s.e1rm;
+                if (s.volume > maxVolume) maxVolume = s.volume;
+            });
+
+            // Sort by timestamp descending to get the most recent set
+            const sorted = [...sets].sort((a, b) => b.timestamp - a.timestamp);
+            return {
+                hasHistory: true,
+                maxWeight,
+                max1RM,
+                maxVolume,
+                lastSet: sorted[0]
+            };
+        }
+
+        function onDateOrExerciseChange() {
+            const exerciseName = document.getElementById('log-exercise').value;
+            const records = getExerciseRecords(exerciseName);
+
+            const lastEl = document.getElementById('ctx-last-set');
+            const bestEl = document.getElementById('ctx-best-pr');
+
+            if (records.hasHistory && records.lastSet) {
+                lastEl.textContent = `${records.lastSet.weight}kg × ${records.lastSet.reps} (${records.lastSet.date})`;
+                bestEl.textContent = `${records.maxWeight}kg | e1RM: ${records.max1RM}kg`;
+            } else {
+                lastEl.textContent = 'No prior sets logged';
+                bestEl.textContent = 'First time logging lift';
+            }
+
+            updateLiveSetMetrics();
+            renderTodaySessionLog();
+        }
+
+        function copyLastSetToInputs() {
+            const exerciseName = document.getElementById('log-exercise').value;
+            const records = getExerciseRecords(exerciseName);
+            if (!records.hasHistory || !records.lastSet) {
+                showToast('No previous set found for this lift', true);
+                return;
+            }
+            document.getElementById('input-weight').value = records.lastSet.weight;
+            document.getElementById('input-reps').value = records.lastSet.reps;
+            updateLiveSetMetrics();
+            showToast('Filled from last logged set');
+        }
+
+        function updateLiveSetMetrics() {
+            const exerciseName = document.getElementById('log-exercise').value;
+            const weight = parseFloat(document.getElementById('input-weight').value) || 0;
+            const reps = parseInt(document.getElementById('input-reps').value, 10) || 0;
+
+            const volume = calculateSetVolume(weight, reps);
+            const e1rm = calculateEpley1RM(weight, reps);
+
+            document.getElementById('live-volume').textContent = `${volume.toLocaleString()} kg`;
+            document.getElementById('live-1rm').textContent = `${e1rm} kg`;
+
+            // Check if this set breaks a PR for the chosen exercise
+            const records = getExerciseRecords(exerciseName);
+            const prBadge = document.getElementById('live-pr-badge');
+            const prText = document.getElementById('live-pr-text');
+
+            if (records.hasHistory && weight > 0 && reps > 0) {
+                const brokenPRs = [];
+                if (weight > records.maxWeight) brokenPRs.push('WEIGHT PR');
+                if (e1rm > records.max1RM) brokenPRs.push('1RM PR');
+                if (volume > records.maxVolume) brokenPRs.push('VOLUME PR');
+
+                if (brokenPRs.length > 0) {
+                    prText.textContent = brokenPRs[0];
+                    prBadge.classList.remove('hidden');
+                } else {
+                    prBadge.classList.add('hidden');
+                }
+            } else {
+                prBadge.classList.add('hidden');
+            }
+        }
+
+        function logWorkoutSet() {
+            const dateStr = document.getElementById('log-date').value || getLocalTodayDateString();
+            const exerciseName = document.getElementById('log-exercise').value;
+            const weight = parseFloat(document.getElementById('input-weight').value);
+            const reps = parseInt(document.getElementById('input-reps').value, 10);
+            const notes = document.getElementById('input-notes').value.trim();
+
+            if (isNaN(weight) || weight < 0 || isNaN(reps) || reps <= 0) {
+                showToast('Enter valid weight and reps', true);
+                return;
+            }
+
+            const exObj = exercises.find(e => e.name === exerciseName);
+            const category = exObj ? exObj.category : 'Custom';
+            const volume = calculateSetVolume(weight, reps);
+            const e1rm = calculateEpley1RM(weight, reps);
+
+            // Detect PR before saving
+            const records = getExerciseRecords(exerciseName);
+            let isPR = false;
+            let prType = '';
+            if (records.hasHistory) {
+                if (e1rm > records.max1RM) { isPR = true; prType = 'New e1RM PR!'; }
+                else if (weight > records.maxWeight) { isPR = true; prType = 'New Weight PR!'; }
+                else if (volume > records.maxVolume) { isPR = true; prType = 'New Set Volume PR!'; }
+            }
+
+            const newSet = {
+                id: 'set_' + Date.now() + '_' + Math.random().toString(36).substring(2, 6),
+                timestamp: Date.now(),
+                date: dateStr,
+                exercise: exerciseName,
+                category,
+                weight,
+                reps,
+                notes,
+                volume,
+                e1rm
+            };
+
+            workoutLogs.push(newSet);
+            saveToLocalStorage();
+
+            // Clear note field & refresh UI
+            document.getElementById('input-notes').value = '';
+            onDateOrExerciseChange();
+
+            // Trigger Rest Timer if Auto-Timer is enabled
+            if (document.getElementById('auto-rest-toggle').checked) {
+                resetTimer();
+                startPauseTimer(true);
+            }
+
+            // Haptic feedback on Android/Samsung if supported
+            if (navigator.vibrate) {
+                navigator.vibrate(isPR ? [80, 50, 120] : 40);
+            }
+
+            showToast(isPR ? `🏆 ${prType} (${weight}kg × ${reps})` : `Logged: ${exerciseName} ${weight}kg × ${reps}`);
+        }
+
+        function deleteWorkoutSet(setId) {
+            workoutLogs = workoutLogs.filter(s => s.id !== setId);
+            saveToLocalStorage();
+            onDateOrExerciseChange();
+            if (!document.getElementById('tab-history').classList.contains('hidden')) {
+                renderHistoryList();
+            }
+            if (!document.getElementById('tab-analytics').classList.contains('hidden')) {
+                renderAnalytics();
+            }
+            showToast('Set deleted');
+        }
+
+        function renderTodaySessionLog() {
+            const selectedDate = document.getElementById('log-date').value;
+            const todayStr = getLocalTodayDateString();
+            document.getElementById('session-date-label').textContent = (selectedDate === todayStr) ? 'Today' : selectedDate;
+
+            const sessionSets = workoutLogs.filter(s => s.date === selectedDate);
+            const totalVol = sessionSets.reduce((acc, s) => acc + s.volume, 0);
+
+            document.getElementById('session-total-volume').textContent = `${totalVol.toLocaleString()} kg`;
+            document.getElementById('session-total-sets').textContent = `${sessionSets.length} ${sessionSets.length === 1 ? 'set' : 'sets'}`;
+
+            const container = document.getElementById('session-sets-container');
+            if (sessionSets.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-6 text-gray-500 text-xs">
+                        <i class="fa-solid fa-clipboard-list text-2xl mb-1.5 block text-gray-600"></i>
+                        No sets logged for ${selectedDate} yet.
+                    </div>
+                `;
+                return;
+            }
+
+            // Group sets by exercise in order of appearance
+            const grouped = {};
+            sessionSets.forEach(s => {
+                if (!grouped[s.exercise]) grouped[s.exercise] = [];
+                grouped[s.exercise].push(s);
+            });
+
+            container.innerHTML = Object.entries(grouped).map(([exName, sets]) => {
+                const exVol = sets.reduce((sum, item) => sum + item.volume, 0);
+                const rowsHtml = sets.map((s, idx) => `
+                    <div class="flex items-center justify-between py-1.5 px-2.5 rounded-lg bg-surface-900/90 border border-gray-800/60 text-xs">
+                        <div class="flex items-center gap-2.5">
+                            <span class="w-5 h-5 rounded-md bg-surface-800 text-gray-400 font-mono text-[11px] flex items-center justify-center font-bold">${idx + 1}</span>
+                            <span class="font-mono font-bold text-white text-sm">${s.weight} kg <span class="text-gray-400 font-normal">×</span> ${s.reps}</span>
+                            <span class="text-[11px] font-mono text-brand-400 bg-brand-500/10 px-1.5 py-0.5 rounded">1RM: ${s.e1rm}</span>
+                            ${s.notes ? `<span class="text-[11px] text-gray-400 italic truncate max-w-[110px]">"${escapeHtml(s.notes)}"</span>` : ''}
+                        </div>
+                        <button onclick="deleteWorkoutSet('${s.id}')" class="text-gray-500 hover:text-rose-400 px-1.5 py-0.5 transition">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                    </div>
+                `).join('');
+
+                return `
+                    <div class="bg-surface-950 border border-gray-800/90 rounded-xl p-3 space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="font-bold text-xs text-white">${escapeHtml(exName)}</span>
+                            <span class="font-mono text-[11px] text-gray-400">Vol: <strong class="text-gray-200">${exVol.toLocaleString()} kg</strong></span>
+                        </div>
+                        <div class="space-y-1.5">${rowsHtml}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        /**************************************************************
+         * 6. BUILT-IN REST TIMER WITH AUDIO & VIBRATION
+         **************************************************************/
+        function toggleTimerDrawer() {
+            const drawer = document.getElementById('timer-drawer');
+            drawer.classList.toggle('hidden');
+        }
+
+        function setTimerPreset(seconds) {
+            timerDefaultSeconds = seconds;
+            timerRemainingSeconds = seconds;
+            updateTimerUI();
+            startPauseTimer(true);
+            document.getElementById('timer-drawer').classList.add('hidden');
+        }
+
+        function adjustTimerSeconds(delta) {
+            timerRemainingSeconds = Math.max(0, timerRemainingSeconds + delta);
+            updateTimerUI();
+        }
+
+        function startPauseTimer(forceStart = false) {
+            if (forceStart) {
+                isTimerRunning = false;
+                clearInterval(timerInterval);
+            }
+
+            const playIcon = document.getElementById('timer-play-icon');
+            const toggleBtn = document.getElementById('timer-toggle-btn');
+
+            if (isTimerRunning) {
+                clearInterval(timerInterval);
+                isTimerRunning = false;
+                playIcon.className = 'fa-solid fa-play text-xs';
+                toggleBtn.classList.remove('timer-active-glow');
+            } else {
+                if (timerRemainingSeconds <= 0) {
+                    timerRemainingSeconds = timerDefaultSeconds;
+                }
+                isTimerRunning = true;
+                playIcon.className = 'fa-solid fa-pause text-xs';
+                toggleBtn.classList.add('timer-active-glow');
+
+                timerInterval = setInterval(() => {
+                    timerRemainingSeconds--;
+                    updateTimerUI();
+
+                    if (timerRemainingSeconds <= 0) {
+                        clearInterval(timerInterval);
+                        isTimerRunning = false;
+                        playIcon.className = 'fa-solid fa-play text-xs';
+                        toggleBtn.classList.remove('timer-active-glow');
+                        triggerTimerAlarm();
+                    }
+                }, 1000);
+            }
+        }
+
+        function resetTimer() {
+            clearInterval(timerInterval);
+            isTimerRunning = false;
+            timerRemainingSeconds = timerDefaultSeconds;
+            document.getElementById('timer-play-icon').className = 'fa-solid fa-play text-xs';
+            document.getElementById('timer-toggle-btn').classList.remove('timer-active-glow');
+            updateTimerUI();
+        }
+
+        function updateTimerUI() {
+            const mins = Math.floor(timerRemainingSeconds / 60);
+            const secs = timerRemainingSeconds % 60;
+            document.getElementById('timer-display').textContent =
+                `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+        }
+
+        function triggerTimerAlarm() {
+            showToast('⏱️ Rest Complete — Ready for next set!');
+            if (navigator.vibrate) {
+                navigator.vibrate([200, 100, 200, 100, 300]);
+            }
+            // Synthesize clean Web Audio API beep (no external MP3 required)
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                [0, 0.22, 0.44].forEach(delay => {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(880, ctx.currentTime + delay);
+                    gain.gain.setValueAtTime(0.25, ctx.currentTime + delay);
+                    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + delay + 0.18);
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start(ctx.currentTime + delay);
+                    osc.stop(ctx.currentTime + delay + 0.18);
+                });
+            } catch (e) {}
+        }
+
+        /**************************************************************
+         * 7. ANALYTICS, CHART.JS & ALL-TIME PR LEADERBOARD
+         **************************************************************/
+        function setChartMode(mode) {
+            currentChartMode = mode;
+            const btn1rm = document.getElementById('chart-mode-1rm');
+            const btnVol = document.getElementById('chart-mode-vol');
+
+            if (mode === '1rm') {
+                btn1rm.className = 'px-2.5 py-1 rounded-lg text-xs font-bold bg-brand-500 text-surface-950 transition';
+                btnVol.className = 'px-2.5 py-1 rounded-lg text-xs font-bold text-gray-400 hover:text-white transition';
+            } else {
+                btnVol.className = 'px-2.5 py-1 rounded-lg text-xs font-bold bg-brand-500 text-surface-950 transition';
+                btn1rm.className = 'px-2.5 py-1 rounded-lg text-xs font-bold text-gray-400 hover:text-white transition';
+            }
+            renderAnalytics();
+        }
+
+        function renderAnalytics() {
+            const selectedEx = document.getElementById('analytics-exercise-select').value;
+            const filteredLogs = (selectedEx === 'ALL')
+                ? workoutLogs
+                : workoutLogs.filter(s => s.exercise === selectedEx);
+
+            // Populate 4 summary cards
+            if (filteredLogs.length === 0) {
+                document.getElementById('stat-max-weight').textContent = '—';
+                document.getElementById('stat-max-weight-sub').textContent = 'No sets logged';
+                document.getElementById('stat-best-1rm').textContent = '—';
+                document.getElementById('stat-best-1rm-sub').textContent = 'No sets logged';
+                document.getElementById('stat-max-vol').textContent = '—';
+                document.getElementById('stat-max-vol-sub').textContent = 'No sets logged';
+                document.getElementById('stat-cum-vol').textContent = '0 kg';
+                document.getElementById('stat-cum-sets').textContent = '0 total sets';
+            } else {
+                let maxW = filteredLogs[0];
+                let max1RM = filteredLogs[0];
+                let maxVol = filteredLogs[0];
+                let totalVol = 0;
+
+                filteredLogs.forEach(s => {
+                    if (s.weight > maxW.weight) maxW = s;
+                    if (s.e1rm > max1RM.e1rm) max1RM = s;
+                    if (s.volume > maxVol.volume) maxVol = s;
+                    totalVol += s.volume;
+                });
+
+                document.getElementById('stat-max-weight').textContent = `${maxW.weight} kg`;
+                document.getElementById('stat-max-weight-sub').textContent = `${maxW.reps} reps (${maxW.date})`;
+
+                document.getElementById('stat-best-1rm').textContent = `${max1RM.e1rm} kg`;
+                document.getElementById('stat-best-1rm-sub').textContent = `${max1RM.weight}kg × ${max1RM.reps} (${max1RM.date})`;
+
+                document.getElementById('stat-max-vol').textContent = `${maxVol.volume.toLocaleString()} kg`;
+                document.getElementById('stat-max-vol-sub').textContent = `${maxVol.weight}kg × ${maxVol.reps}`;
+
+                document.getElementById('stat-cum-vol').textContent = `${Math.round(totalVol).toLocaleString()} kg`;
+                document.getElementById('stat-cum-sets').textContent = `${filteredLogs.length} total sets`;
+            }
+
+            renderProgressionChart(filteredLogs, selectedEx);
+            renderPRLeaderboard();
+        }
+
+        function renderProgressionChart(logs, selectedEx) {
+            const ctx = document.getElementById('progressionChart').getContext('2d');
+            if (progressionChartInstance) {
+                progressionChartInstance.destroy();
+            }
+
+            // Aggregate by Date
+            const byDate = {};
+            logs.forEach(s => {
+                if (!byDate[s.date]) {
+                    byDate[s.date] = { volume: 0, max1RM: 0, topWeight: 0 };
+                }
+                byDate[s.date].volume += s.volume;
+                if (s.e1rm > byDate[s.date].max1RM) byDate[s.date].max1RM = s.e1rm;
+                if (s.weight > byDate[s.date].topWeight) byDate[s.date].topWeight = s.weight;
+            });
+
+            const sortedDates = Object.keys(byDate).sort();
+            const labels = sortedDates.map(d => d.slice(5)); // MM-DD format
+
+            const datasets = (currentChartMode === '1rm')
+                ? [
+                    {
+                        label: 'Best Est. 1RM (kg)',
+                        data: sortedDates.map(d => byDate[d].max1RM),
+                        borderColor: '#10b981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.15)',
+                        borderWidth: 2.5,
+                        tension: 0.3,
+                        fill: true,
+                        pointRadius: 4
+                    },
+                    {
+                        label: 'Heaviest Weight (kg)',
+                        data: sortedDates.map(d => byDate[d].topWeight),
+                        borderColor: '#f59e0b',
+                        borderDash: [5, 5],
+                        borderWidth: 2,
+                        tension: 0.3,
+                        fill: false,
+                        pointRadius: 3
+                    }
+                ]
+                : [
+                    {
+                        label: selectedEx === 'ALL' ? 'Total Session Tonnage (kg)' : `${selectedEx} Volume (kg)`,
+                        data: sortedDates.map(d => Math.round(byDate[d].volume)),
+                        backgroundColor: 'rgba(56, 189, 248, 0.65)',
+                        borderColor: '#38bdf8',
+                        borderWidth: 1.5,
+                        borderRadius: 6
+                    }
+                ];
+
+            progressionChartInstance = new Chart(ctx, {
+                type: currentChartMode === '1rm' ? 'line' : 'bar',
+                data: { labels, datasets },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: { mode: 'index', intersect: false },
+                    plugins: {
+                        legend: {
+                            labels: { color: '#d1d5db', font: { size: 11, family: 'Inter' } }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            ticks: { color: '#9ca3af', font: { size: 10 } },
+                            grid: { color: 'rgba(255,255,255,0.04)' }
+                        },
+                        y: {
+                            ticks: { color: '#9ca3af', font: { size: 10 } },
+                            grid: { color: 'rgba(255,255,255,0.06)' }
+                        }
+                    }
+                }
+            });
+        }
+
+        function renderPRLeaderboard() {
+            const tbody = document.getElementById('pr-leaderboard-body');
+            const summaryByEx = {};
+
+            workoutLogs.forEach(s => {
+                if (!summaryByEx[s.exercise]) {
+                    summaryByEx[s.exercise] = { maxWeight: 0, max1RM: 0, maxVol: 0, sets: 0 };
+                }
+                const item = summaryByEx[s.exercise];
+                item.sets++;
+                if (s.weight > item.maxWeight) item.maxWeight = s.weight;
+                if (s.e1rm > item.max1RM) item.max1RM = s.e1rm;
+                if (s.volume > item.maxVol) item.maxVol = s.volume;
+            });
+
+            const entries = Object.entries(summaryByEx).sort((a, b) => b[1].max1RM - a[1].max1RM);
+
+            if (entries.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" class="py-6 text-center text-gray-500">No personal records yet. Log a workout or load demo data!</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = entries.map(([exName, stats]) => `
+                <tr onclick="inspectExerciseInChart('${escapeHtml(exName)}')" class="hover:bg-surface-800/60 cursor-pointer transition">
+                    <td class="py-2.5 pr-2 font-bold text-white">
+                        ${escapeHtml(exName)}
+                        <span class="block text-[10px] font-normal text-gray-400">${stats.sets} sets</span>
+                    </td>
+                    <td class="py-2.5 px-2 text-right font-mono font-bold text-gray-200">${stats.maxWeight} kg</td>
+                    <td class="py-2.5 px-2 text-right font-mono font-extrabold text-amber-400">${stats.max1RM} kg</td>
+                    <td class="py-2.5 pl-2 text-right font-mono text-brand-400">${stats.maxVol.toLocaleString()} kg</td>
+                </tr>
+            `).join('');
+        }
+
+        function inspectExerciseInChart(exerciseName) {
+            const select = document.getElementById('analytics-exercise-select');
+            select.value = exerciseName;
+            renderAnalytics();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        /**************************************************************
+         * 8. HISTORY ARCHIVE & DATA EXPORT / IMPORT / DEMO DATA
+         **************************************************************/
+        function renderHistoryList() {
+            const query = (document.getElementById('history-search').value || '').toLowerCase().trim();
+            const container = document.getElementById('history-archive-container');
+
+            const filtered = workoutLogs.filter(s =>
+                s.exercise.toLowerCase().includes(query) ||
+                (s.notes && s.notes.toLowerCase().includes(query)) ||
+                s.date.includes(query)
+            );
+
+            if (filtered.length === 0) {
+                container.innerHTML = `<div class="text-center py-8 text-gray-500 text-xs">No matching workout logs found.</div>`;
+                return;
+            }
+
+            // Group by Date descending
+            const byDate = {};
+            filtered.forEach(s => {
+                if (!byDate[s.date]) byDate[s.date] = [];
+                byDate[s.date].push(s);
+            });
+
+            const sortedDates = Object.keys(byDate).sort((a, b) => b.localeCompare(a));
+
+            container.innerHTML = sortedDates.map(dateStr => {
+                const sets = byDate[dateStr];
+                const dayVol = sets.reduce((sum, s) => sum + s.volume, 0);
+
+                const rows = sets.map(s => `
+                    <div class="flex items-center justify-between text-xs py-1.5 border-b border-gray-800/40 last:border-none">
+                        <div>
+                            <span class="font-bold text-gray-200">${escapeHtml(s.exercise)}</span>
+                            ${s.notes ? `<span class="text-[11px] text-gray-400 italic ml-1">(${escapeHtml(s.notes)})</span>` : ''}
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <span class="font-mono font-bold text-white">${s.weight}kg × ${s.reps}</span>
+                            <span class="font-mono text-[11px] text-brand-400">1RM ${s.e1rm}</span>
+                            <button onclick="deleteWorkoutSet('${s.id}')" class="text-gray-500 hover:text-rose-400">
+                                <i class="fa-solid fa-xmark"></i>
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+
+                return `
+                    <div class="bg-surface-950 border border-gray-800 rounded-xl p-3 space-y-2">
+                        <div class="flex items-center justify-between border-b border-gray-800 pb-1.5">
+                            <span class="font-mono font-extrabold text-xs text-brand-400">${dateStr}</span>
+                            <span class="font-mono text-[11px] text-gray-400">${sets.length} sets • <strong class="text-white">${dayVol.toLocaleString()} kg</strong></span>
+                        </div>
+                        <div>${rows}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function updateStorageSummary() {
+            document.getElementById('storage-summary').textContent = `${workoutLogs.length} total sets stored locally`;
+        }
+
+        function exportDataJSON() {
+            const payload = {
+                exportedAt: new Date().toISOString(),
+                exercises,
+                workoutLogs
+            };
+            const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `ironpulse_backup_${getLocalTodayDateString()}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast('JSON Backup Downloaded');
+        }
+
+        function exportDataCSV() {
+            if (workoutLogs.length === 0) {
+                showToast('No sets to export', true);
+                return;
+            }
+            const headers = ['id', 'date', 'exercise', 'category', 'weight_kg', 'reps', 'volume_kg', 'estimated_1rm_kg', 'notes'];
+            const rows = workoutLogs.map(s => [
+                s.id,
+                s.date,
+                `"${(s.exercise || '').replace(/"/g, '""')}"`,
+                `"${(s.category || '').replace(/"/g, '""')}"`,
+                s.weight,
+                s.reps,
+                s.volume,
+                s.e1rm,
+                `"${(s.notes || '').replace(/"/g, '""')}"`
+            ].join(','));
+
+            const csvContent = [headers.join(','), ...rows].join('\n');
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `ironpulse_workouts_${getLocalTodayDateString()}.csv`;
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast('CSV Exported');
+        }
+
+        function importDataJSON(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const parsed = JSON.parse(e.target.result);
+                    if (Array.isArray(parsed.workoutLogs)) {
+                        workoutLogs = parsed.workoutLogs;
+                        if (Array.isArray(parsed.exercises)) {
+                            exercises = parsed.exercises;
+                        }
+                        saveToLocalStorage();
+                        populateExerciseSelect();
+                        onDateOrExerciseChange();
+                        renderHistoryList();
+                        showToast(`Imported ${workoutLogs.length} workout sets!`);
+                    } else {
+                        showToast('Invalid JSON backup format', true);
+                    }
+                } catch (err) {
+                    showToast('Failed to parse JSON file', true);
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function loadDemoWorkoutData() {
+            // Generates 6 realistic progressive sessions over the last 3 weeks
+            const baseDate = new Date();
+            const sampleSessions = [
+                { daysAgo: 18, sets: [
+                    { ex: 'Bench Press', cat: 'Barbell / Compound', w: 80, r: 8, n: 'RPE 7.5' },
+                    { ex: 'Bench Press', cat: 'Barbell / Compound', w: 85, r: 6, n: 'RPE 8' },
+                    { ex: 'Seated Cable Row', cat: 'Upper / Hypertrophy', w: 70, r: 10, n: '' },
+                    { ex: 'Pronation Lift (Belt/Cable)', cat: 'Armwrestling / Forearm', w: 32.5, r: 8, n: 'Strict thumb' }
+                ]},
+                { daysAgo: 14, sets: [
+                    { ex: 'Barbell Squat', cat: 'Barbell / Compound', w: 110, r: 6, n: 'Belt' },
+                    { ex: 'Barbell Squat', cat: 'Barbell / Compound', w: 115, r: 5, n: 'RPE 8.5' },
+                    { ex: 'Romanian Deadlift', cat: 'Barbell / Compound', w: 100, r: 8, n: 'Straps' }
+                ]},
+                { daysAgo: 10, sets: [
+                    { ex: 'Bench Press', cat: 'Barbell / Compound', w: 85, r: 7, n: 'Moving fast' },
+                    { ex: 'Bench Press', cat: 'Barbell / Compound', w: 90, r: 5, n: 'RPE 8.5' },
+                    { ex: 'Pronation Lift (Belt/Cable)', cat: 'Armwrestling / Forearm', w: 35, r: 8, n: 'Strong' },
+                    { ex: 'Cupping / Wrist Wrench', cat: 'Armwrestling / Forearm', w: 30, r: 10, n: '50mm handle' }
+                ]},
+                { daysAgo: 6, sets: [
+                    { ex: 'Barbell Squat', cat: 'Barbell / Compound', w: 120, r: 5, n: 'Solid depth' },
+                    { ex: 'Deadlift', cat: 'Barbell / Compound', w: 150, r: 5, n: 'Hook grip' },
+                    { ex: 'Seated Cable Row', cat: 'Upper / Hypertrophy', w: 75, r: 10, n: '' }
+                ]},
+                { daysAgo: 2, sets: [
+                    { ex: 'Bench Press', cat: 'Barbell / Compound', w: 92.5, r: 5, n: 'PR triple + 2!' },
+                    { ex: 'Bench Press', cat: 'Barbell / Compound', w: 95, r: 3, n: 'RPE 9' },
+                    { ex: 'Pronation Lift (Belt/Cable)', cat: 'Armwrestling / Forearm', w: 37.5, r: 6, n: 'New PR' },
+                    { ex: 'Back Pressure Cable', cat: 'Armwrestling / Forearm', w: 42.5, r: 8, n: '' }
+                ]}
+            ];
+
+            sampleSessions.forEach((sess, sIdx) => {
+                const d = new Date(baseDate.getTime() - sess.daysAgo * 86400000);
+                const dateStr = d.toISOString().split('T')[0];
+                sess.sets.forEach((item, idx) => {
+                    workoutLogs.push({
+                        id: `demo_${Date.now()}_${sIdx}_${idx}`,
+                        timestamp: d.getTime() + idx * 60000,
+                        date: dateStr,
+                        exercise: item.ex,
+                        category: item.cat,
+                        weight: item.w,
+                        reps: item.r,
+                        notes: item.n,
+                        volume: calculateSetVolume(item.w, item.r),
+                        e1rm: calculateEpley1RM(item.w, item.r)
+                    });
+                });
+            });
+
+            saveToLocalStorage();
+            onDateOrExerciseChange();
+            renderHistoryList();
+            showToast('Loaded 5 progressive demo workouts!');
+            switchTab('analytics');
+        }
+
+        function openConfirmClearModal() {
+            document.getElementById('confirm-clear-modal').classList.remove('hidden');
+        }
+
+        function closeConfirmClearModal() {
+            document.getElementById('confirm-clear-modal').classList.add('hidden');
+        }
+
+        function confirmClearAllData() {
+            workoutLogs = [];
+            exercises = [...DEFAULT_EXERCISES];
+            saveToLocalStorage();
+            populateExerciseSelect();
+            onDateOrExerciseChange();
+            renderHistoryList();
+            closeConfirmClearModal();
+            showToast('All workout data cleared');
+        }
+
+        /**************************************************************
+         * 9. TAB NAVIGATION & UTILITIES
+         **************************************************************/
+        function switchTab(tabName) {
+            const tabs = ['logger', 'analytics', 'history'];
+            tabs.forEach(t => {
+                const sec = document.getElementById(`tab-${t}`);
+                const nav = document.getElementById(`nav-${t}`);
+                if (t === tabName) {
+                    sec.classList.remove('hidden');
+                    nav.className = 'flex flex-col items-center justify-center py-1.5 rounded-xl text-brand-400 bg-brand-500/10 font-bold transition';
+                } else {
+                    sec.classList.add('hidden');
+                    nav.className = 'flex flex-col items-center justify-center py-1.5 rounded-xl text-gray-400 hover:text-gray-200 font-semibold transition';
+                }
+            });
+
+            if (tabName === 'analytics') {
+                renderAnalytics();
+            } else if (tabName === 'history') {
+                renderHistoryList();
+            }
+        }
+
+        let toastTimeout = null;
+        function showToast(message, isError = false) {
+            const banner = document.getElementById('toast-banner');
+            const textEl = document.getElementById('toast-text');
+            const iconEl = document.getElementById('toast-icon');
+
+            textEl.textContent = message;
+            iconEl.className = isError
+                ? 'fa-solid fa-circle-exclamation text-rose-400'
+                : 'fa-solid fa-circle-check text-brand-400';
+
+            banner.classList.remove('hidden');
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                banner.classList.add('hidden');
+            }, 2600);
+        }
+
+        function escapeHtml(str) {
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+    </script>
+</body>
+</html>
