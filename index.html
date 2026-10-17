@@ -270,6 +270,38 @@
                 </button>
             </div>
 
+            <!-- Bodyweight Check-in Card -->
+            <div class="bg-surface-900 border border-gray-800/90 rounded-2xl p-4 shadow-lg space-y-3">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                        <div class="w-7 h-7 rounded-lg bg-purple-500/15 border border-purple-500/30 flex items-center justify-center text-purple-400">
+                            <i class="fa-solid fa-weight-scale text-xs"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-xs font-extrabold uppercase tracking-wider text-white">Bodyweight Check-In</h2>
+                            <p id="latest-bw-status" class="text-[11px] text-gray-400 font-mono">Latest: —</p>
+                        </div>
+                    </div>
+                    <span id="date-bw-badge" class="text-[11px] font-mono font-semibold text-purple-400 bg-purple-500/10 border border-purple-500/20 px-2 py-0.5 rounded-lg">Not logged today</span>
+                </div>
+
+                <div class="grid grid-cols-12 gap-1.5 items-center">
+                    <button onclick="stepBodyweight(-0.5)" class="col-span-2 h-11 rounded-xl bg-surface-800 active:bg-gray-700 border border-gray-700/70 flex items-center justify-center text-xs font-mono font-bold text-gray-200 shadow">-0.5</button>
+                    <button onclick="stepBodyweight(-0.1)" class="col-span-2 h-11 rounded-xl bg-surface-800/70 active:bg-gray-700 border border-gray-800 flex items-center justify-center text-xs font-mono font-bold text-gray-300">-0.1</button>
+                    
+                    <div class="col-span-4 relative">
+                        <input type="number" id="input-bodyweight" step="0.1" min="20" max="350" value="82.0" class="w-full min-w-0 h-11 bg-surface-950 border-2 border-gray-700 focus:border-purple-400 rounded-xl text-center font-mono text-lg font-extrabold text-white focus:outline-none px-1">
+                    </div>
+                    
+                    <button onclick="stepBodyweight(0.1)" class="col-span-2 h-11 rounded-xl bg-surface-800/70 active:bg-gray-700 border border-gray-800 flex items-center justify-center text-xs font-mono font-bold text-gray-300">+0.1</button>
+                    <button onclick="stepBodyweight(0.5)" class="col-span-2 h-11 rounded-xl bg-surface-800 active:bg-gray-700 border border-gray-700/70 flex items-center justify-center text-xs font-mono font-bold text-purple-400 shadow">+0.5</button>
+                </div>
+
+                <button onclick="logBodyweight()" class="w-full py-2.5 rounded-xl bg-purple-500/20 hover:bg-purple-500/30 active:scale-[0.99] border border-purple-500/40 text-purple-300 font-extrabold text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 transition">
+                    <i class="fa-solid fa-plus"></i> Log Bodyweight (kg) for Selected Date
+                </button>
+            </div>
+
             <!-- Today's Session Summary & Logged Sets List -->
             <div class="bg-surface-900 border border-gray-800/90 rounded-2xl p-4 shadow-lg space-y-3">
                 <div class="flex items-center justify-between border-b border-gray-800 pb-2.5">
@@ -358,6 +390,18 @@
                         <span id="stat-cum-sets" class="text-[11px] text-gray-400">0 total sets</span>
                     </div>
                 </div>
+
+                <!-- Bodyweight Range Summary Bar -->
+                <div class="bg-surface-950 border border-gray-800/80 rounded-xl p-3 flex items-center justify-between">
+                    <div>
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-purple-400 block">Bodyweight (Selected Range)</span>
+                        <span id="stat-bw-current" class="font-mono text-sm font-extrabold text-white mt-0.5 block">—</span>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-gray-400 block">Range BW Change</span>
+                        <span id="stat-bw-change" class="font-mono text-sm font-extrabold text-purple-400 mt-0.5 block">—</span>
+                    </div>
+                </div>
             </div>
 
             <!-- Interactive Chart Card -->
@@ -367,10 +411,10 @@
                         <h3 id="chart-title-heading" class="text-xs font-extrabold uppercase tracking-wider text-white">Progression & Volume</h3>
                         <p id="chart-subtitle-desc" class="text-[11px] text-gray-400">Aggregated by week across selected date range</p>
                     </div>
-                    <div class="flex bg-surface-950 p-1 rounded-xl border border-gray-800">
+                    <div class="flex flex-wrap bg-surface-950 p-1 rounded-xl border border-gray-800 gap-1">
                         <button id="chart-mode-combined" onclick="setChartMode('combined')" class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-brand-500 text-surface-950 transition">Progression + Vol</button>
-                        <button id="chart-mode-1rm" onclick="setChartMode('1rm')" class="px-2.5 py-1 rounded-lg text-[11px] font-bold text-gray-400 hover:text-white transition"><span id="chart-mode-1rm-label">Avg % Gain</span></button>
-                        <button id="chart-mode-vol" onclick="setChartMode('volume')" class="px-2.5 py-1 rounded-lg text-[11px] font-bold text-gray-400 hover:text-white transition">Volume Only</button>
+                        <button id="chart-mode-1rm" onclick="setChartMode('1rm')" class="px-2.5 py-1 rounded-lg text-[11px] font-bold text-gray-400 hover:text-white transition"><span id="chart-mode-1rm-label">Avg % Gain + BW %</span></button>
+                        <button id="chart-mode-vol" onclick="setChartMode('volume')" class="px-2.5 py-1 rounded-lg text-[11px] font-bold text-gray-400 hover:text-white transition">Vol + BW (kg)</button>
                     </div>
                 </div>
                 <div class="relative h-64 w-full">
@@ -440,6 +484,22 @@
                     <button onclick="openConfirmClearModal()" class="text-rose-400 hover:text-rose-300 font-semibold py-1">
                         <i class="fa-solid fa-trash-can mr-1"></i> Wipe All Data
                     </button>
+                </div>
+            </div>
+
+            <!-- Bodyweight Log History Card -->
+            <div class="bg-surface-900 border border-gray-800/90 rounded-2xl p-4 shadow-lg space-y-3">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="text-sm font-extrabold uppercase tracking-wider text-white flex items-center gap-1.5">
+                            <i class="fa-solid fa-weight-scale text-purple-400"></i> Bodyweight Log History
+                        </h3>
+                        <p class="text-[11px] text-gray-400">Recorded weigh-ins used for progression charts</p>
+                    </div>
+                    <span id="bw-history-count" class="text-[11px] font-mono text-purple-400 font-bold">0 entries</span>
+                </div>
+                <div id="bw-history-container" class="max-h-48 overflow-y-auto space-y-1.5 pr-1">
+                    <!-- Populated by JS -->
                 </div>
             </div>
 
@@ -535,6 +595,7 @@
          **************************************************************/
         const STORAGE_LOGS_KEY = 'ironpulse_workout_sets_v1';
         const STORAGE_EXERCISES_KEY = 'ironpulse_exercises_v2';
+        const STORAGE_BW_KEY = 'ironpulse_bodyweight_v1';
 
         const DEFAULT_EXERCISES = [
             { name: 'BB Incline BenchPress', category: 'Upper / Push' },
@@ -555,6 +616,7 @@
         // Application State
         let workoutLogs = [];
         let exercises = [];
+        let bodyweightLogs = [];
         let currentChartMode = 'combined'; // 'combined', '1rm', or 'volume'
         let analyticsDatePreset = '12m';   // '12w', '12m', 'all', or 'custom'
         let analyticsInterval = 'weekly';  // 'weekly' or 'monthly'
@@ -580,6 +642,7 @@
             populateExerciseSelect();
             setAnalyticsDatePreset('12m', false);
             onDateOrExerciseChange();
+            updateBodyweightUI();
             updateStorageSummary();
         });
 
@@ -622,10 +685,14 @@
 
                 const rawEx = localStorage.getItem(STORAGE_EXERCISES_KEY);
                 exercises = rawEx ? JSON.parse(rawEx) : [...DEFAULT_EXERCISES];
+
+                const rawBw = localStorage.getItem(STORAGE_BW_KEY);
+                bodyweightLogs = rawBw ? JSON.parse(rawBw) : [];
             } catch (e) {
                 console.error('Error reading localStorage:', e);
                 workoutLogs = [];
                 exercises = [...DEFAULT_EXERCISES];
+                bodyweightLogs = [];
             }
         }
 
@@ -633,6 +700,7 @@
             try {
                 localStorage.setItem(STORAGE_LOGS_KEY, JSON.stringify(workoutLogs));
                 localStorage.setItem(STORAGE_EXERCISES_KEY, JSON.stringify(exercises));
+                localStorage.setItem(STORAGE_BW_KEY, JSON.stringify(bodyweightLogs));
                 updateStorageSummary();
             } catch (e) {
                 showToast('Storage error: Check browser quota', true);
@@ -750,6 +818,89 @@
             updateLiveSetMetrics();
         }
 
+        function stepBodyweight(delta) {
+            const input = document.getElementById('input-bodyweight');
+            let current = parseFloat(input.value) || 75;
+            current = Math.max(20, +(current + delta).toFixed(1));
+            input.value = current.toFixed(1);
+        }
+
+        function logBodyweight() {
+            const dateStr = document.getElementById('log-date').value || getLocalTodayDateString();
+            const bwVal = parseFloat(document.getElementById('input-bodyweight').value);
+
+            if (isNaN(bwVal) || bwVal <= 0) {
+                showToast('Please enter a valid bodyweight', true);
+                return;
+            }
+
+            // Update existing entry if already logged on the exact same date, otherwise add new
+            const existingIdx = bodyweightLogs.findIndex(b => b.date === dateStr);
+            if (existingIdx !== -1) {
+                bodyweightLogs[existingIdx].weight = +bwVal.toFixed(1);
+                bodyweightLogs[existingIdx].timestamp = Date.now();
+            } else {
+                bodyweightLogs.push({
+                    id: 'bw_' + Date.now() + '_' + Math.random().toString(36).substring(2, 6),
+                    timestamp: Date.now(),
+                    date: dateStr,
+                    weight: +bwVal.toFixed(1)
+                });
+            }
+
+            saveToLocalStorage();
+            updateBodyweightUI();
+            if (!document.getElementById('tab-analytics').classList.contains('hidden')) {
+                renderAnalytics();
+            }
+            if (!document.getElementById('tab-history').classList.contains('hidden')) {
+                renderHistoryList();
+            }
+            showToast(`Bodyweight logged: ${bwVal.toFixed(1)} kg (${dateStr})`);
+        }
+
+        function deleteBodyweightEntry(bwId) {
+            bodyweightLogs = bodyweightLogs.filter(b => b.id !== bwId);
+            saveToLocalStorage();
+            updateBodyweightUI();
+            if (!document.getElementById('tab-history').classList.contains('hidden')) {
+                renderHistoryList();
+            }
+            if (!document.getElementById('tab-analytics').classList.contains('hidden')) {
+                renderAnalytics();
+            }
+            showToast('Bodyweight entry removed');
+        }
+
+        function updateBodyweightUI() {
+            const selectedDate = document.getElementById('log-date').value || getLocalTodayDateString();
+            const statusEl = document.getElementById('latest-bw-status');
+            const badgeEl = document.getElementById('date-bw-badge');
+            const inputEl = document.getElementById('input-bodyweight');
+
+            if (bodyweightLogs.length === 0) {
+                statusEl.textContent = 'Latest: No weigh-ins yet';
+                badgeEl.textContent = 'No entry for date';
+                badgeEl.className = 'text-[11px] font-mono font-semibold text-gray-400 bg-surface-950 border border-gray-800 px-2 py-0.5 rounded-lg';
+                return;
+            }
+
+            const sorted = [...bodyweightLogs].sort((a, b) => b.date.localeCompare(a.date) || b.timestamp - a.timestamp);
+            const latest = sorted[0];
+            statusEl.textContent = `Latest: ${latest.weight.toFixed(1)} kg (${latest.date})`;
+
+            const entryForDate = bodyweightLogs.find(b => b.date === selectedDate);
+            if (entryForDate) {
+                badgeEl.textContent = `${selectedDate}: ${entryForDate.weight.toFixed(1)} kg`;
+                badgeEl.className = 'text-[11px] font-mono font-semibold text-purple-300 bg-purple-500/20 border border-purple-500/40 px-2 py-0.5 rounded-lg';
+                inputEl.value = entryForDate.weight.toFixed(1);
+            } else {
+                badgeEl.textContent = `Not logged (${selectedDate})`;
+                badgeEl.className = 'text-[11px] font-mono font-semibold text-gray-400 bg-surface-950 border border-gray-800 px-2 py-0.5 rounded-lg';
+                inputEl.value = latest.weight.toFixed(1);
+            }
+        }
+
         function getExerciseRecords(exerciseName) {
             const sets = workoutLogs.filter(s => s.exercise === exerciseName);
             if (sets.length === 0) {
@@ -792,6 +943,7 @@
             }
 
             updateLiveSetMetrics();
+            updateBodyweightUI();
             renderTodaySessionLog();
         }
 
@@ -1091,8 +1243,12 @@
                 start.setFullYear(start.getFullYear() - 1);
                 startStr = formatLocalDate(start);
             } else if (preset === 'all') {
-                if (workoutLogs.length > 0) {
-                    const earliest = workoutLogs.reduce((min, s) => s.date < min ? s.date : min, workoutLogs[0].date);
+                const allDates = [
+                    ...workoutLogs.map(s => s.date),
+                    ...bodyweightLogs.map(b => b.date)
+                ];
+                if (allDates.length > 0) {
+                    const earliest = allDates.reduce((min, d) => d < min ? d : min, allDates[0]);
                     startStr = earliest;
                 } else {
                     const start = new Date(today);
@@ -1148,11 +1304,11 @@
             const modePill = document.getElementById('analytics-mode-pill');
 
             if (selectedEx === 'ALL') {
-                label1rm.textContent = 'Avg % Gain';
-                modePill.textContent = 'Global % Improvement & Volume';
+                label1rm.textContent = 'Avg % Gain + BW %';
+                modePill.textContent = 'Global % Improvement, Volume & BW';
             } else {
-                label1rm.textContent = '1RM & Weight';
-                modePill.textContent = 'Epley 1RM & Volume';
+                label1rm.textContent = 'Lift % / 1RM + BW %';
+                modePill.textContent = 'Epley 1RM, Volume & BW';
             }
             renderAnalytics();
         }
@@ -1201,20 +1357,29 @@
 
         function renderAnalytics() {
             const selectedEx = document.getElementById('analytics-exercise-select').value || 'ALL';
-            if (analyticsDatePreset === 'all' && workoutLogs.length > 0) {
-                const earliest = workoutLogs.reduce((min, s) => s.date < min ? s.date : min, workoutLogs[0].date);
-                document.getElementById('analytics-start-date').value = earliest;
+            if (analyticsDatePreset === 'all') {
+                const allDates = [
+                    ...workoutLogs.map(s => s.date),
+                    ...bodyweightLogs.map(b => b.date)
+                ];
+                if (allDates.length > 0) {
+                    const earliest = allDates.reduce((min, d) => d < min ? d : min, allDates[0]);
+                    document.getElementById('analytics-start-date').value = earliest;
+                }
             }
 
             const startDate = document.getElementById('analytics-start-date').value || '1970-01-01';
             const endDate = document.getElementById('analytics-end-date').value || '2099-12-31';
 
-            //Filter by exercise and date range
+            // Filter by exercise and date range
             const exerciseLogsAllTime = (selectedEx === 'ALL')
                 ? workoutLogs
                 : workoutLogs.filter(s => s.exercise === selectedEx);
 
             const filteredLogs = exerciseLogsAllTime.filter(s => s.date >= startDate && s.date <= endDate);
+            const filteredBwLogs = bodyweightLogs
+                .filter(b => b.date >= startDate && b.date <= endDate)
+                .sort((a, b) => a.date.localeCompare(b.date) || a.timestamp - b.timestamp);
 
             // Establish baseline e1RM for each exercise within the selected window (or earliest recorded set)
             const baselineByEx = {};
@@ -1230,19 +1395,27 @@
                 }
             });
 
-            // Group filtered logs into Weekly or Monthly buckets
+            // Group filtered workout logs and bodyweight logs into Weekly or Monthly buckets
             const buckets = {};
-            filteredLogs.forEach(s => {
-                const key = getIntervalBucketKey(s.date, analyticsInterval);
+            const ensureBucket = (key) => {
                 if (!buckets[key]) {
                     buckets[key] = {
                         volume: 0,
                         max1RM: 0,
                         topWeight: 0,
-                        exercisesMax1RM: {}
+                        exercisesMax1RM: {},
+                        bwSum: 0,
+                        bwCount: 0,
+                        avgBw: null,
+                        bwPctChange: null
                     };
                 }
-                const b = buckets[key];
+                return buckets[key];
+            };
+
+            filteredLogs.forEach(s => {
+                const key = getIntervalBucketKey(s.date, analyticsInterval);
+                const b = ensureBucket(key);
                 b.volume += s.volume;
                 if (s.e1rm > b.max1RM) b.max1RM = s.e1rm;
                 if (s.weight > b.topWeight) b.topWeight = s.weight;
@@ -1252,14 +1425,36 @@
                 }
             });
 
+            filteredBwLogs.forEach(bw => {
+                const key = getIntervalBucketKey(bw.date, analyticsInterval);
+                const b = ensureBucket(key);
+                b.bwSum += bw.weight;
+                b.bwCount += 1;
+            });
+
             const sortedKeys = Object.keys(buckets).sort();
+
+            // Determine baseline bodyweight in the first bucket that has a bodyweight entry
+            let baselineBw = null;
+            sortedKeys.forEach(k => {
+                const b = buckets[k];
+                if (b.bwCount > 0) {
+                    b.avgBw = +(b.bwSum / b.bwCount).toFixed(1);
+                    if (baselineBw === null) {
+                        baselineBw = b.avgBw;
+                    }
+                    b.bwPctChange = baselineBw > 0
+                        ? +(((b.avgBw - baselineBw) / baselineBw) * 100).toFixed(2)
+                        : 0;
+                }
+            });
 
             // Calculate average % improvement per bucket across all exercises performed in that bucket
             sortedKeys.forEach(k => {
                 const b = buckets[k];
                 const exNames = Object.keys(b.exercisesMax1RM);
                 if (exNames.length === 0) {
-                    b.avgPctImprovement = 0;
+                    b.avgPctImprovement = null;
                 } else {
                     let sumPct = 0;
                     exNames.forEach(ex => {
@@ -1272,6 +1467,22 @@
                     b.avgPctImprovement = +(sumPct / exNames.length).toFixed(2);
                 }
             });
+
+            // Update Bodyweight Range Summary Card
+            const bwCurrEl = document.getElementById('stat-bw-current');
+            const bwChangeEl = document.getElementById('stat-bw-change');
+            if (filteredBwLogs.length > 0) {
+                const firstBw = filteredBwLogs[0].weight;
+                const lastBw = filteredBwLogs[filteredBwLogs.length - 1].weight;
+                const diffKg = +(lastBw - firstBw).toFixed(1);
+                const diffPct = firstBw > 0 ? +(((lastBw - firstBw) / firstBw) * 100).toFixed(2) : 0;
+                const sign = diffKg >= 0 ? '+' : '';
+                bwCurrEl.textContent = `${lastBw.toFixed(1)} kg (Start: ${firstBw.toFixed(1)} kg)`;
+                bwChangeEl.textContent = `${sign}${diffKg} kg (${sign}${diffPct}%)`;
+            } else {
+                bwCurrEl.textContent = 'No weigh-ins in range';
+                bwChangeEl.textContent = '—';
+            }
 
             // Update 4 Summary Metric Cards
             const c1Label = document.getElementById('stat-card1-label');
@@ -1305,13 +1516,16 @@
 
                 if (selectedEx === 'ALL') {
                     const uniqueExCount = new Set(filteredLogs.map(s => s.exercise)).size;
-                    const latestKey = sortedKeys[sortedKeys.length - 1];
-                    const latestPct = buckets[latestKey].avgPctImprovement;
-                    const peakPct = Math.max(...sortedKeys.map(k => buckets[k].avgPctImprovement));
+                    const keysWithLifts = sortedKeys.filter(k => buckets[k].avgPctImprovement !== null);
+                    const latestKey = keysWithLifts[keysWithLifts.length - 1];
+                    const latestPct = latestKey ? buckets[latestKey].avgPctImprovement : 0;
+                    const peakPct = keysWithLifts.length > 0
+                        ? Math.max(...keysWithLifts.map(k => buckets[k].avgPctImprovement))
+                        : 0;
 
                     c1Label.textContent = 'Active Lifts';
                     document.getElementById('stat-max-weight').textContent = `${uniqueExCount} Lifts`;
-                    document.getElementById('stat-max-weight-sub').textContent = `Across ${sortedKeys.length} ${analyticsInterval === 'weekly' ? 'weeks' : 'months'}`;
+                    document.getElementById('stat-max-weight-sub').textContent = `Across ${keysWithLifts.length} ${analyticsInterval === 'weekly' ? 'weeks' : 'months'}`;
 
                     c2Label.textContent = 'Avg % Improvement';
                     const sign = latestPct >= 0 ? '+' : '';
@@ -1355,22 +1569,69 @@
             const titleEl = document.getElementById('chart-title-heading');
             const subEl = document.getElementById('chart-subtitle-desc');
 
-            if (selectedEx === 'ALL') {
-                titleEl.textContent = `Global Overview: Avg % Gain & ${intervalLabel} Volume`;
-                subEl.textContent = `Avg % e1RM improvement across active lifts per ${analyticsInterval === 'weekly' ? 'week' : 'month'}`;
-            } else {
-                titleEl.textContent = `${selectedEx}: ${intervalLabel} Progression`;
-                subEl.textContent = `${intervalLabel} volume tonnage & peak strength trend`;
-            }
-
             const labels = sortedKeys.map(k => formatBucketLabel(k, analyticsInterval));
             const volumeData = sortedKeys.map(k => Math.round(buckets[k].volume));
+            const bwAbsData = sortedKeys.map(k => buckets[k].avgBw);
+            const bwPctData = sortedKeys.map(k => buckets[k].bwPctChange);
 
             const datasets = [];
-            const showProgression = (currentChartMode === 'combined' || currentChartMode === '1rm');
-            const showVolume = (currentChartMode === 'combined' || currentChartMode === 'volume');
+            const scalesConfig = {
+                x: {
+                    ticks: { color: '#9ca3af', font: { size: 10 }, maxRotation: 45 },
+                    grid: { color: 'rgba(255,255,255,0.04)' }
+                }
+            };
 
-            if (showVolume) {
+            if (currentChartMode === 'combined') {
+                // Mode 1: Progression + Volume
+                if (selectedEx === 'ALL') {
+                    titleEl.textContent = `Global Overview: Avg % Gain & ${intervalLabel} Volume`;
+                    subEl.textContent = `Avg % e1RM improvement across active lifts & ${intervalLabel.toLowerCase()} volume`;
+                    datasets.push({
+                        type: 'line',
+                        label: 'Avg % Improvement (All Lifts)',
+                        data: sortedKeys.map(k => buckets[k].avgPctImprovement),
+                        borderColor: '#10b981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.18)',
+                        borderWidth: 2.5,
+                        tension: 0.3,
+                        spanGaps: true,
+                        pointRadius: 4,
+                        pointBackgroundColor: '#10b981',
+                        yAxisID: 'yPrimary',
+                        order: 1
+                    });
+                } else {
+                    titleEl.textContent = `${selectedEx}: 1RM & ${intervalLabel} Volume`;
+                    subEl.textContent = `${intervalLabel} volume tonnage & peak strength trend`;
+                    datasets.push({
+                        type: 'line',
+                        label: 'Best Est. 1RM (kg)',
+                        data: sortedKeys.map(k => buckets[k].max1RM || null),
+                        borderColor: '#10b981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.15)',
+                        borderWidth: 2.5,
+                        tension: 0.3,
+                        spanGaps: true,
+                        pointRadius: 4,
+                        yAxisID: 'yPrimary',
+                        order: 1
+                    });
+                    datasets.push({
+                        type: 'line',
+                        label: 'Heaviest Weight (kg)',
+                        data: sortedKeys.map(k => buckets[k].topWeight || null),
+                        borderColor: '#f59e0b',
+                        borderDash: [5, 5],
+                        borderWidth: 2,
+                        tension: 0.3,
+                        spanGaps: true,
+                        pointRadius: 3,
+                        yAxisID: 'yPrimary',
+                        order: 1
+                    });
+                }
+
                 datasets.push({
                     type: 'bar',
                     label: `${intervalLabel} Volume (kg)`,
@@ -1382,62 +1643,7 @@
                     yAxisID: 'yVolume',
                     order: 2
                 });
-            }
 
-            if (showProgression) {
-                if (selectedEx === 'ALL') {
-                    datasets.push({
-                        type: 'line',
-                        label: 'Avg % Improvement (All Active Lifts)',
-                        data: sortedKeys.map(k => buckets[k].avgPctImprovement),
-                        borderColor: '#10b981',
-                        backgroundColor: 'rgba(16, 185, 129, 0.18)',
-                        borderWidth: 2.5,
-                        tension: 0.3,
-                        fill: currentChartMode === '1rm',
-                        pointRadius: 4,
-                        pointBackgroundColor: '#10b981',
-                        yAxisID: 'yPrimary',
-                        order: 1
-                    });
-                } else {
-                    datasets.push({
-                        type: 'line',
-                        label: 'Best Est. 1RM (kg)',
-                        data: sortedKeys.map(k => buckets[k].max1RM),
-                        borderColor: '#10b981',
-                        backgroundColor: 'rgba(16, 185, 129, 0.15)',
-                        borderWidth: 2.5,
-                        tension: 0.3,
-                        fill: currentChartMode === '1rm',
-                        pointRadius: 4,
-                        yAxisID: 'yPrimary',
-                        order: 1
-                    });
-                    datasets.push({
-                        type: 'line',
-                        label: 'Heaviest Weight (kg)',
-                        data: sortedKeys.map(k => buckets[k].topWeight),
-                        borderColor: '#f59e0b',
-                        borderDash: [5, 5],
-                        borderWidth: 2,
-                        tension: 0.3,
-                        fill: false,
-                        pointRadius: 3,
-                        yAxisID: 'yPrimary',
-                        order: 1
-                    });
-                }
-            }
-
-            const scalesConfig = {
-                x: {
-                    ticks: { color: '#9ca3af', font: { size: 10 }, maxRotation: 45 },
-                    grid: { color: 'rgba(255,255,255,0.04)' }
-                }
-            };
-
-            if (showProgression) {
                 scalesConfig.yPrimary = {
                     type: 'linear',
                     position: 'left',
@@ -1448,19 +1654,140 @@
                     },
                     grid: { color: 'rgba(255,255,255,0.06)' }
                 };
-            }
-
-            if (showVolume) {
                 scalesConfig.yVolume = {
                     type: 'linear',
-                    position: showProgression ? 'right' : 'left',
+                    position: 'right',
                     beginAtZero: true,
                     ticks: {
                         color: '#38bdf8',
                         font: { size: 10 },
                         callback: (val) => val >= 1000 ? `${(val / 1000).toFixed(1)}k` : `${val}`
                     },
-                    grid: { drawOnChartArea: !showProgression, color: 'rgba(255,255,255,0.06)' }
+                    grid: { drawOnChartArea: false }
+                };
+
+            } else if (currentChartMode === '1rm') {
+                // Mode 2: Avg % Gain (or Lift % / 1RM) paired with Bodyweight % Change
+                if (selectedEx === 'ALL') {
+                    titleEl.textContent = `Avg % Strength Gain vs. Bodyweight % Change`;
+                    subEl.textContent = `Comparing ${intervalLabel.toLowerCase()} relative strength gain against bodyweight % change`;
+                    datasets.push({
+                        type: 'line',
+                        label: 'Avg % Improvement (All Lifts)',
+                        data: sortedKeys.map(k => buckets[k].avgPctImprovement),
+                        borderColor: '#10b981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.14)',
+                        borderWidth: 2.5,
+                        tension: 0.3,
+                        fill: true,
+                        spanGaps: true,
+                        pointRadius: 4,
+                        pointBackgroundColor: '#10b981',
+                        yAxisID: 'yPct',
+                        order: 1
+                    });
+                } else {
+                    titleEl.textContent = `${selectedEx} % Gain vs. Bodyweight % Change`;
+                    subEl.textContent = `Comparing ${selectedEx} e1RM % gain & top weight against bodyweight % change`;
+                    datasets.push({
+                        type: 'line',
+                        label: `${selectedEx} e1RM % Change`,
+                        data: sortedKeys.map(k => buckets[k].avgPctImprovement),
+                        borderColor: '#10b981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.14)',
+                        borderWidth: 2.5,
+                        tension: 0.3,
+                        fill: true,
+                        spanGaps: true,
+                        pointRadius: 4,
+                        pointBackgroundColor: '#10b981',
+                        yAxisID: 'yPct',
+                        order: 1
+                    });
+                }
+
+                // Pair with Bodyweight % Change line
+                datasets.push({
+                    type: 'line',
+                    label: 'Bodyweight (% Change)',
+                    data: bwPctData,
+                    borderColor: '#c084fc',
+                    backgroundColor: 'rgba(192, 132, 252, 0.15)',
+                    borderWidth: 2.5,
+                    borderDash: [4, 3],
+                    tension: 0.3,
+                    fill: false,
+                    spanGaps: true,
+                    pointRadius: 4,
+                    pointBackgroundColor: '#c084fc',
+                    yAxisID: 'yPct',
+                    order: 0
+                });
+
+                scalesConfig.yPct = {
+                    type: 'linear',
+                    position: 'left',
+                    ticks: {
+                        color: '#10b981',
+                        font: { size: 10 },
+                        callback: (val) => `${val > 0 ? '+' : ''}${val}%`
+                    },
+                    grid: { color: 'rgba(255,255,255,0.06)' }
+                };
+
+            } else if (currentChartMode === 'volume') {
+                // Mode 3: Volume Only tab paired with Bodyweight as an Absolute Value (kg)
+                titleEl.textContent = `${intervalLabel} Training Volume & Bodyweight (kg)`;
+                subEl.textContent = `${intervalLabel} volume bars paired with absolute bodyweight (kg)`;
+
+                datasets.push({
+                    type: 'bar',
+                    label: `${intervalLabel} Volume (kg)`,
+                    data: volumeData,
+                    backgroundColor: 'rgba(56, 189, 248, 0.38)',
+                    borderColor: '#38bdf8',
+                    borderWidth: 1.5,
+                    borderRadius: 6,
+                    yAxisID: 'yVolume',
+                    order: 2
+                });
+
+                datasets.push({
+                    type: 'line',
+                    label: 'Bodyweight (kg)',
+                    data: bwAbsData,
+                    borderColor: '#c084fc',
+                    backgroundColor: 'rgba(192, 132, 252, 0.2)',
+                    borderWidth: 2.5,
+                    tension: 0.3,
+                    spanGaps: true,
+                    pointRadius: 4,
+                    pointBackgroundColor: '#c084fc',
+                    yAxisID: 'yBwAbs',
+                    order: 1
+                });
+
+                scalesConfig.yVolume = {
+                    type: 'linear',
+                    position: 'left',
+                    beginAtZero: true,
+                    ticks: {
+                        color: '#38bdf8',
+                        font: { size: 10 },
+                        callback: (val) => val >= 1000 ? `${(val / 1000).toFixed(1)}k` : `${val}kg`
+                    },
+                    grid: { color: 'rgba(255,255,255,0.06)' }
+                };
+
+                scalesConfig.yBwAbs = {
+                    type: 'linear',
+                    position: 'right',
+                    ticks: {
+                        color: '#c084fc',
+                        font: { size: 10 },
+                        callback: (val) => `${val} kg`
+                    },
+                    grid: { drawOnChartArea: false }
                 };
             }
 
@@ -1479,7 +1806,8 @@
                                 label: function(context) {
                                     const lbl = context.dataset.label || '';
                                     const val = context.parsed.y;
-                                    if (lbl.includes('Avg %')) {
+                                    if (val === null || val === undefined) return `${lbl}: —`;
+                                    if (lbl.includes('%')) {
                                         return `${lbl}: ${val >= 0 ? '+' : ''}${val}%`;
                                     }
                                     return `${lbl}: ${val.toLocaleString()} kg`;
@@ -1538,6 +1866,29 @@
          * 8. HISTORY ARCHIVE & DATA EXPORT / IMPORT / DEMO DATA
          **************************************************************/
         function renderHistoryList() {
+            // Render Bodyweight History list first
+            const bwContainer = document.getElementById('bw-history-container');
+            const bwCountEl = document.getElementById('bw-history-count');
+            if (bwContainer && bwCountEl) {
+                bwCountEl.textContent = `${bodyweightLogs.length} ${bodyweightLogs.length === 1 ? 'entry' : 'entries'}`;
+                if (bodyweightLogs.length === 0) {
+                    bwContainer.innerHTML = `<div class="text-center py-4 text-gray-500 text-xs">No bodyweight entries logged yet.</div>`;
+                } else {
+                    const sortedBw = [...bodyweightLogs].sort((a, b) => b.date.localeCompare(a.date) || b.timestamp - a.timestamp);
+                    bwContainer.innerHTML = sortedBw.map(b => `
+                        <div class="flex items-center justify-between py-1.5 px-3 rounded-xl bg-surface-950 border border-gray-800 text-xs">
+                            <span class="font-mono text-gray-300 font-semibold">${b.date}</span>
+                            <div class="flex items-center gap-3">
+                                <span class="font-mono font-extrabold text-purple-400">${b.weight.toFixed(1)} kg</span>
+                                <button onclick="deleteBodyweightEntry('${b.id}')" class="text-gray-500 hover:text-rose-400 transition">
+                                    <i class="fa-solid fa-xmark"></i>
+                                </button>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+            }
+
             const query = (document.getElementById('history-search').value || '').toLowerCase().trim();
             const container = document.getElementById('history-archive-container');
 
@@ -1594,14 +1945,15 @@
         }
 
         function updateStorageSummary() {
-            document.getElementById('storage-summary').textContent = `${workoutLogs.length} total sets stored locally`;
+            document.getElementById('storage-summary').textContent = `${workoutLogs.length} sets • ${bodyweightLogs.length} weigh-ins stored`;
         }
 
         function exportDataJSON() {
             const payload = {
                 exportedAt: new Date().toISOString(),
                 exercises,
-                workoutLogs
+                workoutLogs,
+                bodyweightLogs
             };
             const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
@@ -1614,12 +1966,13 @@
         }
 
         function exportDataCSV() {
-            if (workoutLogs.length === 0) {
-                showToast('No sets to export', true);
+            if (workoutLogs.length === 0 && bodyweightLogs.length === 0) {
+                showToast('No data to export', true);
                 return;
             }
-            const headers = ['id', 'date', 'exercise', 'category', 'weight_kg', 'reps', 'volume_kg', 'estimated_1rm_kg', 'notes'];
-            const rows = workoutLogs.map(s => [
+            const headers = ['record_type', 'id', 'date', 'exercise', 'category', 'weight_kg', 'reps', 'volume_kg', 'estimated_1rm_kg', 'bodyweight_kg', 'notes'];
+            const setRows = workoutLogs.map(s => [
+                'WORKOUT_SET',
                 s.id,
                 s.date,
                 `"${(s.exercise || '').replace(/"/g, '""')}"`,
@@ -1628,10 +1981,25 @@
                 s.reps,
                 s.volume,
                 s.e1rm,
+                '',
                 `"${(s.notes || '').replace(/"/g, '""')}"`
             ].join(','));
 
-            const csvContent = [headers.join(','), ...rows].join('\n');
+            const bwRows = bodyweightLogs.map(b => [
+                'BODYWEIGHT',
+                b.id,
+                b.date,
+                'Bodyweight',
+                'Body Metric',
+                '',
+                '',
+                '',
+                '',
+                b.weight,
+                ''
+            ].join(','));
+
+            const csvContent = [headers.join(','), ...setRows, ...bwRows].join('\n');
             const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -1655,11 +2023,14 @@
                         if (Array.isArray(parsed.exercises)) {
                             exercises = parsed.exercises;
                         }
+                        if (Array.isArray(parsed.bodyweightLogs)) {
+                            bodyweightLogs = parsed.bodyweightLogs;
+                        }
                         saveToLocalStorage();
                         populateExerciseSelect();
                         onDateOrExerciseChange();
                         renderHistoryList();
-                        showToast(`Imported ${workoutLogs.length} workout sets!`);
+                        showToast(`Imported ${workoutLogs.length} sets & ${bodyweightLogs.length} weigh-ins!`);
                     } else {
                         showToast('Invalid JSON backup format', true);
                     }
@@ -1671,7 +2042,7 @@
         }
 
         function loadDemoWorkoutData() {
-            // Generates 10 months of progressive multi-lift history using the exact 13 default exercises
+            // Generates 10 months of progressive multi-lift history + bodyweight logs
             const today = new Date();
             const weeksBack = [40, 36, 32, 28, 24, 20, 16, 12, 10, 8, 6, 4, 2, 1, 0];
 
@@ -1681,6 +2052,18 @@
                 // Session A (Upper Push & Pull)
                 const d1 = new Date(today.getTime() - (wk * 7 + 2) * 86400000);
                 const dateStr1 = formatLocalDate(d1);
+
+                // Log progressive bodyweight check-in (e.g., 81.5 kg -> 85.2 kg lean bulk)
+                const bwVal = +(81.5 + progressFactor * 3.7 + (Math.sin(idx) * 0.25)).toFixed(1);
+                const existingBwIdx = bodyweightLogs.findIndex(b => b.date === dateStr1);
+                if (existingBwIdx === -1) {
+                    bodyweightLogs.push({
+                        id: `demo_bw_${Date.now()}_${idx}`,
+                        timestamp: d1.getTime(),
+                        date: dateStr1,
+                        weight: bwVal
+                    });
+                }
 
                 const bbIncW = +(65 + Math.round(progressFactor * 20 * 2) / 2).toFixed(1);
                 const dbIncW = +(28 + Math.round(progressFactor * 10 * 2) / 2).toFixed(1);
@@ -1756,7 +2139,7 @@
             setAnalyticsDatePreset('12m', false);
             onDateOrExerciseChange();
             renderHistoryList();
-            showToast('Loaded 10 months of demo data for all 13 lifts!');
+            showToast('Loaded 10 months of demo lifts & bodyweight data!');
             switchTab('analytics');
         }
 
@@ -1770,13 +2153,14 @@
 
         function confirmClearAllData() {
             workoutLogs = [];
+            bodyweightLogs = [];
             exercises = [...DEFAULT_EXERCISES];
             saveToLocalStorage();
             populateExerciseSelect();
             onDateOrExerciseChange();
             renderHistoryList();
             closeConfirmClearModal();
-            showToast('All workout data cleared');
+            showToast('All workout & bodyweight data cleared');
         }
 
         /**************************************************************
