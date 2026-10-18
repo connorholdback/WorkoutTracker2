@@ -141,20 +141,281 @@
     <main class="flex-1 max-w-lg w-full mx-auto px-4 pt-4 space-y-5">
 
         <!-- ========================================================= -->
+        <!-- TAB 0: MUSCLE STATUS & FRACTIONAL VOLUME HEATMAP          -->
+        <!-- ========================================================= -->
+        <section id="tab-status" class="space-y-4">
+
+            <!-- Overview & Fractional Volume Legend Card -->
+            <div class="bg-surface-900 border border-gray-800/90 rounded-2xl p-4 shadow-lg space-y-3.5">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h2 class="text-sm font-extrabold uppercase tracking-wider text-white flex items-center gap-2">
+                            <i class="fa-solid fa-fire-flame-curved text-brand-400"></i> <span id="status-period-heading">Muscle Status</span>
+                        </h2>
+                        <p id="status-period-subtitle" class="text-[11px] text-gray-400 mt-0.5">Avg weekly fractional sets (Last 30 Days • /4.3 wks)</p>
+                    </div>
+                    <div class="text-right">
+                        <span id="status-30d-raw-sets" class="font-mono text-sm font-extrabold text-brand-400">0 sets</span>
+                        <span class="block text-[10px] text-gray-400">Primary = 1.0 • Secondary = 0.5</span>
+                    </div>
+                </div>
+
+                <!-- Status Date Range Quick Presets & Custom Date Pickers -->
+                <div class="pt-2 border-t border-gray-800/80 space-y-2.5">
+                    <div class="flex flex-wrap items-center justify-between gap-2">
+                        <span class="text-[11px] font-bold uppercase tracking-wider text-gray-400">Time Period</span>
+                        <div class="flex flex-wrap bg-surface-950 p-1 rounded-xl border border-gray-800 gap-1">
+                            <button type="button" id="status-range-btn-1m" onclick="setStatusDatePreset('1m')" class="px-2 py-1 rounded-lg text-[11px] font-bold bg-brand-500 text-surface-950 transition">1M</button>
+                            <button type="button" id="status-range-btn-3m" onclick="setStatusDatePreset('3m')" class="px-2 py-1 rounded-lg text-[11px] font-bold text-gray-400 hover:text-white transition">3M</button>
+                            <button type="button" id="status-range-btn-6m" onclick="setStatusDatePreset('6m')" class="px-2 py-1 rounded-lg text-[11px] font-bold text-gray-400 hover:text-white transition">6M</button>
+                            <button type="button" id="status-range-btn-12m" onclick="setStatusDatePreset('12m')" class="px-2 py-1 rounded-lg text-[11px] font-bold text-gray-400 hover:text-white transition">12M</button>
+                            <button type="button" id="status-range-btn-all" onclick="setStatusDatePreset('all')" class="px-2 py-1 rounded-lg text-[11px] font-bold text-gray-400 hover:text-white transition">All Time</button>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="block text-[10px] font-bold uppercase text-gray-400 mb-1">Start Date</label>
+                            <input type="date" id="status-start-date" onchange="onCustomStatusDateChange()" class="w-full bg-surface-950 border border-gray-800 rounded-xl px-2.5 py-1.5 text-xs font-mono text-white focus:outline-none focus:border-brand-500">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold uppercase text-gray-400 mb-1">End Date</label>
+                            <input type="date" id="status-end-date" onchange="onCustomStatusDateChange()" class="w-full bg-surface-950 border border-gray-800 rounded-xl px-2.5 py-1.5 text-xs font-mono text-white focus:outline-none focus:border-brand-500">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Color Heat Tier Legend -->
+                <div class="grid grid-cols-5 gap-1.5 pt-1 text-center">
+                    <div class="bg-surface-950 border border-gray-800 rounded-lg py-1.5 px-1">
+                        <span class="inline-block w-3 h-3 rounded-full bg-gray-700 mb-0.5"></span>
+                        <span class="block text-[9px] font-bold text-gray-400">0 Sets</span>
+                        <span class="block text-[8px] text-gray-500">Untrained</span>
+                    </div>
+                    <div class="bg-surface-950 border border-gray-800 rounded-lg py-1.5 px-1">
+                        <span class="inline-block w-3 h-3 rounded-full bg-sky-500 mb-0.5"></span>
+                        <span class="block text-[9px] font-bold text-sky-400">0.1–4 /wk</span>
+                        <span class="block text-[8px] text-gray-500">Maintenance</span>
+                    </div>
+                    <div class="bg-surface-950 border border-gray-800 rounded-lg py-1.5 px-1">
+                        <span class="inline-block w-3 h-3 rounded-full bg-emerald-500 mb-0.5"></span>
+                        <span class="block text-[9px] font-bold text-emerald-400">4–10 /wk</span>
+                        <span class="block text-[8px] text-gray-500">Solid</span>
+                    </div>
+                    <div class="bg-surface-950 border border-gray-800 rounded-lg py-1.5 px-1">
+                        <span class="inline-block w-3 h-3 rounded-full bg-amber-500 mb-0.5"></span>
+                        <span class="block text-[9px] font-bold text-amber-400">10–16 /wk</span>
+                        <span class="block text-[8px] text-gray-500">High Growth</span>
+                    </div>
+                    <div class="bg-surface-950 border border-gray-800 rounded-lg py-1.5 px-1">
+                        <span class="inline-block w-3 h-3 rounded-full bg-rose-500 mb-0.5"></span>
+                        <span class="block text-[9px] font-bold text-rose-400">16+ /wk</span>
+                        <span class="block text-[8px] text-gray-500">Peak Load</span>
+                    </div>
+                </div>
+
+                <!-- Interactive Dual Anterior & Posterior Anatomical Muscle Map -->
+                <div class="bg-surface-950 border border-gray-800/90 rounded-2xl p-3">
+                    <div class="grid grid-cols-2 gap-2 items-center">
+                        <!-- ANTERIOR (FRONT) VIEW -->
+                        <div class="flex flex-col items-center">
+                            <span class="text-[10px] font-extrabold uppercase tracking-widest text-gray-400 mb-1">Anterior (Front)</span>
+                            <svg viewBox="0 0 200 420" class="w-full max-w-[165px] h-auto select-none">
+                                <!-- Head & Neck Base Silhouette -->
+                                <circle cx="100" cy="30" r="18" fill="#1f2937" stroke="#374151" stroke-width="1.5"/>
+                                <rect x="91" y="48" width="18" height="14" rx="4" fill="#1f2937" stroke="#374151" stroke-width="1"/>
+                                
+                                <!-- Traps (Anterior Collar) -->
+                                <g data-muscle="Traps" onclick="selectMuscleOnDiagram('Traps')" class="cursor-pointer transition-opacity hover:opacity-80">
+                                    <path d="M 72 62 L 91 54 L 91 64 L 72 68 Z" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
+                                    <path d="M 128 62 L 109 54 L 109 64 L 128 68 Z" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
+                                </g>
+
+                                <!-- Front Delts -->
+                                <g data-muscle="Front Delts" onclick="selectMuscleOnDiagram('Front Delts')" class="cursor-pointer transition-opacity hover:opacity-80">
+                                    <path d="M 55 68 Q 63 62 73 66 L 71 92 Q 58 88 55 76 Z" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
+                                    <path d="M 145 68 Q 137 62 127 66 L 129 92 Q 142 88 145 76 Z" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
+                                </g>
+
+                                <!-- Side Delts -->
+                                <g data-muscle="Side Delts" onclick="selectMuscleOnDiagram('Side Delts')" class="cursor-pointer transition-opacity hover:opacity-80">
+                                    <path d="M 45 74 Q 48 64 56 68 L 55 96 Q 44 90 45 74 Z" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
+                                    <path d="M 155 74 Q 152 64 144 68 L 145 96 Q 156 90 155 74 Z" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
+                                </g>
+
+                                <!-- Chest (Pectorals) -->
+                                <g data-muscle="Chest" onclick="selectMuscleOnDiagram('Chest')" class="cursor-pointer transition-opacity hover:opacity-80">
+                                    <path d="M 72 66 L 99 66 L 99 108 L 75 108 L 69 92 Z" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
+                                    <path d="M 128 66 L 101 66 L 101 108 L 125 108 L 131 92 Z" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
+                                </g>
+
+                                <!-- Biceps -->
+                                <g data-muscle="Biceps" onclick="selectMuscleOnDiagram('Biceps')" class="cursor-pointer transition-opacity hover:opacity-80">
+                                    <rect x="44" y="97" width="21" height="44" rx="9" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
+                                    <rect x="135" y="97" width="21" height="44" rx="9" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
+                                </g>
+
+                                <!-- Forearms (Anterior) -->
+                                <g data-muscle="Forearms" onclick="selectMuscleOnDiagram('Forearms')" class="cursor-pointer transition-opacity hover:opacity-80">
+                                    <path d="M 40 144 L 62 144 L 56 192 L 42 192 Z" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
+                                    <path d="M 160 144 L 138 144 L 144 192 L 158 192 Z" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
+                                </g>
+
+                                <!-- Abs / Core -->
+                                <g data-muscle="Abs" onclick="selectMuscleOnDiagram('Abs')" class="cursor-pointer transition-opacity hover:opacity-80">
+                                    <rect x="76" y="110" width="22" height="22" rx="4" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
+                                    <rect x="102" y="110" width="22" height="22" rx="4" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
+                                    <rect x="77" y="134" width="21" height="22" rx="4" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
+                                    <rect x="102" y="134" width="21" height="22" rx="4" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
+                                    <rect x="79" y="158" width="20" height="24" rx="4" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
+                                    <rect x="101" y="158" width="20" height="24" rx="4" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
+                                </g>
+
+                                <!-- Quads -->
+                                <g data-muscle="Quads" onclick="selectMuscleOnDiagram('Quads')" class="cursor-pointer transition-opacity hover:opacity-80">
+                                    <path d="M 67 186 L 97 186 L 94 282 L 71 282 Q 62 234 67 186 Z" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
+                                    <path d="M 133 186 L 103 186 L 106 282 L 129 282 Q 138 234 133 186 Z" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
+                                </g>
+
+                                <!-- Knees (Structural) -->
+                                <rect x="72" y="285" width="21" height="16" rx="5" fill="#1f2937" stroke="#374151" stroke-width="1"/>
+                                <rect x="107" y="285" width="21" height="16" rx="5" fill="#1f2937" stroke="#374151" stroke-width="1"/>
+
+                                <!-- Calves (Anterior Tibialis/Gastroc edge) -->
+                                <g data-muscle="Calves" onclick="selectMuscleOnDiagram('Calves')" class="cursor-pointer transition-opacity hover:opacity-80">
+                                    <path d="M 70 304 L 93 304 L 89 376 L 75 376 Q 66 340 70 304 Z" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
+                                    <path d="M 130 304 L 107 304 L 111 376 L 125 376 Q 134 340 130 304 Z" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
+                                </g>
+                            </svg>
+                        </div>
+
+                        <!-- POSTERIOR (BACK) VIEW -->
+                        <div class="flex flex-col items-center">
+                            <span class="text-[10px] font-extrabold uppercase tracking-widest text-gray-400 mb-1">Posterior (Back)</span>
+                            <svg viewBox="0 0 200 420" class="w-full max-w-[165px] h-auto select-none">
+                                <!-- Head & Neck Base Silhouette -->
+                                <circle cx="100" cy="30" r="18" fill="#1f2937" stroke="#374151" stroke-width="1.5"/>
+                                <rect x="91" y="48" width="18" height="12" rx="4" fill="#1f2937" stroke="#374151" stroke-width="1"/>
+
+                                <!-- Traps & Upper Back -->
+                                <g data-muscle="Traps" onclick="selectMuscleOnDiagram('Traps')" class="cursor-pointer transition-opacity hover:opacity-80">
+                                    <polygon points="100,54 68,64 84,114 100,122 116,114 132,64" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
+                                </g>
+
+                                <!-- Rear Delts -->
+                                <g data-muscle="Rear Delts" onclick="selectMuscleOnDiagram('Rear Delts')" class="cursor-pointer transition-opacity hover:opacity-80">
+                                    <path d="M 52 68 L 68 65 L 69 92 L 52 92 Q 44 80 52 68 Z" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
+                                    <path d="M 148 68 L 132 65 L 131 92 L 148 92 Q 156 80 148 68 Z" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
+                                </g>
+
+                                <!-- Lats (Latissimus Dorsi) -->
+                                <g data-muscle="Lats" onclick="selectMuscleOnDiagram('Lats')" class="cursor-pointer transition-opacity hover:opacity-80">
+                                    <polygon points="69,92 84,114 96,154 75,150 67,118" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
+                                    <polygon points="131,92 116,114 104,154 125,150 133,118" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
+                                </g>
+
+                                <!-- Triceps -->
+                                <g data-muscle="Triceps" onclick="selectMuscleOnDiagram('Triceps')" class="cursor-pointer transition-opacity hover:opacity-80">
+                                    <rect x="44" y="95" width="21" height="46" rx="9" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
+                                    <rect x="135" y="95" width="21" height="46" rx="9" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
+                                </g>
+
+                                <!-- Forearms (Posterior) -->
+                                <g data-muscle="Forearms" onclick="selectMuscleOnDiagram('Forearms')" class="cursor-pointer transition-opacity hover:opacity-80">
+                                    <path d="M 40 144 L 62 144 L 56 192 L 42 192 Z" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
+                                    <path d="M 160 144 L 138 144 L 144 192 L 158 192 Z" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
+                                </g>
+
+                                <!-- Lower Back (Erectors) -->
+                                <g data-muscle="Lower Back" onclick="selectMuscleOnDiagram('Lower Back')" class="cursor-pointer transition-opacity hover:opacity-80">
+                                    <polygon points="84,148 116,148 122,182 78,182" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
+                                </g>
+
+                                <!-- Glutes -->
+                                <g data-muscle="Glutes" onclick="selectMuscleOnDiagram('Glutes')" class="cursor-pointer transition-opacity hover:opacity-80">
+                                    <path d="M 73 183 L 99 183 L 99 224 L 68 220 Q 64 200 73 183 Z" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
+                                    <path d="M 127 183 L 101 183 L 101 224 L 132 220 Q 136 200 127 183 Z" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
+                                </g>
+
+                                <!-- Hamstrings -->
+                                <g data-muscle="Hamstrings" onclick="selectMuscleOnDiagram('Hamstrings')" class="cursor-pointer transition-opacity hover:opacity-80">
+                                    <path d="M 69 224 L 97 224 L 94 292 L 73 292 Q 66 258 69 224 Z" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
+                                    <path d="M 131 224 L 103 224 L 106 292 L 127 292 Q 134 258 131 224 Z" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
+                                </g>
+
+                                <!-- Calves (Posterior Gastrocnemius) -->
+                                <g data-muscle="Calves" onclick="selectMuscleOnDiagram('Calves')" class="cursor-pointer transition-opacity hover:opacity-80">
+                                    <path d="M 71 300 L 94 300 L 89 376 L 75 376 Q 64 334 71 300 Z" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
+                                    <path d="M 129 300 L 106 300 L 111 376 L 125 376 Q 136 334 129 300 Z" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
+                                </g>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- Selected Muscle Inspector Banner -->
+                    <div id="muscle-inspector-banner" class="mt-2 pt-2.5 border-t border-gray-800/80 flex items-center justify-between text-xs">
+                        <div>
+                            <span class="text-gray-400">Tap any muscle region: </span>
+                            <strong id="inspected-muscle-name" class="text-white">All Muscles</strong>
+                        </div>
+                        <span id="inspected-muscle-stats" class="font-mono text-brand-400 font-bold">Select a muscle above</span>
+                    </div>
+                </div>
+
+                <!-- Muscle Volume Summary Grid -->
+                <div>
+                    <div class="flex items-center justify-between mb-2">
+                        <h3 id="status-breakdown-heading" class="text-xs font-extrabold uppercase tracking-wider text-gray-300">Fractional Set Breakdown (Selected Range)</h3>
+                        <span class="text-[10px] text-gray-400 font-mono">Wk Avg • Period Total</span>
+                    </div>
+                    <div id="muscle-volume-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Exercise Muscle Configuration Table Card -->
+            <div class="bg-surface-900 border border-gray-800/90 rounded-2xl p-4 shadow-lg space-y-3">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="text-sm font-extrabold uppercase tracking-wider text-white flex items-center gap-1.5">
+                            <i class="fa-solid fa-sliders text-brand-400"></i> Exercise Muscle Configuration
+                        </h3>
+                        <p class="text-[11px] text-gray-400 mt-0.5">Set Primary (1.0 set) & Secondary (0.5 set) muscles for each lift</p>
+                    </div>
+                    <button onclick="resetMuscleMappingsToDefault()" class="px-2.5 py-1 rounded-lg bg-surface-800 hover:bg-gray-700 text-[11px] font-semibold text-gray-300 transition" title="Reset default muscle mappings">
+                        Reset Defaults
+                    </button>
+                </div>
+
+                <div id="exercise-muscle-config-list" class="space-y-2.5">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================================= -->
         <!-- TAB 1: WORKOUT LOGGER                                     -->
         <!-- ========================================================= -->
-        <section id="tab-logger" class="space-y-4">
+        <section id="tab-logger" class="hidden space-y-4">
             
-            <!-- Date & Exercise Selector Card -->
+            <!-- Session Date & Exercise Selector Card -->
             <div class="bg-surface-900 border border-gray-800/90 rounded-2xl p-4 shadow-lg space-y-3.5">
-                <div class="flex items-center justify-between gap-3">
-                    <div class="flex-1">
-                        <label class="block text-[11px] font-bold uppercase tracking-wider text-gray-400 mb-1">Workout Date</label>
-                        <input type="date" id="log-date" onchange="onDateOrExerciseChange()" class="w-full bg-surface-950 border border-gray-800 rounded-xl px-3 py-2 text-sm font-semibold text-white focus:outline-none focus:border-brand-500">
+                <div class="grid grid-cols-12 gap-2.5 items-center">
+                    <!-- Workout Date -->
+                    <div class="col-span-5">
+                        <label class="block text-[11px] font-bold uppercase tracking-wider text-gray-400 mb-1">Session Date</label>
+                        <input type="date" id="log-date" onchange="onDateOrExerciseChange()" class="w-full bg-surface-950 border border-gray-800 rounded-xl px-2.5 py-2 text-xs font-mono font-semibold text-white focus:outline-none focus:border-brand-500">
                     </div>
-                    <div class="flex-1">
-                        <label class="block text-[11px] font-bold uppercase tracking-wider text-gray-400 mb-1">Category Filter</label>
-                        <select id="category-filter" onchange="populateExerciseSelect()" class="w-full bg-surface-950 border border-gray-800 rounded-xl px-3 py-2 text-sm font-semibold text-white focus:outline-none focus:border-brand-500">
+                    <!-- Category Filter -->
+                    <div class="col-span-7">
+                        <div class="flex items-center justify-between mb-1">
+                            <label class="text-[11px] font-bold uppercase tracking-wider text-gray-400">Category</label>
+                            <button onclick="openCustomExerciseModal()" class="text-[11px] font-bold text-brand-400 hover:text-brand-300 flex items-center gap-1">
+                                <i class="fa-solid fa-plus text-[10px]"></i> Custom Lift
+                            </button>
+                        </div>
+                        <select id="category-filter" onchange="populateExerciseSelect(); onDateOrExerciseChange();" class="w-full bg-surface-950 border border-gray-800 rounded-xl px-3 py-2 text-xs font-semibold text-gray-200 focus:outline-none focus:border-brand-500">
                             <option value="ALL">All Categories</option>
                             <option value="Upper / Push">Upper / Push</option>
                             <option value="Upper / Pull & Arms">Upper / Pull & Arms</option>
@@ -164,215 +425,205 @@
                     </div>
                 </div>
 
-                <!-- Exercise Dropdown + New Custom Exercise Button -->
+                <!-- Exercise Picker -->
                 <div>
-                    <div class="flex items-center justify-between mb-1">
-                        <label class="text-[11px] font-bold uppercase tracking-wider text-gray-400">Select Exercise</label>
-                        <button onclick="openCustomExerciseModal()" class="text-xs font-semibold text-brand-400 hover:text-brand-300 flex items-center gap-1">
-                            <i class="fa-solid fa-plus-circle"></i> Add Custom Lift
-                        </button>
-                    </div>
-                    <select id="log-exercise" onchange="onDateOrExerciseChange()" class="w-full bg-surface-950 border border-gray-700 rounded-xl px-3.5 py-3 text-base font-bold text-white focus:outline-none focus:border-brand-500">
-                        <!-- Dynamically Populated -->
+                    <label class="block text-[11px] font-bold uppercase tracking-wider text-gray-400 mb-1">Select Exercise</label>
+                    <select id="log-exercise" onchange="onDateOrExerciseChange()" class="w-full bg-surface-950 border border-gray-700/80 rounded-xl px-3.5 py-2.5 text-sm font-bold text-white focus:outline-none focus:border-brand-500 transition">
                     </select>
                 </div>
 
-                <!-- Previous Best & Last Set Context Banner -->
-                <div id="exercise-context-bar" class="bg-surface-950/90 border border-gray-800/80 rounded-xl p-2.5 flex items-center justify-between text-xs">
-                    <div class="space-y-0.5">
-                        <div class="text-gray-400">Last Logged: <span id="ctx-last-set" class="font-mono font-semibold text-gray-200">No history</span></div>
-                        <div class="text-gray-400">All-Time PR: <span id="ctx-best-pr" class="font-mono font-semibold text-amber-400">—</span></div>
+                <!-- Last Session & All-Time PR Context Strip -->
+                <div class="grid grid-cols-2 gap-2 pt-1">
+                    <div class="bg-surface-950/90 border border-gray-800/80 rounded-xl p-2.5 flex items-center justify-between">
+                        <div>
+                            <span class="text-[10px] font-bold uppercase tracking-wider text-gray-400 block">Last Logged Set</span>
+                            <span id="ctx-last-set" class="font-mono text-xs font-bold text-gray-200 mt-0.5 block">—</span>
+                        </div>
+                        <button onclick="copyLastSetToInputs()" title="Copy Last Set Weight & Reps" class="px-2 py-1 rounded-lg bg-surface-800 hover:bg-gray-700 text-gray-300 text-[11px] font-semibold transition">
+                            Use
+                        </button>
                     </div>
-                    <button onclick="copyLastSetToInputs()" id="btn-copy-last" class="px-2.5 py-1.5 rounded-lg bg-surface-800 hover:bg-gray-700 text-gray-200 font-semibold text-xs flex items-center gap-1.5 transition">
-                        <i class="fa-solid fa-wand-magic-sparkles text-brand-400"></i> Fill Last
-                    </button>
+                    <div class="bg-surface-950/90 border border-gray-800/80 rounded-xl p-2.5">
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-amber-400/90 flex items-center gap-1">
+                            <i class="fa-solid fa-trophy text-[10px]"></i> All-Time Best
+                        </span>
+                        <span id="ctx-best-pr" class="font-mono text-xs font-bold text-white mt-0.5 block">—</span>
+                    </div>
                 </div>
             </div>
 
-            <!-- Weight & Reps Fast Thumb Controls Card -->
+            <!-- Weight & Reps Fast Stepper Card -->
             <div class="bg-surface-900 border border-gray-800/90 rounded-2xl p-4 shadow-lg space-y-4">
                 
-                <!-- WEIGHT (KG) CONTROL -->
+                <!-- Weight Input Control (Compact 12-Col Grid for Narrow Mobile Screens) -->
                 <div>
-                    <div class="flex items-center justify-between mb-1.5">
+                    <div class="flex justify-between items-center mb-1.5">
                         <label class="text-xs font-bold uppercase tracking-wider text-gray-300">Weight (kg)</label>
                         <div class="flex gap-1">
-                            <button onclick="stepWeight(-5)" class="px-2 py-0.5 rounded bg-surface-800 text-[11px] font-mono text-gray-400 hover:text-white">-5</button>
-                            <button onclick="stepWeight(5)" class="px-2 py-0.5 rounded bg-surface-800 text-[11px] font-mono text-gray-400 hover:text-white">+5</button>
-                            <button onclick="stepWeight(10)" class="px-2 py-0.5 rounded bg-surface-800 text-[11px] font-mono text-gray-400 hover:text-white">+10</button>
+                            <button type="button" onclick="stepWeight(-10)" class="px-2 py-0.5 rounded bg-surface-800 text-[11px] font-mono text-gray-400 hover:text-white">-10</button>
+                            <button type="button" onclick="stepWeight(10)" class="px-2 py-0.5 rounded bg-surface-800 text-[11px] font-mono text-gray-400 hover:text-white">+10</button>
                         </div>
                     </div>
                     <div class="grid grid-cols-12 gap-1.5 items-center">
-                        <button onclick="stepWeight(-2.5)" class="col-span-2 h-12 rounded-xl bg-surface-800 active:bg-gray-700 border border-gray-700/70 flex items-center justify-center text-xs font-mono font-bold text-gray-200 shadow">-2.5</button>
-                        <button onclick="stepWeight(-1)" class="col-span-2 h-12 rounded-xl bg-surface-800/70 active:bg-gray-700 border border-gray-800 flex items-center justify-center text-xs font-mono font-bold text-gray-300">-1</button>
-                        
-                        <input type="number" id="input-weight" step="0.5" min="0" value="60" oninput="updateLiveSetMetrics()" class="col-span-4 w-full min-w-0 h-12 bg-surface-950 border-2 border-gray-700 focus:border-brand-500 rounded-xl text-center font-mono text-xl font-extrabold text-white focus:outline-none px-1">
-                        
-                        <button onclick="stepWeight(1)" class="col-span-2 h-12 rounded-xl bg-surface-800/70 active:bg-gray-700 border border-gray-800 flex items-center justify-center text-xs font-mono font-bold text-gray-300">+1</button>
-                        <button onclick="stepWeight(2.5)" class="col-span-2 h-12 rounded-xl bg-surface-800 active:bg-gray-700 border border-gray-700/70 flex items-center justify-center text-xs font-mono font-bold text-brand-400 shadow">+2.5</button>
+                        <button type="button" onclick="stepWeight(-5)" class="col-span-2 h-11 rounded-xl bg-surface-800 active:bg-gray-700 font-mono font-bold text-xs text-gray-300 border border-gray-700/60">-5</button>
+                        <button type="button" onclick="stepWeight(-2.5)" class="col-span-2 h-11 rounded-xl bg-surface-800 active:bg-gray-700 font-mono font-bold text-xs text-gray-200 border border-gray-700/60">-2.5</button>
+                        <input type="number" id="input-weight" value="60" step="0.5" min="0" oninput="updateLiveSetMetrics()" class="col-span-4 min-w-0 w-full h-11 bg-surface-950 border border-gray-700 rounded-xl text-center font-mono text-lg font-extrabold text-white focus:outline-none focus:border-brand-500">
+                        <button type="button" onclick="stepWeight(2.5)" class="col-span-2 h-11 rounded-xl bg-surface-800 active:bg-gray-700 font-mono font-bold text-xs text-brand-400 border border-gray-700/60">+2.5</button>
+                        <button type="button" onclick="stepWeight(5)" class="col-span-2 h-11 rounded-xl bg-surface-800 active:bg-gray-700 font-mono font-bold text-xs text-brand-400 border border-gray-700/60">+5</button>
                     </div>
                 </div>
 
-                <!-- REPS CONTROL -->
+                <!-- Reps Input Control (Compact 12-Col Grid for Narrow Mobile Screens) -->
                 <div>
-                    <div class="flex items-center justify-between mb-1.5">
+                    <div class="flex justify-between items-center mb-1.5">
                         <label class="text-xs font-bold uppercase tracking-wider text-gray-300">Repetitions</label>
                         <div class="flex gap-1">
-                            <button onclick="setExactReps(5)" class="px-2 py-0.5 rounded bg-surface-800 text-[11px] font-mono text-gray-400 hover:text-white">5</button>
-                            <button onclick="setExactReps(8)" class="px-2 py-0.5 rounded bg-surface-800 text-[11px] font-mono text-gray-400 hover:text-white">8</button>
-                            <button onclick="setExactReps(10)" class="px-2 py-0.5 rounded bg-surface-800 text-[11px] font-mono text-gray-400 hover:text-white">10</button>
-                            <button onclick="setExactReps(12)" class="px-2 py-0.5 rounded bg-surface-800 text-[11px] font-mono text-gray-400 hover:text-white">12</button>
+                            <button type="button" onclick="setExactReps(5)" class="px-2 py-0.5 rounded bg-surface-800 text-[11px] font-mono text-gray-400 hover:text-white">5</button>
+                            <button type="button" onclick="setExactReps(8)" class="px-2 py-0.5 rounded bg-surface-800 text-[11px] font-mono text-gray-400 hover:text-white">8</button>
+                            <button type="button" onclick="setExactReps(10)" class="px-2 py-0.5 rounded bg-surface-800 text-[11px] font-mono text-gray-400 hover:text-white">10</button>
+                            <button type="button" onclick="setExactReps(12)" class="px-2 py-0.5 rounded bg-surface-800 text-[11px] font-mono text-gray-400 hover:text-white">12</button>
                         </div>
                     </div>
                     <div class="grid grid-cols-12 gap-1.5 items-center">
-                        <button onclick="stepReps(-2)" class="col-span-2 h-12 rounded-xl bg-surface-800/70 active:bg-gray-700 border border-gray-800 flex items-center justify-center text-xs font-mono font-bold text-gray-300">-2</button>
-                        <button onclick="stepReps(-1)" class="col-span-2 h-12 rounded-xl bg-surface-800 active:bg-gray-700 border border-gray-700/70 flex items-center justify-center text-sm font-mono font-bold text-gray-200 shadow">-1</button>
-                        
-                        <input type="number" id="input-reps" step="1" min="1" value="8" oninput="updateLiveSetMetrics()" class="col-span-4 w-full min-w-0 h-12 bg-surface-950 border-2 border-gray-700 focus:border-brand-500 rounded-xl text-center font-mono text-xl font-extrabold text-white focus:outline-none px-1">
-                        
-                        <button onclick="stepReps(1)" class="col-span-2 h-12 rounded-xl bg-surface-800 active:bg-gray-700 border border-gray-700/70 flex items-center justify-center text-sm font-mono font-bold text-brand-400 shadow">+1</button>
-                        <button onclick="stepReps(2)" class="col-span-2 h-12 rounded-xl bg-surface-800/70 active:bg-gray-700 border border-gray-800 flex items-center justify-center text-xs font-mono font-bold text-gray-300">+2</button>
+                        <button type="button" onclick="stepReps(-2)" class="col-span-2 h-11 rounded-xl bg-surface-800 active:bg-gray-700 font-mono font-bold text-xs text-gray-300 border border-gray-700/60">-2</button>
+                        <button type="button" onclick="stepReps(-1)" class="col-span-2 h-11 rounded-xl bg-surface-800 active:bg-gray-700 font-mono font-bold text-xs text-gray-200 border border-gray-700/60">-1</button>
+                        <input type="number" id="input-reps" value="8" step="1" min="1" oninput="updateLiveSetMetrics()" class="col-span-4 min-w-0 w-full h-11 bg-surface-950 border border-gray-700 rounded-xl text-center font-mono text-lg font-extrabold text-white focus:outline-none focus:border-brand-500">
+                        <button type="button" onclick="stepReps(1)" class="col-span-2 h-11 rounded-xl bg-surface-800 active:bg-gray-700 font-mono font-bold text-xs text-brand-400 border border-gray-700/60">+1</button>
+                        <button type="button" onclick="stepReps(2)" class="col-span-2 h-11 rounded-xl bg-surface-800 active:bg-gray-700 font-mono font-bold text-xs text-brand-400 border border-gray-700/60">+2</button>
                     </div>
                 </div>
 
-                <!-- Optional Notes / RPE & Auto-Start Rest Timer Checkbox -->
-                <div class="grid grid-cols-12 gap-2.5 pt-1">
+                <!-- Optional Set Note & Auto-Timer Toggle -->
+                <div class="grid grid-cols-12 gap-2 items-center pt-1">
                     <div class="col-span-8">
-                        <input type="text" id="input-notes" placeholder="Notes / RPE (e.g. RPE 8.5, belt, strict)" class="w-full bg-surface-950 border border-gray-800 rounded-xl px-3 py-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-brand-500">
+                        <input type="text" id="input-notes" placeholder="Optional note (e.g. RPE 8.5, pause)" class="w-full bg-surface-950 border border-gray-800 rounded-xl px-3 py-2 text-xs text-gray-200 placeholder-gray-500 focus:outline-none focus:border-brand-500">
                     </div>
-                    <label class="col-span-4 bg-surface-950 border border-gray-800 rounded-xl px-2.5 py-2 flex items-center justify-center gap-1.5 cursor-pointer">
-                        <input type="checkbox" id="auto-rest-toggle" checked class="accent-brand-500 w-3.5 h-3.5 rounded">
-                        <span class="text-[11px] font-semibold text-gray-300">Auto Timer</span>
+                    <label class="col-span-4 flex items-center justify-end gap-1.5 cursor-pointer select-none text-xs text-gray-400">
+                        <input type="checkbox" id="auto-rest-toggle" checked class="accent-brand-500 w-4 h-4 rounded">
+                        <span>Auto-Timer</span>
                     </label>
                 </div>
 
-                <!-- Live Set Preview & Potential PR Detection Banner -->
-                <div class="bg-surface-950 rounded-xl p-3 border border-gray-800/90 flex items-center justify-between">
+                <!-- Live Set Preview & PR Alert Banner -->
+                <div class="bg-surface-950 border border-gray-800 rounded-xl px-3.5 py-2.5 flex items-center justify-between">
                     <div class="flex items-center gap-4">
                         <div>
-                            <span class="text-[10px] uppercase tracking-wider text-gray-400 block">Set Volume</span>
-                            <span id="live-volume" class="font-mono text-sm font-bold text-white">480 kg</span>
+                            <span class="text-[10px] uppercase font-bold text-gray-400 block">Set Volume</span>
+                            <span id="live-volume" class="font-mono text-sm font-bold text-gray-200">480 kg</span>
                         </div>
                         <div class="h-6 w-px bg-gray-800"></div>
                         <div>
-                            <span class="text-[10px] uppercase tracking-wider text-gray-400 block">Est. 1RM (Epley)</span>
+                            <span class="text-[10px] uppercase font-bold text-gray-400 block">Est. 1RM (Epley)</span>
                             <span id="live-1rm" class="font-mono text-sm font-bold text-brand-400">76.0 kg</span>
                         </div>
                     </div>
-                    <div id="live-pr-badge" class="hidden px-2.5 py-1 rounded-full bg-amber-500/20 border border-amber-400/40 text-amber-300 text-[11px] font-extrabold tracking-wide flex items-center gap-1">
-                        <i class="fa-solid fa-trophy text-amber-400"></i> <span id="live-pr-text">NEW PR!</span>
+                    <div id="live-pr-badge" class="hidden px-2.5 py-1 rounded-full bg-amber-500/20 border border-amber-500/40 text-amber-300 text-[11px] font-extrabold tracking-wide flex items-center gap-1 animate-pulse">
+                        <i class="fa-solid fa-bolt"></i> <span id="live-pr-text">NEW PR!</span>
                     </div>
                 </div>
 
-                <!-- Primary Log Set CTA Button -->
-                <button onclick="logWorkoutSet()" class="w-full py-4 rounded-2xl bg-gradient-to-r from-brand-500 to-brand-600 hover:from-brand-400 hover:to-brand-500 active:scale-[0.99] text-surface-950 font-extrabold text-base tracking-wide shadow-lg shadow-brand-500/25 flex items-center justify-center gap-2 transition">
-                    <i class="fa-solid fa-check-double"></i> LOG SET
+                <!-- Primary Log Set CTA -->
+                <button type="button" onclick="logWorkoutSet()" class="w-full py-3.5 rounded-2xl bg-gradient-to-r from-brand-500 to-brand-600 hover:from-brand-400 hover:to-brand-500 active:scale-[0.99] text-surface-950 font-extrabold text-sm uppercase tracking-wider shadow-lg shadow-brand-500/25 flex items-center justify-center gap-2 transition">
+                    <i class="fa-solid fa-check-double"></i> Log Set
                 </button>
             </div>
 
             <!-- Bodyweight Check-in Card -->
             <div class="bg-surface-900 border border-gray-800/90 rounded-2xl p-4 shadow-lg space-y-3">
                 <div class="flex items-center justify-between">
-                    <div class="flex items-center gap-2">
-                        <div class="w-7 h-7 rounded-lg bg-purple-500/15 border border-purple-500/30 flex items-center justify-center text-purple-400">
-                            <i class="fa-solid fa-weight-scale text-xs"></i>
-                        </div>
-                        <div>
-                            <h2 class="text-xs font-extrabold uppercase tracking-wider text-white">Bodyweight Check-In</h2>
-                            <p id="latest-bw-status" class="text-[11px] text-gray-400 font-mono">Latest: —</p>
-                        </div>
+                    <div>
+                        <h3 class="text-xs font-extrabold uppercase tracking-wider text-white flex items-center gap-1.5">
+                            <i class="fa-solid fa-weight-scale text-purple-400"></i> Bodyweight Check-in
+                        </h3>
+                        <p id="latest-bw-status" class="text-[11px] text-gray-400 mt-0.5">Latest: —</p>
                     </div>
-                    <span id="date-bw-badge" class="text-[11px] font-mono font-semibold text-purple-400 bg-purple-500/10 border border-purple-500/20 px-2 py-0.5 rounded-lg">Not logged today</span>
+                    <span id="date-bw-badge" class="text-[11px] font-mono font-semibold text-purple-300 bg-purple-500/15 border border-purple-500/30 px-2 py-0.5 rounded-lg">No entry for date</span>
                 </div>
 
                 <div class="grid grid-cols-12 gap-1.5 items-center">
-                    <button onclick="stepBodyweight(-0.5)" class="col-span-2 h-11 rounded-xl bg-surface-800 active:bg-gray-700 border border-gray-700/70 flex items-center justify-center text-xs font-mono font-bold text-gray-200 shadow">-0.5</button>
-                    <button onclick="stepBodyweight(-0.1)" class="col-span-2 h-11 rounded-xl bg-surface-800/70 active:bg-gray-700 border border-gray-800 flex items-center justify-center text-xs font-mono font-bold text-gray-300">-0.1</button>
-                    
-                    <div class="col-span-4 relative">
-                        <input type="number" id="input-bodyweight" step="0.1" min="20" max="350" value="82.0" class="w-full min-w-0 h-11 bg-surface-950 border-2 border-gray-700 focus:border-purple-400 rounded-xl text-center font-mono text-lg font-extrabold text-white focus:outline-none px-1">
-                    </div>
-                    
-                    <button onclick="stepBodyweight(0.1)" class="col-span-2 h-11 rounded-xl bg-surface-800/70 active:bg-gray-700 border border-gray-800 flex items-center justify-center text-xs font-mono font-bold text-gray-300">+0.1</button>
-                    <button onclick="stepBodyweight(0.5)" class="col-span-2 h-11 rounded-xl bg-surface-800 active:bg-gray-700 border border-gray-700/70 flex items-center justify-center text-xs font-mono font-bold text-purple-400 shadow">+0.5</button>
+                    <button type="button" onclick="stepBodyweight(-0.5)" class="col-span-2 h-10 rounded-xl bg-surface-800 active:bg-gray-700 font-mono font-bold text-xs text-gray-300 border border-gray-700/60">-0.5</button>
+                    <button type="button" onclick="stepBodyweight(-0.1)" class="col-span-2 h-10 rounded-xl bg-surface-800 active:bg-gray-700 font-mono font-bold text-xs text-gray-200 border border-gray-700/60">-0.1</button>
+                    <input type="number" id="input-bodyweight" value="80.0" step="0.1" min="20" class="col-span-4 min-w-0 w-full h-10 bg-surface-950 border border-gray-700 rounded-xl text-center font-mono text-base font-extrabold text-white focus:outline-none focus:border-purple-400">
+                    <button type="button" onclick="stepBodyweight(0.1)" class="col-span-2 h-10 rounded-xl bg-surface-800 active:bg-gray-700 font-mono font-bold text-xs text-purple-400 border border-gray-700/60">+0.1</button>
+                    <button type="button" onclick="stepBodyweight(0.5)" class="col-span-2 h-10 rounded-xl bg-surface-800 active:bg-gray-700 font-mono font-bold text-xs text-purple-400 border border-gray-700/60">+0.5</button>
                 </div>
 
-                <button onclick="logBodyweight()" class="w-full py-2.5 rounded-xl bg-purple-500/20 hover:bg-purple-500/30 active:scale-[0.99] border border-purple-500/40 text-purple-300 font-extrabold text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 transition">
-                    <i class="fa-solid fa-plus"></i> Log Bodyweight (kg) for Selected Date
+                <button type="button" onclick="logBodyweight()" class="w-full py-2.5 rounded-xl bg-purple-500/20 hover:bg-purple-500/30 border border-purple-500/40 text-purple-300 font-extrabold text-xs uppercase tracking-wider transition flex items-center justify-center gap-1.5">
+                    <i class="fa-solid fa-plus"></i> Log Bodyweight (kg)
                 </button>
             </div>
 
-            <!-- Today's Session Summary & Logged Sets List -->
+            <!-- Current Session Summary & Logged Sets -->
             <div class="bg-surface-900 border border-gray-800/90 rounded-2xl p-4 shadow-lg space-y-3">
                 <div class="flex items-center justify-between border-b border-gray-800 pb-2.5">
                     <div>
-                        <h2 class="text-sm font-extrabold uppercase tracking-wider text-white">Session Log (<span id="session-date-label">Today</span>)</h2>
-                        <p class="text-[11px] text-gray-400">Tap trash icon to remove a mistaken set</p>
+                        <h2 class="text-sm font-extrabold text-white uppercase tracking-wide">Session Sets (<span id="session-date-label">Today</span>)</h2>
+                        <p class="text-[11px] text-gray-400">Tap trash icon to remove a mistyped set</p>
                     </div>
                     <div class="text-right">
-                        <span id="session-total-volume" class="font-mono text-base font-extrabold text-brand-400">0 kg</span>
-                        <span id="session-total-sets" class="block text-[11px] text-gray-400 font-semibold">0 sets</span>
+                        <span id="session-total-volume" class="font-mono text-sm font-extrabold text-brand-400">0 kg</span>
+                        <span id="session-total-sets" class="block text-[10px] uppercase tracking-wider text-gray-400">0 sets</span>
                     </div>
                 </div>
 
-                <div id="session-sets-container" class="space-y-2.5">
-                    <!-- Populated by JS -->
+                <!-- Dynamic List of Sets Logged on Selected Date -->
+                <div id="session-sets-container" class="space-y-2">
                 </div>
             </div>
         </section>
 
         <!-- ========================================================= -->
-        <!-- TAB 2: ANALYTICS, CHARTS & PERSONAL RECORDS               -->
+        <!-- TAB 2: VOLUME & PR ANALYTICS                              -->
         <!-- ========================================================= -->
         <section id="tab-analytics" class="hidden space-y-4">
             
-            <!-- Filter Bar -->
-            <div class="bg-surface-900 border border-gray-800/90 rounded-2xl p-4 shadow-lg space-y-3">
+            <!-- Filter & Time Window Controls Card -->
+            <div class="bg-surface-900 border border-gray-800/90 rounded-2xl p-4 shadow-lg space-y-3.5">
                 <div class="flex items-center justify-between">
-                    <label class="text-xs font-bold uppercase tracking-wider text-gray-400">Analyze Lift</label>
-                    <span id="analytics-mode-pill" class="text-[11px] text-brand-400 font-semibold">Global % Improvement & Volume</span>
+                    <label class="text-xs font-bold uppercase tracking-wider text-gray-400">Analyze Lift / Overview</label>
+                    <span id="analytics-mode-pill" class="text-[11px] font-mono text-brand-400">Global % Improvement, Volume & BW</span>
                 </div>
                 <select id="analytics-exercise-select" onchange="onAnalyticsExerciseChange()" class="w-full bg-surface-950 border border-gray-700 rounded-xl px-3.5 py-2.5 text-sm font-bold text-white focus:outline-none focus:border-brand-500">
-                    <!-- Populated by JS -->
                 </select>
 
-                <!-- Date Range Presets & Custom Pickers -->
-                <div class="pt-1 space-y-2 border-t border-gray-800/80">
+                <!-- Date Range Quick Presets & Custom Pickers -->
+                <div class="pt-1 border-t border-gray-800/80 space-y-2.5">
                     <div class="flex items-center justify-between gap-2">
-                        <span class="text-[10px] font-bold uppercase tracking-wider text-gray-400">Date Range</span>
+                        <span class="text-[11px] font-bold uppercase tracking-wider text-gray-400">Date Range</span>
                         <div class="flex bg-surface-950 p-1 rounded-xl border border-gray-800 gap-1">
-                            <button id="range-btn-12w" onclick="setAnalyticsDatePreset('12w')" class="px-2.5 py-1 rounded-lg text-[11px] font-bold text-gray-400 hover:text-white transition">12 Weeks</button>
-                            <button id="range-btn-12m" onclick="setAnalyticsDatePreset('12m')" class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-brand-500 text-surface-950 transition">12 Months</button>
-                            <button id="range-btn-all" onclick="setAnalyticsDatePreset('all')" class="px-2.5 py-1 rounded-lg text-[11px] font-bold text-gray-400 hover:text-white transition">All Time</button>
+                            <button type="button" id="range-btn-12w" onclick="setAnalyticsDatePreset('12w')" class="px-2.5 py-1 rounded-lg text-[11px] font-bold text-gray-400 hover:text-white transition">12 Weeks</button>
+                            <button type="button" id="range-btn-12m" onclick="setAnalyticsDatePreset('12m')" class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-brand-500 text-surface-950 transition">12 Months</button>
+                            <button type="button" id="range-btn-all" onclick="setAnalyticsDatePreset('all')" class="px-2.5 py-1 rounded-lg text-[11px] font-bold text-gray-400 hover:text-white transition">All Time</button>
                         </div>
                     </div>
+
                     <div class="grid grid-cols-2 gap-2">
                         <div>
-                            <label class="block text-[10px] uppercase text-gray-500 font-semibold mb-0.5">Start Date</label>
-                            <input type="date" id="analytics-start-date" onchange="onCustomAnalyticsDateChange()" class="w-full bg-surface-950 border border-gray-800 rounded-xl px-2.5 py-1.5 text-xs font-mono text-gray-200 focus:outline-none focus:border-brand-500">
+                            <label class="block text-[10px] font-bold uppercase text-gray-400 mb-1">Start Date</label>
+                            <input type="date" id="analytics-start-date" onchange="onCustomAnalyticsDateChange()" class="w-full bg-surface-950 border border-gray-800 rounded-xl px-2.5 py-1.5 text-xs font-mono text-white focus:outline-none focus:border-brand-500">
                         </div>
                         <div>
-                            <label class="block text-[10px] uppercase text-gray-500 font-semibold mb-0.5">End Date</label>
-                            <input type="date" id="analytics-end-date" onchange="onCustomAnalyticsDateChange()" class="w-full bg-surface-950 border border-gray-800 rounded-xl px-2.5 py-1.5 text-xs font-mono text-gray-200 focus:outline-none focus:border-brand-500">
+                            <label class="block text-[10px] font-bold uppercase text-gray-400 mb-1">End Date</label>
+                            <input type="date" id="analytics-end-date" onchange="onCustomAnalyticsDateChange()" class="w-full bg-surface-950 border border-gray-800 rounded-xl px-2.5 py-1.5 text-xs font-mono text-white focus:outline-none focus:border-brand-500">
+                        </div>
+                    </div>
+
+                    <!-- Volume & Progression Interval Grouping (Weekly vs Monthly) -->
+                    <div class="flex items-center justify-between pt-1">
+                        <span class="text-[11px] font-bold uppercase tracking-wider text-gray-400">Volume Grouping</span>
+                        <div class="flex bg-surface-950 p-1 rounded-xl border border-gray-800 gap-1">
+                            <button type="button" id="interval-btn-weekly" onclick="setAnalyticsInterval('weekly')" class="px-3 py-1 rounded-lg text-[11px] font-bold bg-brand-500 text-surface-950 transition">Weekly</button>
+                            <button type="button" id="interval-btn-monthly" onclick="setAnalyticsInterval('monthly')" class="px-3 py-1 rounded-lg text-[11px] font-bold text-gray-400 hover:text-white transition">Monthly</button>
                         </div>
                     </div>
                 </div>
 
-                <!-- Interval Aggregation Toggle (Weekly vs Monthly) -->
-                <div class="flex items-center justify-between pt-1 border-t border-gray-800/80">
-                    <span class="text-[10px] font-bold uppercase tracking-wider text-gray-400">Aggregation Interval</span>
-                    <div class="flex bg-surface-950 p-1 rounded-xl border border-gray-800 gap-1">
-                        <button id="interval-btn-weekly" onclick="setAnalyticsInterval('weekly')" class="px-3 py-1 rounded-lg text-[11px] font-bold bg-brand-500 text-surface-950 transition">Weekly</button>
-                        <button id="interval-btn-monthly" onclick="setAnalyticsInterval('monthly')" class="px-3 py-1 rounded-lg text-[11px] font-bold text-gray-400 hover:text-white transition">Monthly</button>
-                    </div>
-                </div>
-
-                <!-- 4 Key Metric Cards -->
+                <!-- 4-Card PR & Volume Summary Grid -->
                 <div class="grid grid-cols-2 gap-2.5 pt-1">
                     <div class="bg-surface-950 border border-gray-800/80 rounded-xl p-3">
                         <span id="stat-card1-label" class="text-[10px] font-bold uppercase tracking-wider text-gray-400 block">Heaviest Weight</span>
                         <span id="stat-max-weight" class="font-mono text-lg font-extrabold text-white mt-0.5 block">—</span>
-                        <span id="stat-max-weight-sub" class="text-[11px] text-gray-400">All-time top weight</span>
+                        <span id="stat-max-weight-sub" class="text-[11px] text-gray-400">No sets yet</span>
                     </div>
                     <div class="bg-surface-950 border border-gray-800/80 rounded-xl p-3">
                         <span id="stat-card2-label" class="text-[10px] font-bold uppercase tracking-wider text-gray-400 block">Best Est. 1RM</span>
@@ -475,7 +726,7 @@
                         <input type="file" id="import-json-input" accept=".json" onchange="importDataJSON(event)" class="hidden">
                     </label>
                     <button onclick="loadDemoWorkoutData()" class="py-2.5 px-3 rounded-xl bg-brand-500/15 hover:bg-brand-500/25 border border-brand-500/30 text-xs font-bold text-brand-300 flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-bolt"></i> Load Demo Data
+                        <i class="fa-solid fa-bolt"></i> Load 18M Demo
                     </button>
                 </div>
 
@@ -572,9 +823,13 @@
 
     <!-- ================= BOTTOM NAVIGATION BAR ================= -->
     <nav class="fixed bottom-0 left-0 right-0 z-30 bg-surface-950/95 backdrop-blur-md border-t border-gray-800/90 px-4 py-2">
-        <div class="max-w-lg mx-auto grid grid-cols-3 gap-2">
-            <button id="nav-logger" onclick="switchTab('logger')" class="flex flex-col items-center justify-center py-1.5 rounded-xl text-brand-400 bg-brand-500/10 font-bold transition">
-                <i class="fa-solid fa-Plus-square fa-dumbbell text-base mb-0.5"></i>
+        <div class="max-w-lg mx-auto grid grid-cols-4 gap-1.5">
+            <button id="nav-status" onclick="switchTab('status')" class="flex flex-col items-center justify-center py-1.5 rounded-xl text-brand-400 bg-brand-500/10 font-bold transition">
+                <i class="fa-solid fa-child-reaching text-base mb-0.5"></i>
+                <span class="text-[11px]">Status</span>
+            </button>
+            <button id="nav-logger" onclick="switchTab('logger')" class="flex flex-col items-center justify-center py-1.5 rounded-xl text-gray-400 hover:text-gray-200 font-semibold transition">
+                <i class="fa-solid fa-dumbbell text-base mb-0.5"></i>
                 <span class="text-[11px]">Log Workout</span>
             </button>
             <button id="nav-analytics" onclick="switchTab('analytics')" class="flex flex-col items-center justify-center py-1.5 rounded-xl text-gray-400 hover:text-gray-200 font-semibold transition">
@@ -594,23 +849,41 @@
          * 1. STORAGE KEYS & DEFAULT EXERCISE LIBRARY
          **************************************************************/
         const STORAGE_LOGS_KEY = 'ironpulse_workout_sets_v1';
-        const STORAGE_EXERCISES_KEY = 'ironpulse_exercises_v2';
+        const STORAGE_EXERCISES_KEY = 'ironpulse_exercises_v3';
         const STORAGE_BW_KEY = 'ironpulse_bodyweight_v1';
 
+        const MUSCLE_GROUPS = [
+            'Chest',
+            'Front Delts',
+            'Side Delts',
+            'Rear Delts',
+            'Lats',
+            'Traps',
+            'Biceps',
+            'Triceps',
+            'Forearms',
+            'Abs',
+            'Lower Back',
+            'Glutes',
+            'Quads',
+            'Hamstrings',
+            'Calves'
+        ];
+
         const DEFAULT_EXERCISES = [
-            { name: 'BB Incline BenchPress', category: 'Upper / Push' },
-            { name: 'DB Incline BenchPress', category: 'Upper / Push' },
-            { name: 'DB Decline BenchPress', category: 'Upper / Push' },
-            { name: 'DB Shoulder Press', category: 'Upper / Push' },
-            { name: 'Pull-up', category: 'Upper / Pull & Arms' },
-            { name: 'Row', category: 'Upper / Pull & Arms' },
-            { name: 'Bicep Curl', category: 'Upper / Pull & Arms' },
-            { name: 'Tricep Extension', category: 'Upper / Pull & Arms' },
-            { name: 'Lateral Raise', category: 'Upper / Push' },
-            { name: 'Leg Press', category: 'Lower Body' },
-            { name: 'Leg Extension', category: 'Lower Body' },
-            { name: 'Hamstring Curl', category: 'Lower Body' },
-            { name: 'Romainian Deadlift', category: 'Lower Body' }
+            { name: 'BB Incline BenchPress', category: 'Upper / Push', primaryMuscle: 'Chest', secondaryMuscles: ['Front Delts', 'Triceps'] },
+            { name: 'DB Incline BenchPress', category: 'Upper / Push', primaryMuscle: 'Chest', secondaryMuscles: ['Front Delts', 'Triceps'] },
+            { name: 'DB Decline BenchPress', category: 'Upper / Push', primaryMuscle: 'Chest', secondaryMuscles: ['Triceps', 'Front Delts'] },
+            { name: 'DB Shoulder Press', category: 'Upper / Push', primaryMuscle: 'Front Delts', secondaryMuscles: ['Side Delts', 'Triceps'] },
+            { name: 'Pull-up', category: 'Upper / Pull & Arms', primaryMuscle: 'Lats', secondaryMuscles: ['Biceps', 'Traps', 'Rear Delts', 'Forearms'] },
+            { name: 'Row', category: 'Upper / Pull & Arms', primaryMuscle: 'Traps', secondaryMuscles: ['Lats', 'Rear Delts', 'Biceps', 'Lower Back'] },
+            { name: 'Bicep Curl', category: 'Upper / Pull & Arms', primaryMuscle: 'Biceps', secondaryMuscles: ['Forearms'] },
+            { name: 'Tricep Extension', category: 'Upper / Pull & Arms', primaryMuscle: 'Triceps', secondaryMuscles: [] },
+            { name: 'Lateral Raise', category: 'Upper / Push', primaryMuscle: 'Side Delts', secondaryMuscles: ['Front Delts', 'Traps'] },
+            { name: 'Leg Press', category: 'Lower Body', primaryMuscle: 'Quads', secondaryMuscles: ['Glutes', 'Hamstrings', 'Calves'] },
+            { name: 'Leg Extension', category: 'Lower Body', primaryMuscle: 'Quads', secondaryMuscles: [] },
+            { name: 'Hamstring Curl', category: 'Lower Body', primaryMuscle: 'Hamstrings', secondaryMuscles: ['Calves'] },
+            { name: 'Romainian Deadlift', category: 'Lower Body', primaryMuscle: 'Hamstrings', secondaryMuscles: ['Glutes', 'Lower Back', 'Traps', 'Forearms'] }
         ];
 
         // Application State
@@ -620,7 +893,9 @@
         let currentChartMode = 'combined'; // 'combined', '1rm', or 'volume'
         let analyticsDatePreset = '12m';   // '12w', '12m', 'all', or 'custom'
         let analyticsInterval = 'weekly';  // 'weekly' or 'monthly'
+        let statusDatePreset = '1m';       // '1m', '3m', '6m', '12m', 'all', or 'custom'
         let progressionChartInstance = null;
+        let selectedDiagramMuscle = null;
 
         // Rest Timer State
         let timerDefaultSeconds = 90;
@@ -640,10 +915,15 @@
             document.getElementById('log-date').value = todayStr;
 
             populateExerciseSelect();
+            setStatusDatePreset('1m', false);
             setAnalyticsDatePreset('12m', false);
             onDateOrExerciseChange();
             updateBodyweightUI();
             updateStorageSummary();
+
+            // Render Status page first on startup
+            renderStatusPage();
+            switchTab('status');
         });
 
         function getLocalTodayDateString() {
@@ -653,7 +933,6 @@
         }
 
         function setupPWAManifest() {
-            // Embeds a valid Web App Manifest via Data URI so Samsung Internet / Chrome installs cleanly
             const manifestObj = {
                 name: "IronPulse Workout & PR Tracker",
                 short_name: "IronPulse",
@@ -678,20 +957,41 @@
         /**************************************************************
          * 3. LOCAL STORAGE PERSISTENCE & CORE FORMULAS
          **************************************************************/
+        function normalizeExercisesList(rawList) {
+            if (!Array.isArray(rawList) || rawList.length === 0) {
+                return JSON.parse(JSON.stringify(DEFAULT_EXERCISES));
+            }
+            return rawList.map(ex => {
+                const def = DEFAULT_EXERCISES.find(d => d.name.toLowerCase() === (ex.name || '').toLowerCase());
+                const primaryMuscle = ex.primaryMuscle && MUSCLE_GROUPS.includes(ex.primaryMuscle)
+                    ? ex.primaryMuscle
+                    : (def ? def.primaryMuscle : 'Chest');
+                const secondaryMuscles = Array.isArray(ex.secondaryMuscles)
+                    ? ex.secondaryMuscles.filter(m => MUSCLE_GROUPS.includes(m) && m !== primaryMuscle)
+                    : (def ? [...def.secondaryMuscles] : []);
+                return {
+                    name: ex.name,
+                    category: ex.category || (def ? def.category : 'Custom'),
+                    primaryMuscle,
+                    secondaryMuscles
+                };
+            });
+        }
+
         function loadFromLocalStorage() {
             try {
                 const rawLogs = localStorage.getItem(STORAGE_LOGS_KEY);
                 workoutLogs = rawLogs ? JSON.parse(rawLogs) : [];
 
-                const rawEx = localStorage.getItem(STORAGE_EXERCISES_KEY);
-                exercises = rawEx ? JSON.parse(rawEx) : [...DEFAULT_EXERCISES];
+                const rawEx = localStorage.getItem(STORAGE_EXERCISES_KEY) || localStorage.getItem('ironpulse_exercises_v2');
+                exercises = rawEx ? normalizeExercisesList(JSON.parse(rawEx)) : JSON.parse(JSON.stringify(DEFAULT_EXERCISES));
 
                 const rawBw = localStorage.getItem(STORAGE_BW_KEY);
                 bodyweightLogs = rawBw ? JSON.parse(rawBw) : [];
             } catch (e) {
                 console.error('Error reading localStorage:', e);
                 workoutLogs = [];
-                exercises = [...DEFAULT_EXERCISES];
+                exercises = JSON.parse(JSON.stringify(DEFAULT_EXERCISES));
                 bodyweightLogs = [];
             }
         }
@@ -705,6 +1005,356 @@
             } catch (e) {
                 showToast('Storage error: Check browser quota', true);
             }
+        }
+
+        /**************************************************************
+         * 3B. MUSCLE STATUS PAGE, FRACTIONAL VOLUME & CONFIG TABLE
+         **************************************************************/
+        function setStatusDatePreset(preset, shouldRender = true) {
+            statusDatePreset = preset;
+            const today = new Date();
+            const endStr = formatLocalDate(today);
+            let startStr = '';
+
+            if (preset === '1m') {
+                const start = new Date(today.getTime() - 30 * 86400000);
+                startStr = formatLocalDate(start);
+            } else if (preset === '3m') {
+                const start = new Date(today.getTime() - 90 * 86400000);
+                startStr = formatLocalDate(start);
+            } else if (preset === '6m') {
+                const start = new Date(today.getTime() - 180 * 86400000);
+                startStr = formatLocalDate(start);
+            } else if (preset === '12m') {
+                const start = new Date(today.getTime() - 365 * 86400000);
+                startStr = formatLocalDate(start);
+            } else if (preset === 'all') {
+                const allDates = [
+                    ...workoutLogs.map(s => s.date),
+                    ...bodyweightLogs.map(b => b.date)
+                ];
+                if (allDates.length > 0) {
+                    const earliest = allDates.reduce((min, d) => d < min ? d : min, allDates[0]);
+                    startStr = earliest;
+                } else {
+                    const start = new Date(today.getTime() - 30 * 86400000);
+                    startStr = formatLocalDate(start);
+                }
+            }
+
+            const startEl = document.getElementById('status-start-date');
+            const endEl = document.getElementById('status-end-date');
+            if (startEl) startEl.value = startStr;
+            if (endEl) endEl.value = endStr;
+
+            updateStatusDatePresetButtonsUI();
+            if (shouldRender) renderStatusPage();
+        }
+
+        function onCustomStatusDateChange() {
+            statusDatePreset = 'custom';
+            updateStatusDatePresetButtonsUI();
+            renderStatusPage();
+        }
+
+        function updateStatusDatePresetButtonsUI() {
+            const presets = ['1m', '3m', '6m', '12m', 'all'];
+            presets.forEach(p => {
+                const btn = document.getElementById(`status-range-btn-${p}`);
+                if (!btn) return;
+                if (statusDatePreset === p) {
+                    btn.className = 'px-2 py-1 rounded-lg text-[11px] font-bold bg-brand-500 text-surface-950 transition';
+                } else {
+                    btn.className = 'px-2 py-1 rounded-lg text-[11px] font-bold text-gray-400 hover:text-white transition';
+                }
+            });
+        }
+
+        function getMuscleHeatStyle(weeklyAvgSets) {
+            if (weeklyAvgSets <= 0) {
+                return { fill: '#374151', textClass: 'text-gray-400', badgeBg: 'bg-gray-800/80 border-gray-700', label: 'Untrained' };
+            }
+            if (weeklyAvgSets < 4) {
+                return { fill: '#0ea5e9', textClass: 'text-sky-400', badgeBg: 'bg-sky-500/15 border-sky-500/30', label: 'Maintenance' };
+            }
+            if (weeklyAvgSets < 10) {
+                return { fill: '#10b981', textClass: 'text-emerald-400', badgeBg: 'bg-emerald-500/15 border-emerald-500/30', label: 'Optimal' };
+            }
+            if (weeklyAvgSets < 16) {
+                return { fill: '#f59e0b', textClass: 'text-amber-400', badgeBg: 'bg-amber-500/15 border-amber-500/30', label: 'High Growth' };
+            }
+            return { fill: '#f43f5e', textClass: 'text-rose-400', badgeBg: 'bg-rose-500/15 border-rose-500/30', label: 'Peak Load' };
+        }
+
+        function calculateMuscleVolumeForPeriod() {
+            if (statusDatePreset === 'all') {
+                const allDates = [
+                    ...workoutLogs.map(s => s.date),
+                    ...bodyweightLogs.map(b => b.date)
+                ];
+                if (allDates.length > 0) {
+                    const earliest = allDates.reduce((min, d) => d < min ? d : min, allDates[0]);
+                    const startInput = document.getElementById('status-start-date');
+                    if (startInput) startInput.value = earliest;
+                }
+            }
+
+            const todayStr = getLocalTodayDateString();
+            const startInputVal = (document.getElementById('status-start-date') && document.getElementById('status-start-date').value) || todayStr;
+            const endInputVal = (document.getElementById('status-end-date') && document.getElementById('status-end-date').value) || todayStr;
+
+            const startDateStr = startInputVal <= endInputVal ? startInputVal : endInputVal;
+            const endDateStr = endInputVal >= startInputVal ? endInputVal : startInputVal;
+
+            const [sy, sm, sd] = startDateStr.split('-').map(Number);
+            const [ey, em, ed] = endDateStr.split('-').map(Number);
+            const startObj = new Date(sy, sm - 1, sd);
+            const endObj = new Date(ey, em - 1, ed);
+
+            const diffDays = Math.max(1, Math.round((endObj.getTime() - startObj.getTime()) / 86400000));
+            const weeksInPeriod = Math.max(1 / 7, diffDays / 7);
+
+            const statsByMuscle = {};
+            MUSCLE_GROUPS.forEach(m => {
+                statsByMuscle[m] = {
+                    primarySets: 0,
+                    secondarySets: 0,
+                    fractionalTotal: 0,
+                    weeklyAvg: 0
+                };
+            });
+
+            const exMap = {};
+            exercises.forEach(ex => {
+                exMap[ex.name] = ex;
+            });
+
+            const periodLogs = workoutLogs.filter(s => s.date >= startDateStr && s.date <= endDateStr);
+
+            periodLogs.forEach(s => {
+                const exConfig = exMap[s.exercise];
+                if (!exConfig) return;
+
+                const pMuscle = exConfig.primaryMuscle;
+                if (pMuscle && statsByMuscle[pMuscle]) {
+                    statsByMuscle[pMuscle].primarySets += 1;
+                    statsByMuscle[pMuscle].fractionalTotal += 1.0;
+                }
+
+                if (Array.isArray(exConfig.secondaryMuscles)) {
+                    exConfig.secondaryMuscles.forEach(secM => {
+                        if (secM !== pMuscle && statsByMuscle[secM]) {
+                            statsByMuscle[secM].secondarySets += 1;
+                            statsByMuscle[secM].fractionalTotal += 0.5;
+                        }
+                    });
+                }
+            });
+
+            MUSCLE_GROUPS.forEach(m => {
+                statsByMuscle[m].weeklyAvg = +(statsByMuscle[m].fractionalTotal / weeksInPeriod).toFixed(1);
+            });
+
+            const presetLabels = {
+                '1m': '1-Month Muscle Status',
+                '3m': '3-Month Muscle Status',
+                '6m': '6-Month Muscle Status',
+                '12m': '12-Month Muscle Status',
+                'all': 'All-Time Muscle Status',
+                'custom': 'Custom Range Muscle Status'
+            };
+
+            return {
+                statsByMuscle,
+                rawSetCount: periodLogs.length,
+                weeksInPeriod: +weeksInPeriod.toFixed(1),
+                startDateStr,
+                endDateStr,
+                headingLabel: presetLabels[statusDatePreset] || 'Muscle Status'
+            };
+        }
+
+        function renderStatusPage() {
+            const {
+                statsByMuscle,
+                rawSetCount,
+                weeksInPeriod,
+                startDateStr,
+                endDateStr,
+                headingLabel
+            } = calculateMuscleVolumeForPeriod();
+
+            const headingEl = document.getElementById('status-period-heading');
+            if (headingEl) headingEl.textContent = headingLabel;
+
+            const subtitleEl = document.getElementById('status-period-subtitle');
+            if (subtitleEl) {
+                subtitleEl.textContent = `Avg weekly fractional sets (${startDateStr} to ${endDateStr} • /${weeksInPeriod} wks)`;
+            }
+
+            const rawSetsEl = document.getElementById('status-30d-raw-sets');
+            if (rawSetsEl) {
+                rawSetsEl.textContent = `${rawSetCount} logged ${rawSetCount === 1 ? 'set' : 'sets'}`;
+            }
+
+            // Color all SVG muscle groups
+            MUSCLE_GROUPS.forEach(muscleName => {
+                const mStats = statsByMuscle[muscleName];
+                const style = getMuscleHeatStyle(mStats.weeklyAvg);
+                const svgGroups = document.querySelectorAll(`g[data-muscle="${muscleName}"]`);
+                svgGroups.forEach(g => {
+                    const shapes = g.querySelectorAll('path, rect, polygon, circle');
+                    shapes.forEach(shape => {
+                        shape.setAttribute('fill', style.fill);
+                        if (selectedDiagramMuscle === muscleName) {
+                            shape.setAttribute('stroke', '#ffffff');
+                            shape.setAttribute('stroke-width', '2.5');
+                        } else {
+                            shape.setAttribute('stroke', '#090d16');
+                            shape.setAttribute('stroke-width', '1.5');
+                        }
+                    });
+                });
+            });
+
+            // Update Inspector Banner if a muscle is selected
+            const nameEl = document.getElementById('inspected-muscle-name');
+            const detailEl = document.getElementById('inspected-muscle-stats');
+            if (selectedDiagramMuscle && statsByMuscle[selectedDiagramMuscle]) {
+                const st = statsByMuscle[selectedDiagramMuscle];
+                nameEl.textContent = selectedDiagramMuscle;
+                detailEl.textContent = `${st.weeklyAvg} sets/wk (${st.fractionalTotal} total: ${st.primarySets}P + ${st.secondarySets}S)`;
+            } else {
+                nameEl.textContent = 'Tap any muscle on body map';
+                detailEl.textContent = '1.0 Primary • 0.5 Secondary';
+            }
+
+            // Render Muscle Volume Breakdown Grid sorted by weekly average descending
+            const gridContainer = document.getElementById('muscle-volume-grid');
+            if (gridContainer) {
+                const sortedMuscles = [...MUSCLE_GROUPS].sort((a, b) => statsByMuscle[b].weeklyAvg - statsByMuscle[a].weeklyAvg);
+                gridContainer.innerHTML = sortedMuscles.map(m => {
+                    const st = statsByMuscle[m];
+                    const style = getMuscleHeatStyle(st.weeklyAvg);
+                    const isSelected = selectedDiagramMuscle === m;
+                    return `
+                        <button onclick="selectMuscleOnDiagram('${m}')" class="text-left p-2.5 rounded-xl bg-surface-950 border ${isSelected ? 'border-white' : 'border-gray-800/90'} hover:border-gray-700 transition flex flex-col justify-between">
+                            <div class="flex items-center justify-between w-full gap-1">
+                                <span class="text-xs font-bold text-white truncate">${m}</span>
+                                <span class="w-2.5 h-2.5 rounded-full shrink-0" style="background-color: ${style.fill}"></span>
+                            </div>
+                            <div class="mt-1.5 flex items-baseline justify-between w-full">
+                                <span class="font-mono text-sm font-extrabold ${style.textClass}">${st.weeklyAvg}<span class="text-[10px] font-normal text-gray-400">/wk</span></span>
+                                <span class="font-mono text-[10px] text-gray-400">${st.fractionalTotal} sets</span>
+                            </div>
+                            <div class="mt-0.5 text-[10px] text-gray-500 font-mono">
+                                ${st.primarySets} pri • ${st.secondarySets} sec
+                            </div>
+                        </button>
+                    `;
+                }).join('');
+            }
+
+            renderExerciseMuscleConfigTable();
+        }
+
+        function selectMuscleOnDiagram(muscleName) {
+            selectedDiagramMuscle = (selectedDiagramMuscle === muscleName) ? null : muscleName;
+            renderStatusPage();
+        }
+
+        function renderExerciseMuscleConfigTable() {
+            const container = document.getElementById('exercise-muscle-config-list');
+            if (!container) return;
+
+            container.innerHTML = exercises.map((ex, exIdx) => {
+                const primaryOptions = MUSCLE_GROUPS.map(m =>
+                    `<option value="${m}" ${ex.primaryMuscle === m ? 'selected' : ''}>${m}</option>`
+                ).join('');
+
+                const secondaryPills = MUSCLE_GROUPS.map(m => {
+                    const isPrimary = ex.primaryMuscle === m;
+                    const isSelected = Array.isArray(ex.secondaryMuscles) && ex.secondaryMuscles.includes(m);
+                    if (isPrimary) {
+                        return `<span class="px-2 py-0.5 rounded-lg bg-surface-900 border border-gray-800 text-[10px] text-gray-600 cursor-not-allowed" title="Already selected as Primary muscle">${m} (Pri)</span>`;
+                    }
+                    return `
+                        <button type="button" onclick="toggleExerciseSecondaryMuscle(${exIdx}, '${m}')" class="px-2 py-0.5 rounded-lg border text-[10px] font-semibold transition ${
+                            isSelected
+                                ? 'bg-brand-500/20 border-brand-500/50 text-brand-300'
+                                : 'bg-surface-900 border-gray-800 text-gray-400 hover:text-gray-200'
+                        }">
+                            ${isSelected ? '<i class="fa-solid fa-check mr-0.5 text-[9px]"></i>' : '+ '}${m}
+                        </button>
+                    `;
+                }).join('');
+
+                return `
+                    <div class="bg-surface-950 border border-gray-800/90 rounded-xl p-3 space-y-2.5">
+                        <div class="flex flex-wrap items-center justify-between gap-2">
+                            <div>
+                                <span class="text-xs font-extrabold text-white">${escapeHtml(ex.name)}</span>
+                                <span class="block text-[10px] text-gray-400">${escapeHtml(ex.category || 'Custom')}</span>
+                            </div>
+                            <div class="flex items-center gap-1.5">
+                                <label class="text-[10px] font-bold uppercase text-brand-400">Primary (1.0):</label>
+                                <select onchange="updateExercisePrimaryMuscle(${exIdx}, this.value)" class="bg-surface-900 border border-gray-700 rounded-lg px-2 py-1 text-xs font-bold text-white focus:outline-none focus:border-brand-500">
+                                    ${primaryOptions}
+                                </select>
+                            </div>
+                        </div>
+                        <div>
+                            <span class="block text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-1">Secondary Muscles (0.5 sets each — tap to toggle):</span>
+                            <div class="flex flex-wrap gap-1">
+                                ${secondaryPills}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function updateExercisePrimaryMuscle(exIndex, newPrimary) {
+            if (!exercises[exIndex]) return;
+            exercises[exIndex].primaryMuscle = newPrimary;
+            if (Array.isArray(exercises[exIndex].secondaryMuscles)) {
+                exercises[exIndex].secondaryMuscles = exercises[exIndex].secondaryMuscles.filter(m => m !== newPrimary);
+            }
+            saveToLocalStorage();
+            renderStatusPage();
+            showToast(`Updated ${exercises[exIndex].name} primary muscle`);
+        }
+
+        function toggleExerciseSecondaryMuscle(exIndex, muscleName) {
+            const ex = exercises[exIndex];
+            if (!ex || ex.primaryMuscle === muscleName) return;
+            if (!Array.isArray(ex.secondaryMuscles)) ex.secondaryMuscles = [];
+
+            const idx = ex.secondaryMuscles.indexOf(muscleName);
+            if (idx === -1) {
+                ex.secondaryMuscles.push(muscleName);
+            } else {
+                ex.secondaryMuscles.splice(idx, 1);
+            }
+            saveToLocalStorage();
+            renderStatusPage();
+        }
+
+        function resetMuscleMappingsToDefault() {
+            exercises = exercises.map(ex => {
+                const def = DEFAULT_EXERCISES.find(d => d.name.toLowerCase() === ex.name.toLowerCase());
+                if (def) {
+                    return {
+                        ...ex,
+                        primaryMuscle: def.primaryMuscle,
+                        secondaryMuscles: [...def.secondaryMuscles]
+                    };
+                }
+                return ex;
+            });
+            saveToLocalStorage();
+            renderStatusPage();
+            showToast('Default muscle mappings restored');
         }
 
         // Epley Formula: Weight * (1 + Reps / 30)
@@ -783,7 +1433,16 @@
 
             const exists = exercises.some(e => e.name.toLowerCase() === nameInput.toLowerCase());
             if (!exists) {
-                exercises.push({ name: nameInput, category: catInput });
+                let defaultPrimary = 'Chest';
+                if (catInput === 'Upper / Pull & Arms') defaultPrimary = 'Lats';
+                else if (catInput === 'Lower Body') defaultPrimary = 'Quads';
+
+                exercises.push({
+                    name: nameInput,
+                    category: catInput,
+                    primaryMuscle: defaultPrimary,
+                    secondaryMuscles: []
+                });
                 saveToLocalStorage();
             }
 
@@ -791,7 +1450,8 @@
             populateExerciseSelect(nameInput);
             closeCustomExerciseModal();
             onDateOrExerciseChange();
-            showToast(`Added "${nameInput}"`);
+            renderStatusPage();
+            showToast(`Added "${nameInput}" (configure muscles on Status tab)`);
         }
 
         /**************************************************************
@@ -834,7 +1494,6 @@
                 return;
             }
 
-            // Update existing entry if already logged on the exact same date, otherwise add new
             const existingIdx = bodyweightLogs.findIndex(b => b.date === dateStr);
             if (existingIdx !== -1) {
                 bodyweightLogs[existingIdx].weight = +bwVal.toFixed(1);
@@ -916,7 +1575,6 @@
                 if (s.volume > maxVolume) maxVolume = s.volume;
             });
 
-            // Sort by timestamp descending to get the most recent set
             const sorted = [...sets].sort((a, b) => b.timestamp - a.timestamp);
             return {
                 hasHistory: true,
@@ -971,7 +1629,6 @@
             document.getElementById('live-volume').textContent = `${volume.toLocaleString()} kg`;
             document.getElementById('live-1rm').textContent = `${e1rm} kg`;
 
-            // Check if this set breaks a PR for the chosen exercise
             const records = getExerciseRecords(exerciseName);
             const prBadge = document.getElementById('live-pr-badge');
             const prText = document.getElementById('live-pr-text');
@@ -1010,7 +1667,6 @@
             const volume = calculateSetVolume(weight, reps);
             const e1rm = calculateEpley1RM(weight, reps);
 
-            // Detect PR before saving
             const records = getExerciseRecords(exerciseName);
             let isPR = false;
             let prType = '';
@@ -1036,17 +1692,15 @@
             workoutLogs.push(newSet);
             saveToLocalStorage();
 
-            // Clear note field & refresh UI
             document.getElementById('input-notes').value = '';
             onDateOrExerciseChange();
+            renderStatusPage();
 
-            // Trigger Rest Timer if Auto-Timer is enabled
             if (document.getElementById('auto-rest-toggle').checked) {
                 resetTimer();
                 startPauseTimer(true);
             }
 
-            // Haptic feedback on Android/Samsung if supported
             if (navigator.vibrate) {
                 navigator.vibrate(isPR ? [80, 50, 120] : 40);
             }
@@ -1058,6 +1712,9 @@
             workoutLogs = workoutLogs.filter(s => s.id !== setId);
             saveToLocalStorage();
             onDateOrExerciseChange();
+            if (!document.getElementById('tab-status').classList.contains('hidden')) {
+                renderStatusPage();
+            }
             if (!document.getElementById('tab-history').classList.contains('hidden')) {
                 renderHistoryList();
             }
@@ -1089,7 +1746,6 @@
                 return;
             }
 
-            // Group sets by exercise in order of appearance
             const grouped = {};
             sessionSets.forEach(s => {
                 if (!grouped[s.exercise]) grouped[s.exercise] = [];
@@ -1203,7 +1859,6 @@
             if (navigator.vibrate) {
                 navigator.vibrate([200, 100, 200, 100, 300]);
             }
-            // Synthesize clean Web Audio API beep (no external MP3 required)
             try {
                 const ctx = new (window.AudioContext || window.webkitAudioContext)();
                 [0, 0.22, 0.44].forEach(delay => {
@@ -1332,10 +1987,9 @@
             renderAnalytics();
         }
 
-        // Returns ISO Monday YYYY-MM-DD for Weekly or YYYY-MM for Monthly
         function getIntervalBucketKey(dateStr, intervalType) {
             if (intervalType === 'monthly') {
-                return dateStr.slice(0, 7); // YYYY-MM
+                return dateStr.slice(0, 7);
             }
             const [y, m, d] = dateStr.split('-').map(Number);
             const dt = new Date(y, m - 1, d);
@@ -1351,7 +2005,6 @@
                 const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
                 return `${months[parseInt(m, 10) - 1]} '${y.slice(2)}`;
             }
-            // Weekly: MM/DD
             return bucketKey.slice(5).replace('-', '/');
         }
 
@@ -1371,7 +2024,6 @@
             const startDate = document.getElementById('analytics-start-date').value || '1970-01-01';
             const endDate = document.getElementById('analytics-end-date').value || '2099-12-31';
 
-            // Filter by exercise and date range
             const exerciseLogsAllTime = (selectedEx === 'ALL')
                 ? workoutLogs
                 : workoutLogs.filter(s => s.exercise === selectedEx);
@@ -1381,7 +2033,6 @@
                 .filter(b => b.date >= startDate && b.date <= endDate)
                 .sort((a, b) => a.date.localeCompare(b.date) || a.timestamp - b.timestamp);
 
-            // Establish baseline e1RM for each exercise within the selected window (or earliest recorded set)
             const baselineByEx = {};
             const sortedWindowLogs = [...filteredLogs].sort((a, b) => a.date.localeCompare(b.date) || a.timestamp - b.timestamp);
             sortedWindowLogs.forEach(s => {
@@ -1395,7 +2046,6 @@
                 }
             });
 
-            // Group filtered workout logs and bodyweight logs into Weekly or Monthly buckets
             const buckets = {};
             const ensureBucket = (key) => {
                 if (!buckets[key]) {
@@ -1434,7 +2084,6 @@
 
             const sortedKeys = Object.keys(buckets).sort();
 
-            // Determine baseline bodyweight in the first bucket that has a bodyweight entry
             let baselineBw = null;
             sortedKeys.forEach(k => {
                 const b = buckets[k];
@@ -1449,7 +2098,6 @@
                 }
             });
 
-            // Calculate average % improvement per bucket across all exercises performed in that bucket
             sortedKeys.forEach(k => {
                 const b = buckets[k];
                 const exNames = Object.keys(b.exercisesMax1RM);
@@ -1468,7 +2116,6 @@
                 }
             });
 
-            // Update Bodyweight Range Summary Card
             const bwCurrEl = document.getElementById('stat-bw-current');
             const bwChangeEl = document.getElementById('stat-bw-change');
             if (filteredBwLogs.length > 0) {
@@ -1484,7 +2131,6 @@
                 bwChangeEl.textContent = '—';
             }
 
-            // Update 4 Summary Metric Cards
             const c1Label = document.getElementById('stat-card1-label');
             const c2Label = document.getElementById('stat-card2-label');
             const c3Label = document.getElementById('stat-card3-label');
@@ -1508,7 +2154,6 @@
                 let totalVol = 0;
                 filteredLogs.forEach(s => { totalVol += s.volume; });
 
-                // Peak interval volume
                 let peakBucketKey = sortedKeys[0];
                 sortedKeys.forEach(k => {
                     if (buckets[k].volume > buckets[peakBucketKey].volume) peakBucketKey = k;
@@ -1583,7 +2228,6 @@
             };
 
             if (currentChartMode === 'combined') {
-                // Mode 1: Progression + Volume
                 if (selectedEx === 'ALL') {
                     titleEl.textContent = `Global Overview: Avg % Gain & ${intervalLabel} Volume`;
                     subEl.textContent = `Avg % e1RM improvement across active lifts & ${intervalLabel.toLowerCase()} volume`;
@@ -1667,7 +2311,6 @@
                 };
 
             } else if (currentChartMode === '1rm') {
-                // Mode 2: Avg % Gain (or Lift % / 1RM) paired with Bodyweight % Change
                 if (selectedEx === 'ALL') {
                     titleEl.textContent = `Avg % Strength Gain vs. Bodyweight % Change`;
                     subEl.textContent = `Comparing ${intervalLabel.toLowerCase()} relative strength gain against bodyweight % change`;
@@ -1706,7 +2349,6 @@
                     });
                 }
 
-                // Pair with Bodyweight % Change line
                 datasets.push({
                     type: 'line',
                     label: 'Bodyweight (% Change)',
@@ -1736,7 +2378,6 @@
                 };
 
             } else if (currentChartMode === 'volume') {
-                // Mode 3: Volume Only tab paired with Bodyweight as an Absolute Value (kg)
                 titleEl.textContent = `${intervalLabel} Training Volume & Bodyweight (kg)`;
                 subEl.textContent = `${intervalLabel} volume bars paired with absolute bodyweight (kg)`;
 
@@ -1866,7 +2507,6 @@
          * 8. HISTORY ARCHIVE & DATA EXPORT / IMPORT / DEMO DATA
          **************************************************************/
         function renderHistoryList() {
-            // Render Bodyweight History list first
             const bwContainer = document.getElementById('bw-history-container');
             const bwCountEl = document.getElementById('bw-history-count');
             if (bwContainer && bwCountEl) {
@@ -1903,7 +2543,6 @@
                 return;
             }
 
-            // Group by Date descending
             const byDate = {};
             filtered.forEach(s => {
                 if (!byDate[s.date]) byDate[s.date] = [];
@@ -1966,24 +2605,31 @@
         }
 
         function exportDataCSV() {
-            if (workoutLogs.length === 0 && bodyweightLogs.length === 0) {
+            if (workoutLogs.length === 0 && bodyweightLogs.length === 0 && exercises.length === 0) {
                 showToast('No data to export', true);
                 return;
             }
-            const headers = ['record_type', 'id', 'date', 'exercise', 'category', 'weight_kg', 'reps', 'volume_kg', 'estimated_1rm_kg', 'bodyweight_kg', 'notes'];
-            const setRows = workoutLogs.map(s => [
-                'WORKOUT_SET',
-                s.id,
-                s.date,
-                `"${(s.exercise || '').replace(/"/g, '""')}"`,
-                `"${(s.category || '').replace(/"/g, '""')}"`,
-                s.weight,
-                s.reps,
-                s.volume,
-                s.e1rm,
-                '',
-                `"${(s.notes || '').replace(/"/g, '""')}"`
-            ].join(','));
+            const headers = ['record_type', 'id', 'date', 'exercise', 'category', 'weight_kg', 'reps', 'volume_kg', 'estimated_1rm_kg', 'bodyweight_kg', 'primary_muscle', 'secondary_muscles', 'notes'];
+            const setRows = workoutLogs.map(s => {
+                const exObj = exercises.find(e => e.name === s.exercise);
+                const priM = exObj ? (exObj.primaryMuscle || '') : '';
+                const secM = exObj && Array.isArray(exObj.secondaryMuscles) ? exObj.secondaryMuscles.join(';') : '';
+                return [
+                    'WORKOUT_SET',
+                    s.id,
+                    s.date,
+                    `"${(s.exercise || '').replace(/"/g, '""')}"`,
+                    `"${(s.category || '').replace(/"/g, '""')}"`,
+                    s.weight,
+                    s.reps,
+                    s.volume,
+                    s.e1rm,
+                    '',
+                    `"${priM}"`,
+                    `"${secM}"`,
+                    `"${(s.notes || '').replace(/"/g, '""')}"`
+                ].join(',');
+            });
 
             const bwRows = bodyweightLogs.map(b => [
                 'BODYWEIGHT',
@@ -1996,10 +2642,28 @@
                 '',
                 '',
                 b.weight,
+                '',
+                '',
                 ''
             ].join(','));
 
-            const csvContent = [headers.join(','), ...setRows, ...bwRows].join('\n');
+            const configRows = exercises.map((ex, i) => [
+                'EXERCISE_CONFIG',
+                `ex_${i + 1}`,
+                '',
+                `"${(ex.name || '').replace(/"/g, '""')}"`,
+                `"${(ex.category || '').replace(/"/g, '""')}"`,
+                '',
+                '',
+                '',
+                '',
+                '',
+                `"${ex.primaryMuscle || ''}"`,
+                `"${Array.isArray(ex.secondaryMuscles) ? ex.secondaryMuscles.join(';') : ''}"`,
+                ''
+            ].join(','));
+
+            const csvContent = [headers.join(','), ...setRows, ...bwRows, ...configRows].join('\n');
             const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -2021,7 +2685,7 @@
                     if (Array.isArray(parsed.workoutLogs)) {
                         workoutLogs = parsed.workoutLogs;
                         if (Array.isArray(parsed.exercises)) {
-                            exercises = parsed.exercises;
+                            exercises = normalizeExercisesList(parsed.exercises);
                         }
                         if (Array.isArray(parsed.bodyweightLogs)) {
                             bodyweightLogs = parsed.bodyweightLogs;
@@ -2029,8 +2693,9 @@
                         saveToLocalStorage();
                         populateExerciseSelect();
                         onDateOrExerciseChange();
+                        renderStatusPage();
                         renderHistoryList();
-                        showToast(`Imported ${workoutLogs.length} sets & ${bodyweightLogs.length} weigh-ins!`);
+                        showToast(`Imported ${workoutLogs.length} sets, ${exercises.length} exercise configs & ${bodyweightLogs.length} weigh-ins!`);
                     } else {
                         showToast('Invalid JSON backup format', true);
                     }
@@ -2042,105 +2707,168 @@
         }
 
         function loadDemoWorkoutData() {
-            // Generates 10 months of progressive multi-lift history + bodyweight logs
+            // Clear prior demo sets and demo weigh-ins so reloading is clean
+            workoutLogs = workoutLogs.filter(s => !String(s.id).startsWith('demo_'));
+            bodyweightLogs = bodyweightLogs.filter(b => !String(b.id).startsWith('demo_bw_'));
+
             const today = new Date();
-            const weeksBack = [40, 36, 32, 28, 24, 20, 16, 12, 10, 8, 6, 4, 2, 1, 0];
+            today.setHours(12, 0, 0, 0);
 
-            weeksBack.forEach((wk, idx) => {
-                const progressFactor = idx / (weeksBack.length - 1); // 0.0 -> 1.0 progressive overload
+            // Anchor to Monday of the current week
+            const currentDay = today.getDay(); // 0=Sun, 1=Mon, ..., 6=Sat
+            const diffToMon = (currentDay === 0 ? -6 : 1) - currentDay;
+            const currentWeekMonday = new Date(today);
+            currentWeekMonday.setDate(today.getDate() + diffToMon);
 
-                // Session A (Upper Push & Pull)
-                const d1 = new Date(today.getTime() - (wk * 7 + 2) * 86400000);
-                const dateStr1 = formatLocalDate(d1);
+            const totalWeeks = 78; // 18 months of weekly training
+            const roundToStep = (val, step) => +(Math.round(val / step) * step).toFixed(1);
 
-                // Log progressive bodyweight check-in (e.g., 81.5 kg -> 85.2 kg lean bulk)
-                const bwVal = +(81.5 + progressFactor * 3.7 + (Math.sin(idx) * 0.25)).toFixed(1);
-                const existingBwIdx = bodyweightLogs.findIndex(b => b.date === dateStr1);
-                if (existingBwIdx === -1) {
-                    bodyweightLogs.push({
-                        id: `demo_bw_${Date.now()}_${idx}`,
-                        timestamp: d1.getTime(),
-                        date: dateStr1,
-                        weight: bwVal
-                    });
+            // Weekly Program Template (Tuesday through Saturday)
+            // offsets from Monday: Tue=+1, Wed=+2, Thu=+3, Fri=+4, Sat=+5
+            const weeklyProgram = [
+                {
+                    dayOffset: 1, // Tuesday (14 Total Sets)
+                    blocks: [
+                        { ex: 'DB Shoulder Press', cat: 'Upper / Push', sets: 3, startW: 20, gainW: 8, step: 1, baseR: 9, note: 'Standard' },
+                        { ex: 'Row', cat: 'Upper / Pull & Arms', sets: 3, startW: 60, gainW: 22.5, step: 2.5, baseR: 9, note: 'Controlled' },
+                        { ex: 'Lateral Raise', cat: 'Upper / Push', sets: 3, startW: 8, gainW: 4, step: 0.5, baseR: 14, note: 'Light' },
+                        { ex: 'Bicep Curl', cat: 'Upper / Pull & Arms', sets: 3, startW: 12, gainW: 4.5, step: 0.5, baseR: 12, note: 'Light' },
+                        { ex: 'Romainian Deadlift', cat: 'Lower Body', sets: 2, startW: 80, gainW: 32.5, step: 2.5, baseR: 8, note: 'Hamstring focus' }
+                    ]
+                },
+                {
+                    dayOffset: 2, // Wednesday (13 Total Sets)
+                    blocks: [
+                        { ex: 'DB Incline BenchPress', cat: 'Upper / Push', sets: 3, startW: 24, gainW: 10, step: 1, baseR: 9, note: 'Full ROM' },
+                        { ex: 'Pull-up', cat: 'Upper / Pull & Arms', sets: 2, startW: 5, gainW: 15, step: 1.25, baseR: 8, note: 'Weighted' },
+                        { ex: 'Lateral Raise', cat: 'Upper / Push', sets: 3, startW: 8, gainW: 4, step: 0.5, baseR: 14, note: 'Light' },
+                        { ex: 'Tricep Extension', cat: 'Upper / Pull & Arms', sets: 3, startW: 20, gainW: 9, step: 1, baseR: 13, note: 'Light' },
+                        { ex: 'Romainian Deadlift', cat: 'Lower Body', sets: 2, startW: 80, gainW: 32.5, step: 2.5, baseR: 8, note: 'Controlled eccentric' }
+                    ]
+                },
+                {
+                    dayOffset: 3, // Thursday (14 Total Sets)
+                    blocks: [
+                        { ex: 'DB Shoulder Press', cat: 'Upper / Push', sets: 3, startW: 22, gainW: 9, step: 1, baseR: 7, note: 'Heavy' },
+                        { ex: 'Bicep Curl', cat: 'Upper / Pull & Arms', sets: 3, startW: 14, gainW: 6, step: 0.5, baseR: 8, note: 'Heavy' },
+                        { ex: 'Lateral Raise', cat: 'Upper / Push', sets: 3, startW: 10, gainW: 4.5, step: 0.5, baseR: 11, note: 'Moderate' },
+                        { ex: 'Row', cat: 'Upper / Pull & Arms', sets: 3, startW: 62.5, gainW: 22.5, step: 2.5, baseR: 8, note: 'Strict' },
+                        { ex: 'Romainian Deadlift', cat: 'Lower Body', sets: 2, startW: 82.5, gainW: 32.5, step: 2.5, baseR: 8, note: 'Straps' }
+                    ]
+                },
+                {
+                    dayOffset: 4, // Friday (13 Total Sets)
+                    blocks: [
+                        { ex: 'DB Decline BenchPress', cat: 'Upper / Push', sets: 5, startW: 26, gainW: 11, step: 1, baseR: 9, note: 'Working set' },
+                        { ex: 'Lateral Raise', cat: 'Upper / Push', sets: 3, startW: 12, gainW: 5, step: 0.5, baseR: 9, note: 'Heavy' },
+                        { ex: 'Tricep Extension', cat: 'Upper / Pull & Arms', sets: 3, startW: 25, gainW: 11, step: 1, baseR: 9, note: 'Heavy' },
+                        { ex: 'Romainian Deadlift', cat: 'Lower Body', sets: 2, startW: 82.5, gainW: 32.5, step: 2.5, baseR: 8, note: 'Paused bottom' }
+                    ]
+                },
+                {
+                    dayOffset: 5, // Saturday (15 Total Sets)
+                    blocks: [
+                        { ex: 'Leg Press', cat: 'Lower Body', sets: 5, startW: 140, gainW: 65, step: 5, baseR: 10, note: 'Deep sled' },
+                        { ex: 'Hamstring Curl', cat: 'Lower Body', sets: 5, startW: 45, gainW: 20, step: 2.5, baseR: 11, note: 'Slow eccentric' },
+                        { ex: 'Leg Extension', cat: 'Lower Body', sets: 5, startW: 50, gainW: 25, step: 2.5, baseR: 12, note: 'Top squeeze' }
+                    ]
                 }
+            ];
 
-                const bbIncW = +(65 + Math.round(progressFactor * 20 * 2) / 2).toFixed(1);
-                const dbIncW = +(28 + Math.round(progressFactor * 10 * 2) / 2).toFixed(1);
-                const dbDecW = +(30 + Math.round(progressFactor * 10 * 2) / 2).toFixed(1);
-                const dbShldW = +(24 + Math.round(progressFactor * 8 * 2) / 2).toFixed(1);
-                const pullupW = +(10 + Math.round(progressFactor * 12.5 * 2) / 2).toFixed(1);
-                const rowW = +(70 + Math.round(progressFactor * 22.5 * 2) / 2).toFixed(1);
-                const curlW = +(16 + Math.round(progressFactor * 6 * 2) / 2).toFixed(1);
-                const triW = +(25 + Math.round(progressFactor * 10 * 2) / 2).toFixed(1);
-                const latW = +(12 + Math.round(progressFactor * 4 * 2) / 2).toFixed(1);
+            for (let wIdx = 0; wIdx < totalWeeks; wIdx++) {
+                const weeksBack = (totalWeeks - 1) - wIdx;
+                const progress = wIdx / (totalWeeks - 1); // 0.0 -> 1.0 over 18 months
 
-                const sessionASets = [
-                    { ex: 'BB Incline BenchPress', cat: 'Upper / Push', w: bbIncW, r: 6, n: 'Working set' },
-                    { ex: 'BB Incline BenchPress', cat: 'Upper / Push', w: +(bbIncW + 2.5).toFixed(1), r: 5, n: 'Top set' },
-                    { ex: 'DB Incline BenchPress', cat: 'Upper / Push', w: dbIncW, r: 8, n: 'Full ROM' },
-                    { ex: 'DB Decline BenchPress', cat: 'Upper / Push', w: dbDecW, r: 8, n: 'Controlled' },
-                    { ex: 'DB Shoulder Press', cat: 'Upper / Push', w: dbShldW, r: 8, n: 'Seated' },
-                    { ex: 'Pull-up', cat: 'Upper / Pull & Arms', w: pullupW, r: 8, n: 'Weighted belt' },
-                    { ex: 'Row', cat: 'Upper / Pull & Arms', w: rowW, r: 8, n: 'Strict pause' },
-                    { ex: 'Bicep Curl', cat: 'Upper / Pull & Arms', w: curlW, r: 10, n: 'Supinated' },
-                    { ex: 'Tricep Extension', cat: 'Upper / Pull & Arms', w: triW, r: 12, n: 'Overhead cable' },
-                    { ex: 'Lateral Raise', cat: 'Upper / Push', w: latW, r: 12, n: 'Strict' }
-                ];
+                // Mesocycle wave + small weekly biological readiness noise
+                const mesoWave = Math.sin(wIdx * 0.48) * 0.025 + Math.cos(wIdx * 0.23) * 0.015;
+                const isDeloadWeek = (wIdx > 0 && wIdx % 9 === 0);
+                const weeklyReadiness = isDeloadWeek
+                    ? -0.045
+                    : (mesoWave + (Math.random() - 0.5) * 0.03);
 
-                sessionASets.forEach((item, sIdx) => {
-                    workoutLogs.push({
-                        id: `demo_A_${Date.now()}_${idx}_${sIdx}`,
-                        timestamp: d1.getTime() + sIdx * 60000,
-                        date: dateStr1,
-                        exercise: item.ex,
-                        category: item.cat,
-                        weight: item.w,
-                        reps: item.r,
-                        notes: item.n,
-                        volume: calculateSetVolume(item.w, item.r),
-                        e1rm: calculateEpley1RM(item.w, item.r)
-                    });
+                const weekMonday = new Date(currentWeekMonday);
+                weekMonday.setDate(currentWeekMonday.getDate() - weeksBack * 7);
+
+                // Log Bodyweight twice a week (Tuesday & Saturday) with slow lean gain + natural fluctuations
+                [1, 5].forEach(bwDayOffset => {
+                    const bwDate = new Date(weekMonday);
+                    bwDate.setDate(weekMonday.getDate() + bwDayOffset);
+                    if (bwDate > today) return;
+
+                    const bwDateStr = formatLocalDate(bwDate);
+                    const baseBw = 79.2 + (progress * 4.4) + Math.sin(wIdx * 0.3) * 0.45 + (Math.random() - 0.5) * 0.4;
+                    const bwVal = +baseBw.toFixed(1);
+
+                    if (!bodyweightLogs.some(b => b.date === bwDateStr)) {
+                        bodyweightLogs.push({
+                            id: `demo_bw_${wIdx}_${bwDayOffset}`,
+                            timestamp: bwDate.getTime(),
+                            date: bwDateStr,
+                            weight: bwVal
+                        });
+                    }
                 });
 
-                // Session B (Lower Body)
-                const d2 = new Date(today.getTime() - (wk * 7) * 86400000);
-                const dateStr2 = formatLocalDate(d2);
+                // Generate Tuesday through Saturday workouts
+                weeklyProgram.forEach((session, dayIdx) => {
+                    const sessionDate = new Date(weekMonday);
+                    sessionDate.setDate(weekMonday.getDate() + session.dayOffset);
+                    if (sessionDate > today) return;
 
-                const legPressW = +(160 + Math.round(progressFactor * 50 * 2) / 2).toFixed(1);
-                const legExtW = +(55 + Math.round(progressFactor * 20 * 2) / 2).toFixed(1);
-                const hamCurlW = +(50 + Math.round(progressFactor * 17.5 * 2) / 2).toFixed(1);
-                const rdlW = +(95 + Math.round(progressFactor * 30 * 2) / 2).toFixed(1);
+                    // Small chance (~4%) of a missed workout day for realistic volume variance
+                    if (wIdx < totalWeeks - 2 && Math.random() < 0.035) return;
 
-                const sessionBSets = [
-                    { ex: 'Leg Press', cat: 'Lower Body', w: legPressW, r: 10, n: 'Deep sled' },
-                    { ex: 'Leg Extension', cat: 'Lower Body', w: legExtW, r: 12, n: 'Top hold' },
-                    { ex: 'Hamstring Curl', cat: 'Lower Body', w: hamCurlW, r: 10, n: 'Slow eccentric' },
-                    { ex: 'Romainian Deadlift', cat: 'Lower Body', w: rdlW, r: 8, n: 'Straps' }
-                ];
+                    const dateStr = formatLocalDate(sessionDate);
+                    let setCounter = 0;
 
-                sessionBSets.forEach((item, sIdx) => {
-                    workoutLogs.push({
-                        id: `demo_B_${Date.now()}_${idx}_${sIdx}`,
-                        timestamp: d2.getTime() + sIdx * 60000,
-                        date: dateStr2,
-                        exercise: item.ex,
-                        category: item.cat,
-                        weight: item.w,
-                        reps: item.r,
-                        notes: item.n,
-                        volume: calculateSetVolume(item.w, item.r),
-                        e1rm: calculateEpley1RM(item.w, item.r)
+                    session.blocks.forEach((block) => {
+                        // Small random set-count fluctuation around target sets
+                        let actualSets = block.sets;
+                        const roll = Math.random();
+                        if (isDeloadWeek && block.sets >= 3) {
+                            actualSets = block.sets - 1;
+                        } else if (roll < 0.10 && block.sets > 2) {
+                            actualSets = block.sets - 1;
+                        } else if (roll > 0.90) {
+                            actualSets = block.sets + 1;
+                        }
+
+                        // Target weight progresses slowly over 18 months with small fluctuations
+                        const rawTargetWeight = block.startW + (block.gainW * progress) + (block.startW * weeklyReadiness);
+                        const workingWeight = Math.max(block.step, roundToStep(rawTargetWeight, block.step));
+
+                        for (let s = 0; s < actualSets; s++) {
+                            setCounter++;
+                            // Slight intra-session fatigue on later sets + random rep fluctuation (-1, 0, +1)
+                            const fatigueDrop = (s >= actualSets - 1 && actualSets >= 3 && Math.random() < 0.45) ? -1 : 0;
+                            const repNoise = Math.floor(Math.random() * 3) - 1; // -1, 0, or +1
+                            const reps = Math.max(5, block.baseR + fatigueDrop + repNoise);
+
+                            workoutLogs.push({
+                                id: `demo_set_${wIdx}_${dayIdx}_${setCounter}_${Math.random().toString(36).substring(2, 5)}`,
+                                timestamp: sessionDate.getTime() + setCounter * 120000,
+                                date: dateStr,
+                                exercise: block.ex,
+                                category: block.cat,
+                                weight: workingWeight,
+                                reps: reps,
+                                notes: isDeloadWeek ? `${block.note} (Deload)` : block.note,
+                                volume: calculateSetVolume(workingWeight, reps),
+                                e1rm: calculateEpley1RM(workingWeight, reps)
+                            });
+                        }
                     });
                 });
-            });
+            }
 
             saveToLocalStorage();
-            setAnalyticsDatePreset('12m', false);
+            setStatusDatePreset(statusDatePreset, false);
+            setAnalyticsDatePreset('all', false);
             onDateOrExerciseChange();
+            renderStatusPage();
             renderHistoryList();
-            showToast('Loaded 10 months of demo lifts & bodyweight data!');
-            switchTab('analytics');
+            showToast(`Loaded 18 months (${workoutLogs.length.toLocaleString()} sets) of your Tue–Sat program!`);
+            switchTab('status');
         }
 
         function openConfirmClearModal() {
@@ -2154,10 +2882,11 @@
         function confirmClearAllData() {
             workoutLogs = [];
             bodyweightLogs = [];
-            exercises = [...DEFAULT_EXERCISES];
+            exercises = JSON.parse(JSON.stringify(DEFAULT_EXERCISES));
             saveToLocalStorage();
             populateExerciseSelect();
             onDateOrExerciseChange();
+            renderStatusPage();
             renderHistoryList();
             closeConfirmClearModal();
             showToast('All workout & bodyweight data cleared');
@@ -2167,10 +2896,11 @@
          * 9. TAB NAVIGATION & UTILITIES
          **************************************************************/
         function switchTab(tabName) {
-            const tabs = ['logger', 'analytics', 'history'];
+            const tabs = ['status', 'logger', 'analytics', 'history'];
             tabs.forEach(t => {
                 const sec = document.getElementById(`tab-${t}`);
                 const nav = document.getElementById(`nav-${t}`);
+                if (!sec || !nav) return;
                 if (t === tabName) {
                     sec.classList.remove('hidden');
                     nav.className = 'flex flex-col items-center justify-center py-1.5 rounded-xl text-brand-400 bg-brand-500/10 font-bold transition';
@@ -2180,7 +2910,9 @@
                 }
             });
 
-            if (tabName === 'analytics') {
+            if (tabName === 'status') {
+                renderStatusPage();
+            } else if (tabName === 'analytics') {
                 renderAnalytics();
             } else if (tabName === 'history') {
                 renderHistoryList();
