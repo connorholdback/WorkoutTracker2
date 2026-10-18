@@ -185,33 +185,33 @@
                     </div>
                 </div>
 
-                <!-- Color Heat Tier Legend -->
+                <!-- Color Heat Tier Legend (Interactive Buttons to Customize Set Ranges) -->
                 <div class="grid grid-cols-5 gap-1.5 pt-1 text-center">
-                    <div class="bg-surface-950 border border-gray-800 rounded-lg py-1.5 px-1">
+                    <button type="button" onclick="openHeatTierModal('detrained')" class="bg-surface-950 hover:bg-surface-800/80 active:scale-95 border border-gray-800 hover:border-gray-600 rounded-lg py-1.5 px-1 transition flex flex-col items-center justify-center cursor-pointer" title="Tap to configure Detrained set range">
                         <span class="inline-block w-3 h-3 rounded-full bg-gray-700 mb-0.5"></span>
-                        <span class="block text-[9px] font-bold text-gray-400">0 Sets</span>
-                        <span class="block text-[8px] text-gray-500">Untrained</span>
-                    </div>
-                    <div class="bg-surface-950 border border-gray-800 rounded-lg py-1.5 px-1">
+                        <span id="legend-range-detrained" class="block text-[9px] font-bold text-gray-400">0 Sets</span>
+                        <span class="block text-[8px] text-gray-500">Detrained</span>
+                    </button>
+                    <button type="button" onclick="openHeatTierModal('maintenance')" class="bg-surface-950 hover:bg-surface-800/80 active:scale-95 border border-gray-800 hover:border-sky-500/50 rounded-lg py-1.5 px-1 transition flex flex-col items-center justify-center cursor-pointer" title="Tap to configure Maintenance set range">
                         <span class="inline-block w-3 h-3 rounded-full bg-sky-500 mb-0.5"></span>
-                        <span class="block text-[9px] font-bold text-sky-400">0.1–4 /wk</span>
+                        <span id="legend-range-maintenance" class="block text-[9px] font-bold text-sky-400">0.1–4 /wk</span>
                         <span class="block text-[8px] text-gray-500">Maintenance</span>
-                    </div>
-                    <div class="bg-surface-950 border border-gray-800 rounded-lg py-1.5 px-1">
+                    </button>
+                    <button type="button" onclick="openHeatTierModal('solid')" class="bg-surface-950 hover:bg-surface-800/80 active:scale-95 border border-gray-800 hover:border-emerald-500/50 rounded-lg py-1.5 px-1 transition flex flex-col items-center justify-center cursor-pointer" title="Tap to configure Solid set range">
                         <span class="inline-block w-3 h-3 rounded-full bg-emerald-500 mb-0.5"></span>
-                        <span class="block text-[9px] font-bold text-emerald-400">4–10 /wk</span>
+                        <span id="legend-range-solid" class="block text-[9px] font-bold text-emerald-400">4–10 /wk</span>
                         <span class="block text-[8px] text-gray-500">Solid</span>
-                    </div>
-                    <div class="bg-surface-950 border border-gray-800 rounded-lg py-1.5 px-1">
+                    </button>
+                    <button type="button" onclick="openHeatTierModal('high')" class="bg-surface-950 hover:bg-surface-800/80 active:scale-95 border border-gray-800 hover:border-amber-500/50 rounded-lg py-1.5 px-1 transition flex flex-col items-center justify-center cursor-pointer" title="Tap to configure High Growth set range">
                         <span class="inline-block w-3 h-3 rounded-full bg-amber-500 mb-0.5"></span>
-                        <span class="block text-[9px] font-bold text-amber-400">10–16 /wk</span>
+                        <span id="legend-range-high" class="block text-[9px] font-bold text-amber-400">10–16 /wk</span>
                         <span class="block text-[8px] text-gray-500">High Growth</span>
-                    </div>
-                    <div class="bg-surface-950 border border-gray-800 rounded-lg py-1.5 px-1">
+                    </button>
+                    <button type="button" onclick="openHeatTierModal('peak')" class="bg-surface-950 hover:bg-surface-800/80 active:scale-95 border border-gray-800 hover:border-rose-500/50 rounded-lg py-1.5 px-1 transition flex flex-col items-center justify-center cursor-pointer" title="Tap to configure Peak Load set range">
                         <span class="inline-block w-3 h-3 rounded-full bg-rose-500 mb-0.5"></span>
-                        <span class="block text-[9px] font-bold text-rose-400">16+ /wk</span>
+                        <span id="legend-range-peak" class="block text-[9px] font-bold text-rose-400">16+ /wk</span>
                         <span class="block text-[8px] text-gray-500">Peak Load</span>
-                    </div>
+                    </button>
                 </div>
 
                 <!-- Interactive Dual Anterior & Posterior Anatomical Muscle Map -->
@@ -800,6 +800,113 @@
         </div>
     </div>
 
+    <!-- ================= HEAT TIER RANGE CONFIG MODAL ================= -->
+    <div id="heat-tier-modal" class="fixed inset-0 z-50 hidden bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-surface-900 border border-gray-700 rounded-2xl max-w-sm w-full p-5 space-y-4 shadow-2xl">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h3 class="font-extrabold text-base text-white flex items-center gap-2">
+                        <i class="fa-solid fa-palette text-brand-400"></i> Customize Volume Tiers
+                    </h3>
+                    <p id="heat-tier-modal-subtitle" class="text-[11px] text-gray-400 mt-0.5">Set weekly fractional set thresholds for each color</p>
+                </div>
+                <button type="button" onclick="closeHeatTierModal()" class="text-gray-400 hover:text-white">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <div class="space-y-2.5 text-xs">
+                <!-- Detrained Row -->
+                <div id="tier-row-detrained" class="p-2.5 rounded-xl bg-surface-950 border border-gray-800 flex items-center justify-between gap-2 transition">
+                    <div class="flex items-center gap-2">
+                        <span class="w-3.5 h-3.5 rounded-full bg-gray-700 shrink-0"></span>
+                        <div>
+                            <span class="font-bold text-gray-300 block">Detrained</span>
+                            <span class="text-[10px] text-gray-500">0 up to max sets/wk</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-1.5">
+                        <span class="text-[11px] font-mono text-gray-400">0 –</span>
+                        <input type="number" id="tier-input-detrained-max" step="0.5" min="0" oninput="previewHeatTierRanges()" class="w-16 bg-surface-900 border border-gray-700 rounded-lg px-2 py-1 text-center font-mono font-bold text-white focus:outline-none focus:border-brand-500">
+                        <span class="text-[10px] text-gray-500">/wk</span>
+                    </div>
+                </div>
+
+                <!-- Maintenance Row -->
+                <div id="tier-row-maintenance" class="p-2.5 rounded-xl bg-surface-950 border border-gray-800 flex items-center justify-between gap-2 transition">
+                    <div class="flex items-center gap-2">
+                        <span class="w-3.5 h-3.5 rounded-full bg-sky-500 shrink-0"></span>
+                        <div>
+                            <span class="font-bold text-sky-400 block">Maintenance</span>
+                            <span class="text-[10px] text-gray-500">Above Detrained up to max</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-1.5">
+                        <span id="tier-preview-maint-min" class="text-[11px] font-mono text-gray-400">0.1 –</span>
+                        <input type="number" id="tier-input-maint-max" step="0.5" min="0.5" oninput="previewHeatTierRanges()" class="w-16 bg-surface-900 border border-gray-700 rounded-lg px-2 py-1 text-center font-mono font-bold text-white focus:outline-none focus:border-sky-400">
+                        <span class="text-[10px] text-gray-500">/wk</span>
+                    </div>
+                </div>
+
+                <!-- Solid Row -->
+                <div id="tier-row-solid" class="p-2.5 rounded-xl bg-surface-950 border border-gray-800 flex items-center justify-between gap-2 transition">
+                    <div class="flex items-center gap-2">
+                        <span class="w-3.5 h-3.5 rounded-full bg-emerald-500 shrink-0"></span>
+                        <div>
+                            <span class="font-bold text-emerald-400 block">Solid</span>
+                            <span class="text-[10px] text-gray-500">Moderate growth range</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-1.5">
+                        <span id="tier-preview-solid-min" class="text-[11px] font-mono text-gray-400">4 –</span>
+                        <input type="number" id="tier-input-solid-max" step="0.5" min="1" oninput="previewHeatTierRanges()" class="w-16 bg-surface-900 border border-gray-700 rounded-lg px-2 py-1 text-center font-mono font-bold text-white focus:outline-none focus:border-emerald-400">
+                        <span class="text-[10px] text-gray-500">/wk</span>
+                    </div>
+                </div>
+
+                <!-- High Growth Row -->
+                <div id="tier-row-high" class="p-2.5 rounded-xl bg-surface-950 border border-gray-800 flex items-center justify-between gap-2 transition">
+                    <div class="flex items-center gap-2">
+                        <span class="w-3.5 h-3.5 rounded-full bg-amber-500 shrink-0"></span>
+                        <div>
+                            <span class="font-bold text-amber-400 block">High Growth</span>
+                            <span class="text-[10px] text-gray-500">High volume target</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-1.5">
+                        <span id="tier-preview-high-min" class="text-[11px] font-mono text-gray-400">10 –</span>
+                        <input type="number" id="tier-input-high-max" step="0.5" min="1.5" oninput="previewHeatTierRanges()" class="w-16 bg-surface-900 border border-gray-700 rounded-lg px-2 py-1 text-center font-mono font-bold text-white focus:outline-none focus:border-amber-400">
+                        <span class="text-[10px] text-gray-500">/wk</span>
+                    </div>
+                </div>
+
+                <!-- Peak Load Row -->
+                <div id="tier-row-peak" class="p-2.5 rounded-xl bg-surface-950 border border-gray-800 flex items-center justify-between gap-2 transition">
+                    <div class="flex items-center gap-2">
+                        <span class="w-3.5 h-3.5 rounded-full bg-rose-500 shrink-0"></span>
+                        <div>
+                            <span class="font-bold text-rose-400 block">Peak Load</span>
+                            <span class="text-[10px] text-gray-500">Anything at or above High max</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-1.5">
+                        <span id="tier-preview-peak-min" class="font-mono font-bold text-rose-400 text-xs">16+ /wk</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex items-center justify-between pt-2 gap-2">
+                <button type="button" onclick="resetHeatTiersToDefault()" class="px-3 py-2.5 rounded-xl bg-surface-800 hover:bg-gray-700 text-gray-300 font-bold text-xs">
+                    Reset Defaults
+                </button>
+                <div class="flex gap-2 flex-1 justify-end">
+                    <button type="button" onclick="closeHeatTierModal()" class="px-3.5 py-2.5 rounded-xl bg-surface-800 text-gray-300 font-bold text-xs">Cancel</button>
+                    <button type="button" onclick="saveHeatTierThresholds()" class="px-4 py-2.5 rounded-xl bg-brand-500 hover:bg-brand-400 text-surface-950 font-extrabold text-xs">Save Ranges</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- ================= CONFIRM WIPE MODAL ================= -->
     <div id="confirm-clear-modal" class="fixed inset-0 z-50 hidden bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
         <div class="bg-surface-900 border border-rose-500/40 rounded-2xl max-w-sm w-full p-5 space-y-4 shadow-2xl">
@@ -851,6 +958,14 @@
         const STORAGE_LOGS_KEY = 'ironpulse_workout_sets_v1';
         const STORAGE_EXERCISES_KEY = 'ironpulse_exercises_v3';
         const STORAGE_BW_KEY = 'ironpulse_bodyweight_v1';
+        const STORAGE_TIERS_KEY = 'ironpulse_heat_tiers_v1';
+
+        const DEFAULT_HEAT_TIERS = {
+            detrainedMax: 0,
+            maintenanceMax: 4,
+            solidMax: 10,
+            highMax: 16
+        };
 
         const MUSCLE_GROUPS = [
             'Chest',
@@ -890,6 +1005,7 @@
         let workoutLogs = [];
         let exercises = [];
         let bodyweightLogs = [];
+        let heatTierThresholds = { ...DEFAULT_HEAT_TIERS };
         let currentChartMode = 'combined'; // 'combined', '1rm', or 'volume'
         let analyticsDatePreset = '12m';   // '12w', '12m', 'all', or 'custom'
         let analyticsInterval = 'weekly';  // 'weekly' or 'monthly'
@@ -988,12 +1104,34 @@
 
                 const rawBw = localStorage.getItem(STORAGE_BW_KEY);
                 bodyweightLogs = rawBw ? JSON.parse(rawBw) : [];
+
+                const rawTiers = localStorage.getItem(STORAGE_TIERS_KEY);
+                if (rawTiers) {
+                    heatTierThresholds = normalizeHeatTiers(JSON.parse(rawTiers));
+                } else {
+                    heatTierThresholds = { ...DEFAULT_HEAT_TIERS };
+                }
             } catch (e) {
                 console.error('Error reading localStorage:', e);
                 workoutLogs = [];
                 exercises = JSON.parse(JSON.stringify(DEFAULT_EXERCISES));
                 bodyweightLogs = [];
+                heatTierThresholds = { ...DEFAULT_HEAT_TIERS };
             }
+        }
+
+        function normalizeHeatTiers(raw) {
+            if (!raw || typeof raw !== 'object') return { ...DEFAULT_HEAT_TIERS };
+            const detrainedMax = Math.max(0, parseFloat(raw.detrainedMax ?? DEFAULT_HEAT_TIERS.detrainedMax) || 0);
+            const maintenanceMax = Math.max(detrainedMax + 0.5, parseFloat(raw.maintenanceMax ?? DEFAULT_HEAT_TIERS.maintenanceMax) || 4);
+            const solidMax = Math.max(maintenanceMax + 0.5, parseFloat(raw.solidMax ?? DEFAULT_HEAT_TIERS.solidMax) || 10);
+            const highMax = Math.max(solidMax + 0.5, parseFloat(raw.highMax ?? DEFAULT_HEAT_TIERS.highMax) || 16);
+            return {
+                detrainedMax: +detrainedMax.toFixed(1),
+                maintenanceMax: +maintenanceMax.toFixed(1),
+                solidMax: +solidMax.toFixed(1),
+                highMax: +highMax.toFixed(1)
+            };
         }
 
         function saveToLocalStorage() {
@@ -1001,6 +1139,7 @@
                 localStorage.setItem(STORAGE_LOGS_KEY, JSON.stringify(workoutLogs));
                 localStorage.setItem(STORAGE_EXERCISES_KEY, JSON.stringify(exercises));
                 localStorage.setItem(STORAGE_BW_KEY, JSON.stringify(bodyweightLogs));
+                localStorage.setItem(STORAGE_TIERS_KEY, JSON.stringify(heatTierThresholds));
                 updateStorageSummary();
             } catch (e) {
                 showToast('Storage error: Check browser quota', true);
@@ -1026,7 +1165,8 @@
                 const start = new Date(today.getTime() - 180 * 86400000);
                 startStr = formatLocalDate(start);
             } else if (preset === '12m') {
-                const start = new Date(today.getTime() - 365 * 86400000);
+                const start = new Date(today);
+                start.setFullYear(start.getFullYear() - 1);
                 startStr = formatLocalDate(start);
             } else if (preset === 'all') {
                 const allDates = [
@@ -1034,8 +1174,7 @@
                     ...bodyweightLogs.map(b => b.date)
                 ];
                 if (allDates.length > 0) {
-                    const earliest = allDates.reduce((min, d) => d < min ? d : min, allDates[0]);
-                    startStr = earliest;
+                    startStr = allDates.reduce((min, d) => d < min ? d : min, allDates[0]);
                 } else {
                     const start = new Date(today.getTime() - 30 * 86400000);
                     startStr = formatLocalDate(start);
@@ -1070,17 +1209,142 @@
             });
         }
 
-        function getMuscleHeatStyle(weeklyAvgSets) {
-            if (weeklyAvgSets <= 0) {
-                return { fill: '#374151', textClass: 'text-gray-400', badgeBg: 'bg-gray-800/80 border-gray-700', label: 'Untrained' };
+        function formatTierNum(n) {
+            return Number.isInteger(n) ? String(n) : n.toFixed(1);
+        }
+
+        function updateHeatLegendLabelsUI() {
+            const dMax = heatTierThresholds.detrainedMax;
+            const mMax = heatTierThresholds.maintenanceMax;
+            const sMax = heatTierThresholds.solidMax;
+            const hMax = heatTierThresholds.highMax;
+
+            const elDetrained = document.getElementById('legend-range-detrained');
+            const elMaint = document.getElementById('legend-range-maintenance');
+            const elSolid = document.getElementById('legend-range-solid');
+            const elHigh = document.getElementById('legend-range-high');
+            const elPeak = document.getElementById('legend-range-peak');
+
+            if (elDetrained) {
+                elDetrained.textContent = dMax <= 0 ? '0 Sets' : `0–${formatTierNum(dMax)} /wk`;
             }
-            if (weeklyAvgSets < 4) {
+            if (elMaint) {
+                const mMinStr = dMax <= 0 ? '0.1' : formatTierNum(dMax);
+                elMaint.textContent = `${mMinStr}–${formatTierNum(mMax)} /wk`;
+            }
+            if (elSolid) {
+                elSolid.textContent = `${formatTierNum(mMax)}–${formatTierNum(sMax)} /wk`;
+            }
+            if (elHigh) {
+                elHigh.textContent = `${formatTierNum(sMax)}–${formatTierNum(hMax)} /wk`;
+            }
+            if (elPeak) {
+                elPeak.textContent = `${formatTierNum(hMax)}+ /wk`;
+            }
+        }
+
+        function openHeatTierModal(focusTierKey = 'detrained') {
+            document.getElementById('tier-input-detrained-max').value = heatTierThresholds.detrainedMax;
+            document.getElementById('tier-input-maint-max').value = heatTierThresholds.maintenanceMax;
+            document.getElementById('tier-input-solid-max').value = heatTierThresholds.solidMax;
+            document.getElementById('tier-input-high-max').value = heatTierThresholds.highMax;
+
+            previewHeatTierRanges();
+
+            const tierRows = {
+                detrained: { row: 'tier-row-detrained', input: 'tier-input-detrained-max', border: 'border-gray-400' },
+                maintenance: { row: 'tier-row-maintenance', input: 'tier-input-maint-max', border: 'border-sky-400' },
+                solid: { row: 'tier-row-solid', input: 'tier-input-solid-max', border: 'border-emerald-400' },
+                high: { row: 'tier-row-high', input: 'tier-input-high-max', border: 'border-amber-400' },
+                peak: { row: 'tier-row-peak', input: 'tier-input-high-max', border: 'border-rose-400' }
+            };
+
+            Object.keys(tierRows).forEach(k => {
+                const rowEl = document.getElementById(tierRows[k].row);
+                if (!rowEl) return;
+                rowEl.className = 'p-2.5 rounded-xl bg-surface-950 border border-gray-800 flex items-center justify-between gap-2 transition';
+            });
+
+            const active = tierRows[focusTierKey] || tierRows.detrained;
+            const activeRow = document.getElementById(active.row);
+            if (activeRow) {
+                activeRow.className = `p-2.5 rounded-xl bg-surface-950 border ${active.border} flex items-center justify-between gap-2 transition`;
+            }
+
+            document.getElementById('heat-tier-modal').classList.remove('hidden');
+            const inputEl = document.getElementById(active.input);
+            if (inputEl) {
+                setTimeout(() => { inputEl.focus(); inputEl.select(); }, 50);
+            }
+        }
+
+        function previewHeatTierRanges() {
+            const dVal = Math.max(0, parseFloat(document.getElementById('tier-input-detrained-max').value) || 0);
+            const mVal = Math.max(dVal + 0.5, parseFloat(document.getElementById('tier-input-maint-max').value) || 4);
+            const sVal = Math.max(mVal + 0.5, parseFloat(document.getElementById('tier-input-solid-max').value) || 10);
+            const hVal = Math.max(sVal + 0.5, parseFloat(document.getElementById('tier-input-high-max').value) || 16);
+
+            document.getElementById('tier-preview-maint-min').textContent = `${dVal <= 0 ? '0.1' : formatTierNum(dVal)} –`;
+            document.getElementById('tier-preview-solid-min').textContent = `${formatTierNum(mVal)} –`;
+            document.getElementById('tier-preview-high-min').textContent = `${formatTierNum(sVal)} –`;
+            document.getElementById('tier-preview-peak-min').textContent = `${formatTierNum(hVal)}+ /wk`;
+        }
+
+        function closeHeatTierModal() {
+            document.getElementById('heat-tier-modal').classList.add('hidden');
+        }
+
+        function saveHeatTierThresholds() {
+            const dRaw = parseFloat(document.getElementById('tier-input-detrained-max').value);
+            const mRaw = parseFloat(document.getElementById('tier-input-maint-max').value);
+            const sRaw = parseFloat(document.getElementById('tier-input-solid-max').value);
+            const hRaw = parseFloat(document.getElementById('tier-input-high-max').value);
+
+            if (isNaN(dRaw) || dRaw < 0 || isNaN(mRaw) || isNaN(sRaw) || isNaN(hRaw)) {
+                showToast('Please enter valid numbers for all tiers', true);
+                return;
+            }
+            if (!(dRaw < mRaw && mRaw < sRaw && sRaw < hRaw)) {
+                showToast('Each tier max must be greater than the previous tier', true);
+                return;
+            }
+
+            heatTierThresholds = normalizeHeatTiers({
+                detrainedMax: dRaw,
+                maintenanceMax: mRaw,
+                solidMax: sRaw,
+                highMax: hRaw
+            });
+
+            saveToLocalStorage();
+            closeHeatTierModal();
+            renderStatusPage();
+            showToast('Updated muscle volume color ranges');
+        }
+
+        function resetHeatTiersToDefault() {
+            heatTierThresholds = { ...DEFAULT_HEAT_TIERS };
+            document.getElementById('tier-input-detrained-max').value = heatTierThresholds.detrainedMax;
+            document.getElementById('tier-input-maint-max').value = heatTierThresholds.maintenanceMax;
+            document.getElementById('tier-input-solid-max').value = heatTierThresholds.solidMax;
+            document.getElementById('tier-input-high-max').value = heatTierThresholds.highMax;
+            previewHeatTierRanges();
+            saveToLocalStorage();
+            renderStatusPage();
+            showToast('Restored default volume ranges');
+        }
+
+        function getMuscleHeatStyle(weeklyAvgSets) {
+            if (weeklyAvgSets <= heatTierThresholds.detrainedMax) {
+                return { fill: '#374151', textClass: 'text-gray-400', badgeBg: 'bg-gray-800/80 border-gray-700', label: 'Detrained' };
+            }
+            if (weeklyAvgSets < heatTierThresholds.maintenanceMax) {
                 return { fill: '#0ea5e9', textClass: 'text-sky-400', badgeBg: 'bg-sky-500/15 border-sky-500/30', label: 'Maintenance' };
             }
-            if (weeklyAvgSets < 10) {
-                return { fill: '#10b981', textClass: 'text-emerald-400', badgeBg: 'bg-emerald-500/15 border-emerald-500/30', label: 'Optimal' };
+            if (weeklyAvgSets < heatTierThresholds.solidMax) {
+                return { fill: '#10b981', textClass: 'text-emerald-400', badgeBg: 'bg-emerald-500/15 border-emerald-500/30', label: 'Solid' };
             }
-            if (weeklyAvgSets < 16) {
+            if (weeklyAvgSets < heatTierThresholds.highMax) {
                 return { fill: '#f59e0b', textClass: 'text-amber-400', badgeBg: 'bg-amber-500/15 border-amber-500/30', label: 'High Growth' };
             }
             return { fill: '#f43f5e', textClass: 'text-rose-400', badgeBg: 'bg-rose-500/15 border-rose-500/30', label: 'Peak Load' };
@@ -1175,6 +1439,8 @@
         }
 
         function renderStatusPage() {
+            updateHeatLegendLabelsUI();
+
             const {
                 statsByMuscle,
                 rawSetCount,
@@ -1563,15 +1829,19 @@
         function getExerciseRecords(exerciseName) {
             const sets = workoutLogs.filter(s => s.exercise === exerciseName);
             if (sets.length === 0) {
-                return { hasHistory: false, maxWeight: 0, max1RM: 0, maxVolume: 0, lastSet: null };
+                return { hasHistory: false, maxWeight: 0, max1RM: 0, max1RMSet: null, maxVolume: 0, lastSet: null };
             }
             let maxWeight = 0;
             let max1RM = 0;
+            let max1RMSet = null;
             let maxVolume = 0;
 
             sets.forEach(s => {
                 if (s.weight > maxWeight) maxWeight = s.weight;
-                if (s.e1rm > max1RM) max1RM = s.e1rm;
+                if (s.e1rm > max1RM) {
+                    max1RM = s.e1rm;
+                    max1RMSet = s;
+                }
                 if (s.volume > maxVolume) maxVolume = s.volume;
             });
 
@@ -1580,6 +1850,7 @@
                 hasHistory: true,
                 maxWeight,
                 max1RM,
+                max1RMSet,
                 maxVolume,
                 lastSet: sorted[0]
             };
@@ -1594,7 +1865,10 @@
 
             if (records.hasHistory && records.lastSet) {
                 lastEl.textContent = `${records.lastSet.weight}kg × ${records.lastSet.reps} (${records.lastSet.date})`;
-                bestEl.textContent = `${records.maxWeight}kg | e1RM: ${records.max1RM}kg`;
+                const bestSetDetail = records.max1RMSet
+                    ? ` (${records.max1RMSet.weight}kg × ${records.max1RMSet.reps})`
+                    : '';
+                bestEl.textContent = `${records.maxWeight}kg | e1RM: ${records.max1RM}kg${bestSetDetail}`;
             } else {
                 lastEl.textContent = 'No prior sets logged';
                 bestEl.textContent = 'First time logging lift';
@@ -2592,7 +2866,8 @@
                 exportedAt: new Date().toISOString(),
                 exercises,
                 workoutLogs,
-                bodyweightLogs
+                bodyweightLogs,
+                heatTierThresholds
             };
             const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
@@ -2689,6 +2964,9 @@
                         }
                         if (Array.isArray(parsed.bodyweightLogs)) {
                             bodyweightLogs = parsed.bodyweightLogs;
+                        }
+                        if (parsed.heatTierThresholds) {
+                            heatTierThresholds = normalizeHeatTiers(parsed.heatTierThresholds);
                         }
                         saveToLocalStorage();
                         populateExerciseSelect();
@@ -2883,6 +3161,7 @@
             workoutLogs = [];
             bodyweightLogs = [];
             exercises = JSON.parse(JSON.stringify(DEFAULT_EXERCISES));
+            heatTierThresholds = { ...DEFAULT_HEAT_TIERS };
             saveToLocalStorage();
             populateExerciseSelect();
             onDateOrExerciseChange();
