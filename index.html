@@ -218,9 +218,13 @@
                 <!-- Interactive Dual Anterior & Posterior Anatomical Muscle Map -->
                 <div class="bg-surface-950 border border-gray-800/90 rounded-2xl p-3">
                     <div class="grid grid-cols-2 gap-2 items-center">
-                        <!-- ANTERIOR (FRONT) VIEW -->
+                        <!-- ANTERIOR (FRONT) VIEW: Viewer's Left = Anatomical Right (R), Viewer's Right = Anatomical Left (L) -->
                         <div class="flex flex-col items-center">
-                            <span class="text-[10px] font-extrabold uppercase tracking-widest text-gray-400 mb-1">Anterior (Front)</span>
+                            <div class="flex items-center justify-between w-full max-w-[165px] px-1 mb-1">
+                                <span class="text-[9px] font-mono font-bold text-gray-500">R</span>
+                                <span class="text-[10px] font-extrabold uppercase tracking-widest text-gray-400">Anterior (Front)</span>
+                                <span class="text-[9px] font-mono font-bold text-gray-500">L</span>
+                            </div>
                             <svg viewBox="0 0 200 420" class="w-full max-w-[165px] h-auto select-none">
                                 <!-- Head & Neck Base Silhouette -->
                                 <circle cx="100" cy="30" r="18" fill="#1f2937" stroke="#374151" stroke-width="1.5"/>
@@ -228,54 +232,54 @@
                                 
                                 <!-- Upper Traps (Anterior Collar) -->
                                 <g data-muscle="Upper Traps" onclick="selectMuscleOnDiagram('Upper Traps')" class="cursor-pointer transition-opacity hover:opacity-80">
-                                    <path d="M 72 62 L 91 54 L 91 64 L 72 68 Z" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
-                                    <path d="M 128 62 L 109 54 L 109 64 L 128 68 Z" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
+                                    <path data-side="right" d="M 72 62 L 91 54 L 91 64 L 72 68 Z" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
+                                    <path data-side="left" d="M 128 62 L 109 54 L 109 64 L 128 68 Z" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
                                 </g>
 
                                 <!-- Front Delts -->
                                 <g data-muscle="Front Delts" onclick="selectMuscleOnDiagram('Front Delts')" class="cursor-pointer transition-opacity hover:opacity-80">
-                                    <path d="M 55 68 Q 63 62 73 66 L 71 92 Q 58 88 55 76 Z" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
-                                    <path d="M 145 68 Q 137 62 127 66 L 129 92 Q 142 88 145 76 Z" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
+                                    <path data-side="right" d="M 55 68 Q 63 62 73 66 L 71 92 Q 58 88 55 76 Z" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
+                                    <path data-side="left" d="M 145 68 Q 137 62 127 66 L 129 92 Q 142 88 145 76 Z" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
                                 </g>
 
                                 <!-- Side Delts -->
                                 <g data-muscle="Side Delts" onclick="selectMuscleOnDiagram('Side Delts')" class="cursor-pointer transition-opacity hover:opacity-80">
-                                    <path d="M 45 74 Q 48 64 56 68 L 55 96 Q 44 90 45 74 Z" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
-                                    <path d="M 155 74 Q 152 64 144 68 L 145 96 Q 156 90 155 74 Z" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
+                                    <path data-side="right" d="M 45 74 Q 48 64 56 68 L 55 96 Q 44 90 45 74 Z" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
+                                    <path data-side="left" d="M 155 74 Q 152 64 144 68 L 145 96 Q 156 90 155 74 Z" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
                                 </g>
 
                                 <!-- Chest (Pectorals) -->
                                 <g data-muscle="Chest" onclick="selectMuscleOnDiagram('Chest')" class="cursor-pointer transition-opacity hover:opacity-80">
-                                    <path d="M 72 66 L 99 66 L 99 108 L 75 108 L 69 92 Z" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
-                                    <path d="M 128 66 L 101 66 L 101 108 L 125 108 L 131 92 Z" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
+                                    <path data-side="right" d="M 72 66 L 99 66 L 99 108 L 75 108 L 69 92 Z" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
+                                    <path data-side="left" d="M 128 66 L 101 66 L 101 108 L 125 108 L 131 92 Z" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
                                 </g>
 
                                 <!-- Biceps -->
                                 <g data-muscle="Biceps" onclick="selectMuscleOnDiagram('Biceps')" class="cursor-pointer transition-opacity hover:opacity-80">
-                                    <rect x="44" y="97" width="21" height="44" rx="9" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
-                                    <rect x="135" y="97" width="21" height="44" rx="9" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
+                                    <rect data-side="right" x="44" y="97" width="21" height="44" rx="9" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
+                                    <rect data-side="left" x="135" y="97" width="21" height="44" rx="9" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
                                 </g>
 
                                 <!-- Forearms (Anterior) -->
                                 <g data-muscle="Forearms" onclick="selectMuscleOnDiagram('Forearms')" class="cursor-pointer transition-opacity hover:opacity-80">
-                                    <path d="M 40 144 L 62 144 L 56 192 L 42 192 Z" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
-                                    <path d="M 160 144 L 138 144 L 144 192 L 158 192 Z" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
+                                    <path data-side="right" d="M 40 144 L 62 144 L 56 192 L 42 192 Z" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
+                                    <path data-side="left" d="M 160 144 L 138 144 L 144 192 L 158 192 Z" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
                                 </g>
 
                                 <!-- Abs / Core -->
                                 <g data-muscle="Abs" onclick="selectMuscleOnDiagram('Abs')" class="cursor-pointer transition-opacity hover:opacity-80">
-                                    <rect x="76" y="110" width="22" height="22" rx="4" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
-                                    <rect x="102" y="110" width="22" height="22" rx="4" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
-                                    <rect x="77" y="134" width="21" height="22" rx="4" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
-                                    <rect x="102" y="134" width="21" height="22" rx="4" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
-                                    <rect x="79" y="158" width="20" height="24" rx="4" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
-                                    <rect x="101" y="158" width="20" height="24" rx="4" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
+                                    <rect data-side="right" x="76" y="110" width="22" height="22" rx="4" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
+                                    <rect data-side="left" x="102" y="110" width="22" height="22" rx="4" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
+                                    <rect data-side="right" x="77" y="134" width="21" height="22" rx="4" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
+                                    <rect data-side="left" x="102" y="134" width="21" height="22" rx="4" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
+                                    <rect data-side="right" x="79" y="158" width="20" height="24" rx="4" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
+                                    <rect data-side="left" x="101" y="158" width="20" height="24" rx="4" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
                                 </g>
 
                                 <!-- Quads -->
                                 <g data-muscle="Quads" onclick="selectMuscleOnDiagram('Quads')" class="cursor-pointer transition-opacity hover:opacity-80">
-                                    <path d="M 67 186 L 97 186 L 94 282 L 71 282 Q 62 234 67 186 Z" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
-                                    <path d="M 133 186 L 103 186 L 106 282 L 129 282 Q 138 234 133 186 Z" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
+                                    <path data-side="right" d="M 67 186 L 97 186 L 94 282 L 71 282 Q 62 234 67 186 Z" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
+                                    <path data-side="left" d="M 133 186 L 103 186 L 106 282 L 129 282 Q 138 234 133 186 Z" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
                                 </g>
 
                                 <!-- Knees (Structural) -->
@@ -284,75 +288,82 @@
 
                                 <!-- Calves (Anterior Tibialis/Gastroc edge) -->
                                 <g data-muscle="Calves" onclick="selectMuscleOnDiagram('Calves')" class="cursor-pointer transition-opacity hover:opacity-80">
-                                    <path d="M 70 304 L 93 304 L 89 376 L 75 376 Q 66 340 70 304 Z" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
-                                    <path d="M 130 304 L 107 304 L 111 376 L 125 376 Q 134 340 130 304 Z" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
+                                    <path data-side="right" d="M 70 304 L 93 304 L 89 376 L 75 376 Q 66 340 70 304 Z" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
+                                    <path data-side="left" d="M 130 304 L 107 304 L 111 376 L 125 376 Q 134 340 130 304 Z" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
                                 </g>
                             </svg>
                         </div>
 
-                        <!-- POSTERIOR (BACK) VIEW -->
+                        <!-- POSTERIOR (BACK) VIEW: Viewer's Left = Anatomical Left (L), Viewer's Right = Anatomical Right (R) -->
                         <div class="flex flex-col items-center">
-                            <span class="text-[10px] font-extrabold uppercase tracking-widest text-gray-400 mb-1">Posterior (Back)</span>
+                            <div class="flex items-center justify-between w-full max-w-[165px] px-1 mb-1">
+                                <span class="text-[9px] font-mono font-bold text-gray-500">L</span>
+                                <span class="text-[10px] font-extrabold uppercase tracking-widest text-gray-400">Posterior (Back)</span>
+                                <span class="text-[9px] font-mono font-bold text-gray-500">R</span>
+                            </div>
                             <svg viewBox="0 0 200 420" class="w-full max-w-[165px] h-auto select-none">
                                 <!-- Head & Neck Base Silhouette -->
                                 <circle cx="100" cy="30" r="18" fill="#1f2937" stroke="#374151" stroke-width="1.5"/>
                                 <rect x="91" y="48" width="18" height="12" rx="4" fill="#1f2937" stroke="#374151" stroke-width="1"/>
 
-                                <!-- Upper Traps (Posterior Superior) -->
+                                <!-- Upper Traps (Posterior Superior - Split L/R) -->
                                 <g data-muscle="Upper Traps" onclick="selectMuscleOnDiagram('Upper Traps')" class="cursor-pointer transition-opacity hover:opacity-80">
-                                    <polygon points="100,53 68,64 75,83 100,79 125,83 132,64" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
+                                    <polygon data-side="left" points="100,53 68,64 75,83 100,79" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
+                                    <polygon data-side="right" points="100,53 132,64 125,83 100,79" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
                                 </g>
 
-                                <!-- Mid Traps & Rhomboids (Posterior Middle) -->
+                                <!-- Mid Traps & Rhomboids (Posterior Middle - Split L/R) -->
                                 <g data-muscle="Mid Traps" onclick="selectMuscleOnDiagram('Mid Traps')" class="cursor-pointer transition-opacity hover:opacity-80">
-                                    <polygon points="75,83 100,79 125,83 116,115 100,124 84,115" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
+                                    <polygon data-side="left" points="75,83 100,79 100,124 84,115" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
+                                    <polygon data-side="right" points="100,79 125,83 116,115 100,124" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
                                 </g>
 
                                 <!-- Rear Delts -->
                                 <g data-muscle="Rear Delts" onclick="selectMuscleOnDiagram('Rear Delts')" class="cursor-pointer transition-opacity hover:opacity-80">
-                                    <path d="M 52 68 L 68 65 L 69 92 L 52 92 Q 44 80 52 68 Z" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
-                                    <path d="M 148 68 L 132 65 L 131 92 L 148 92 Q 156 80 148 68 Z" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
+                                    <path data-side="left" d="M 52 68 L 68 65 L 69 92 L 52 92 Q 44 80 52 68 Z" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
+                                    <path data-side="right" d="M 148 68 L 132 65 L 131 92 L 148 92 Q 156 80 148 68 Z" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
                                 </g>
 
                                 <!-- Lats (Latissimus Dorsi) -->
                                 <g data-muscle="Lats" onclick="selectMuscleOnDiagram('Lats')" class="cursor-pointer transition-opacity hover:opacity-80">
-                                    <polygon points="69,92 84,114 96,154 75,150 67,118" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
-                                    <polygon points="131,92 116,114 104,154 125,150 133,118" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
+                                    <polygon data-side="left" points="69,92 84,114 96,154 75,150 67,118" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
+                                    <polygon data-side="right" points="131,92 116,114 104,154 125,150 133,118" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
                                 </g>
 
                                 <!-- Triceps -->
                                 <g data-muscle="Triceps" onclick="selectMuscleOnDiagram('Triceps')" class="cursor-pointer transition-opacity hover:opacity-80">
-                                    <rect x="44" y="95" width="21" height="46" rx="9" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
-                                    <rect x="135" y="95" width="21" height="46" rx="9" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
+                                    <rect data-side="left" x="44" y="95" width="21" height="46" rx="9" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
+                                    <rect data-side="right" x="135" y="95" width="21" height="46" rx="9" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
                                 </g>
 
                                 <!-- Forearms (Posterior) -->
                                 <g data-muscle="Forearms" onclick="selectMuscleOnDiagram('Forearms')" class="cursor-pointer transition-opacity hover:opacity-80">
-                                    <path d="M 40 144 L 62 144 L 56 192 L 42 192 Z" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
-                                    <path d="M 160 144 L 138 144 L 144 192 L 158 192 Z" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
+                                    <path data-side="left" d="M 40 144 L 62 144 L 56 192 L 42 192 Z" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
+                                    <path data-side="right" d="M 160 144 L 138 144 L 144 192 L 158 192 Z" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
                                 </g>
 
-                                <!-- Lower Back (Erectors) -->
+                                <!-- Lower Back (Erectors - Split L/R) -->
                                 <g data-muscle="Lower Back" onclick="selectMuscleOnDiagram('Lower Back')" class="cursor-pointer transition-opacity hover:opacity-80">
-                                    <polygon points="84,148 116,148 122,182 78,182" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
+                                    <polygon data-side="left" points="84,148 100,148 100,182 78,182" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
+                                    <polygon data-side="right" points="100,148 116,148 122,182 100,182" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
                                 </g>
 
                                 <!-- Glutes -->
                                 <g data-muscle="Glutes" onclick="selectMuscleOnDiagram('Glutes')" class="cursor-pointer transition-opacity hover:opacity-80">
-                                    <path d="M 73 183 L 99 183 L 99 224 L 68 220 Q 64 200 73 183 Z" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
-                                    <path d="M 127 183 L 101 183 L 101 224 L 132 220 Q 136 200 127 183 Z" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
+                                    <path data-side="left" d="M 73 183 L 99 183 L 99 224 L 68 220 Q 64 200 73 183 Z" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
+                                    <path data-side="right" d="M 127 183 L 101 183 L 101 224 L 132 220 Q 136 200 127 183 Z" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
                                 </g>
 
                                 <!-- Hamstrings -->
                                 <g data-muscle="Hamstrings" onclick="selectMuscleOnDiagram('Hamstrings')" class="cursor-pointer transition-opacity hover:opacity-80">
-                                    <path d="M 69 224 L 97 224 L 94 292 L 73 292 Q 66 258 69 224 Z" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
-                                    <path d="M 131 224 L 103 224 L 106 292 L 127 292 Q 134 258 131 224 Z" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
+                                    <path data-side="left" d="M 69 224 L 97 224 L 94 292 L 73 292 Q 66 258 69 224 Z" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
+                                    <path data-side="right" d="M 131 224 L 103 224 L 106 292 L 127 292 Q 134 258 131 224 Z" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
                                 </g>
 
                                 <!-- Calves (Posterior Gastrocnemius) -->
                                 <g data-muscle="Calves" onclick="selectMuscleOnDiagram('Calves')" class="cursor-pointer transition-opacity hover:opacity-80">
-                                    <path d="M 71 300 L 94 300 L 89 376 L 75 376 Q 64 334 71 300 Z" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
-                                    <path d="M 129 300 L 106 300 L 111 376 L 125 376 Q 136 334 129 300 Z" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
+                                    <path data-side="left" d="M 71 300 L 94 300 L 89 376 L 75 376 Q 64 334 71 300 Z" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
+                                    <path data-side="right" d="M 129 300 L 106 300 L 111 376 L 125 376 Q 136 334 129 300 Z" fill="#374151" stroke="#090d16" stroke-width="1.5"/>
                                 </g>
                             </svg>
                         </div>
@@ -360,23 +371,24 @@
 
                     <!-- Selected Muscle Inspector Banner -->
                     <div id="muscle-inspector-banner" class="mt-2 pt-2.5 border-t border-gray-800/80 flex items-center justify-between text-xs">
-                        <div>
-                            <span class="text-gray-400">Tap any muscle region: </span>
-                            <strong id="inspected-muscle-name" class="text-white">All Muscles</strong>
-                        </div>
-                        <span id="inspected-muscle-stats" class="font-mono text-brand-400 font-bold">Select a muscle above</span>
+                        <span id="inspected-muscle-name" class="font-extrabold text-brand-400">Tap any muscle on body map</span>
+                        <span id="inspected-muscle-stats" class="font-mono text-gray-300">1.0 Primary • 0.5 Secondary</span>
                     </div>
                 </div>
+            </div>
 
-                <!-- Muscle Volume Summary Grid -->
-                <div>
-                    <div class="flex items-center justify-between mb-2">
-                        <h3 id="status-breakdown-heading" class="text-xs font-extrabold uppercase tracking-wider text-gray-300">Fractional Set Breakdown (Selected Range)</h3>
-                        <span class="text-[10px] text-gray-400 font-mono">Wk Avg • Period Total</span>
+            <!-- Muscle Volume Breakdown Grid Card -->
+            <div class="bg-surface-900 border border-gray-800/90 rounded-2xl p-4 shadow-lg space-y-3">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="text-sm font-extrabold uppercase tracking-wider text-white flex items-center gap-1.5">
+                            <i class="fa-solid fa-layer-group text-brand-400"></i> Weekly Set Volume by Muscle
+                        </h3>
+                        <p class="text-[11px] text-gray-400 mt-0.5">Muscles with different Left & Right volume are reported separately</p>
                     </div>
-                    <div id="muscle-volume-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                        <!-- Populated by JS -->
-                    </div>
+                </div>
+                <div id="muscle-volume-grid" class="grid grid-cols-2 gap-2">
+                    <!-- Populated by JS -->
                 </div>
             </div>
 
@@ -798,6 +810,14 @@
                         <option value="Lower Body">Lower Body</option>
                     </select>
                 </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase text-gray-400 mb-1">Laterality (Side)</label>
+                    <select id="custom-ex-lat" class="w-full bg-surface-950 border border-gray-700 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-brand-500">
+                        <option value="bilateral">Bilateral (Both Sides)</option>
+                        <option value="right">Right Side Only</option>
+                        <option value="left">Left Side Only</option>
+                    </select>
+                </div>
             </div>
             <div class="flex gap-2 pt-1">
                 <button onclick="closeCustomExerciseModal()" class="flex-1 py-2.5 rounded-xl bg-surface-800 text-gray-300 font-bold text-xs">Cancel</button>
@@ -1005,19 +1025,19 @@
         ];
 
         const DEFAULT_EXERCISES = [
-            { name: 'BB Incline BenchPress', category: 'Upper / Push', primaryMuscle: 'Chest', primaryMuscle2: '', secondaryMuscles: ['Front Delts', 'Triceps'] },
-            { name: 'DB Incline BenchPress', category: 'Upper / Push', primaryMuscle: 'Chest', primaryMuscle2: '', secondaryMuscles: ['Front Delts', 'Triceps'] },
-            { name: 'DB Decline BenchPress', category: 'Upper / Push', primaryMuscle: 'Chest', primaryMuscle2: '', secondaryMuscles: ['Triceps', 'Front Delts'] },
-            { name: 'DB Shoulder Press', category: 'Upper / Push', primaryMuscle: 'Front Delts', primaryMuscle2: '', secondaryMuscles: ['Side Delts', 'Triceps'] },
-            { name: 'Pull-up', category: 'Upper / Pull & Arms', primaryMuscle: 'Lats', primaryMuscle2: '', secondaryMuscles: ['Biceps', 'Mid Traps', 'Rear Delts', 'Forearms'] },
-            { name: 'Row', category: 'Upper / Pull & Arms', primaryMuscle: 'Mid Traps', primaryMuscle2: 'Lats', secondaryMuscles: ['Rear Delts', 'Biceps', 'Upper Traps', 'Lower Back'] },
-            { name: 'Bicep Curl', category: 'Upper / Pull & Arms', primaryMuscle: 'Biceps', primaryMuscle2: '', secondaryMuscles: ['Forearms'] },
-            { name: 'Tricep Extension', category: 'Upper / Pull & Arms', primaryMuscle: 'Triceps', primaryMuscle2: '', secondaryMuscles: [] },
-            { name: 'Lateral Raise', category: 'Upper / Push', primaryMuscle: 'Side Delts', primaryMuscle2: '', secondaryMuscles: ['Front Delts', 'Upper Traps'] },
-            { name: 'Leg Press', category: 'Lower Body', primaryMuscle: 'Quads', primaryMuscle2: '', secondaryMuscles: ['Glutes', 'Hamstrings', 'Calves'] },
-            { name: 'Leg Extension', category: 'Lower Body', primaryMuscle: 'Quads', primaryMuscle2: '', secondaryMuscles: [] },
-            { name: 'Hamstring Curl', category: 'Lower Body', primaryMuscle: 'Hamstrings', primaryMuscle2: '', secondaryMuscles: ['Calves'] },
-            { name: 'Romainian Deadlift', category: 'Lower Body', primaryMuscle: 'Hamstrings', primaryMuscle2: 'Glutes', secondaryMuscles: ['Lower Back', 'Mid Traps', 'Upper Traps', 'Forearms'] }
+            { name: 'BB Incline BenchPress', category: 'Upper / Push', laterality: 'bilateral', primaryMuscle: 'Chest', primaryMuscle2: '', secondaryMuscles: ['Front Delts', 'Triceps'] },
+            { name: 'DB Incline BenchPress', category: 'Upper / Push', laterality: 'bilateral', primaryMuscle: 'Chest', primaryMuscle2: '', secondaryMuscles: ['Front Delts', 'Triceps'] },
+            { name: 'DB Decline BenchPress', category: 'Upper / Push', laterality: 'bilateral', primaryMuscle: 'Chest', primaryMuscle2: '', secondaryMuscles: ['Triceps', 'Front Delts'] },
+            { name: 'DB Shoulder Press', category: 'Upper / Push', laterality: 'bilateral', primaryMuscle: 'Front Delts', primaryMuscle2: '', secondaryMuscles: ['Side Delts', 'Triceps'] },
+            { name: 'Pull-up', category: 'Upper / Pull & Arms', laterality: 'bilateral', primaryMuscle: 'Lats', primaryMuscle2: '', secondaryMuscles: ['Biceps', 'Mid Traps', 'Rear Delts', 'Forearms'] },
+            { name: 'Row', category: 'Upper / Pull & Arms', laterality: 'bilateral', primaryMuscle: 'Mid Traps', primaryMuscle2: 'Lats', secondaryMuscles: ['Rear Delts', 'Biceps', 'Upper Traps', 'Lower Back'] },
+            { name: 'Bicep Curl', category: 'Upper / Pull & Arms', laterality: 'bilateral', primaryMuscle: 'Biceps', primaryMuscle2: '', secondaryMuscles: ['Forearms'] },
+            { name: 'Tricep Extension', category: 'Upper / Pull & Arms', laterality: 'bilateral', primaryMuscle: 'Triceps', primaryMuscle2: '', secondaryMuscles: [] },
+            { name: 'Lateral Raise', category: 'Upper / Push', laterality: 'bilateral', primaryMuscle: 'Side Delts', primaryMuscle2: '', secondaryMuscles: ['Front Delts', 'Upper Traps'] },
+            { name: 'Leg Press', category: 'Lower Body', laterality: 'bilateral', primaryMuscle: 'Quads', primaryMuscle2: '', secondaryMuscles: ['Glutes', 'Hamstrings', 'Calves'] },
+            { name: 'Leg Extension', category: 'Lower Body', laterality: 'bilateral', primaryMuscle: 'Quads', primaryMuscle2: '', secondaryMuscles: [] },
+            { name: 'Hamstring Curl', category: 'Lower Body', laterality: 'bilateral', primaryMuscle: 'Hamstrings', primaryMuscle2: '', secondaryMuscles: ['Calves'] },
+            { name: 'Romainian Deadlift', category: 'Lower Body', laterality: 'bilateral', primaryMuscle: 'Hamstrings', primaryMuscle2: 'Glutes', secondaryMuscles: ['Lower Back', 'Mid Traps', 'Upper Traps', 'Forearms'] }
         ];
 
         // Application State
@@ -1132,9 +1152,14 @@
                     m => MUSCLE_GROUPS.includes(m) && m !== primaryMuscle && m !== migratedPrimary2
                 );
 
+                const validLat = ['bilateral', 'left', 'right'].includes(ex.laterality)
+                    ? ex.laterality
+                    : (def && def.laterality ? def.laterality : 'bilateral');
+
                 return {
                     name: ex.name,
                     category: ex.category || (def ? def.category : 'Custom'),
+                    laterality: validLat,
                     primaryMuscle,
                     primaryMuscle2: migratedPrimary2,
                     secondaryMuscles
@@ -1432,6 +1457,9 @@
             const statsByMuscle = {};
             MUSCLE_GROUPS.forEach(m => {
                 statsByMuscle[m] = {
+                    left: { primarySets: 0, secondarySets: 0, fractionalTotal: 0, weeklyAvg: 0 },
+                    right: { primarySets: 0, secondarySets: 0, fractionalTotal: 0, weeklyAvg: 0 },
+                    isAsymmetric: false,
                     primarySets: 0,
                     secondarySets: 0,
                     fractionalTotal: 0,
@@ -1446,35 +1474,60 @@
 
             const periodLogs = workoutLogs.filter(s => s.date >= startDateStr && s.date <= endDateStr);
 
+            const addMuscleSideSet = (mName, side, isPrimary) => {
+                if (!mName || !statsByMuscle[mName]) return;
+                if (isPrimary) {
+                    statsByMuscle[mName][side].primarySets += 1;
+                    statsByMuscle[mName][side].fractionalTotal += 1.0;
+                } else {
+                    statsByMuscle[mName][side].secondarySets += 1;
+                    statsByMuscle[mName][side].fractionalTotal += 0.5;
+                }
+            };
+
             periodLogs.forEach(s => {
                 const exConfig = exMap[s.exercise];
                 if (!exConfig) return;
 
+                const lat = exConfig.laterality || 'bilateral';
+                const sidesToCredit = lat === 'left' ? ['left'] : (lat === 'right' ? ['right'] : ['left', 'right']);
+
                 const pMuscle1 = exConfig.primaryMuscle;
                 const pMuscle2 = exConfig.primaryMuscle2 || '';
 
-                if (pMuscle1 && statsByMuscle[pMuscle1]) {
-                    statsByMuscle[pMuscle1].primarySets += 1;
-                    statsByMuscle[pMuscle1].fractionalTotal += 1.0;
-                }
-
-                if (pMuscle2 && pMuscle2 !== pMuscle1 && statsByMuscle[pMuscle2]) {
-                    statsByMuscle[pMuscle2].primarySets += 1;
-                    statsByMuscle[pMuscle2].fractionalTotal += 1.0;
-                }
-
-                if (Array.isArray(exConfig.secondaryMuscles)) {
-                    exConfig.secondaryMuscles.forEach(secM => {
-                        if (secM !== pMuscle1 && secM !== pMuscle2 && statsByMuscle[secM]) {
-                            statsByMuscle[secM].secondarySets += 1;
-                            statsByMuscle[secM].fractionalTotal += 0.5;
-                        }
-                    });
-                }
+                sidesToCredit.forEach(side => {
+                    if (pMuscle1 && statsByMuscle[pMuscle1]) {
+                        addMuscleSideSet(pMuscle1, side, true);
+                    }
+                    if (pMuscle2 && pMuscle2 !== pMuscle1 && statsByMuscle[pMuscle2]) {
+                        addMuscleSideSet(pMuscle2, side, true);
+                    }
+                    if (Array.isArray(exConfig.secondaryMuscles)) {
+                        exConfig.secondaryMuscles.forEach(secM => {
+                            if (secM !== pMuscle1 && secM !== pMuscle2 && statsByMuscle[secM]) {
+                                addMuscleSideSet(secM, side, false);
+                            }
+                        });
+                    }
+                });
             });
 
             MUSCLE_GROUPS.forEach(m => {
-                statsByMuscle[m].weeklyAvg = +(statsByMuscle[m].fractionalTotal / weeksInPeriod).toFixed(1);
+                const st = statsByMuscle[m];
+                st.left.fractionalTotal = +st.left.fractionalTotal.toFixed(1);
+                st.right.fractionalTotal = +st.right.fractionalTotal.toFixed(1);
+                st.left.weeklyAvg = +(st.left.fractionalTotal / weeksInPeriod).toFixed(1);
+                st.right.weeklyAvg = +(st.right.fractionalTotal / weeksInPeriod).toFixed(1);
+
+                st.isAsymmetric = Math.abs(st.left.fractionalTotal - st.right.fractionalTotal) > 0.001;
+
+                // Bilateral default representation (when symmetric, L and R are identical)
+                st.primarySets = st.left.primarySets;
+                st.secondarySets = st.left.secondarySets;
+                st.fractionalTotal = st.left.fractionalTotal;
+                st.weeklyAvg = st.left.weeklyAvg;
+                // Max of L/R used for sorting when asymmetric
+                st.sortWeeklyAvg = Math.max(st.left.weeklyAvg, st.right.weeklyAvg);
             });
 
             const presetLabels = {
@@ -1522,15 +1575,26 @@
                 rawSetsEl.textContent = `${rawSetCount} logged ${rawSetCount === 1 ? 'set' : 'sets'}`;
             }
 
-            // Color all SVG muscle groups
+            // Color all SVG muscle groups (supports independent Left and Right side coloring when asymmetric)
             MUSCLE_GROUPS.forEach(muscleName => {
                 const mStats = statsByMuscle[muscleName];
-                const style = getMuscleHeatStyle(mStats.weeklyAvg);
+                const leftStyle = getMuscleHeatStyle(mStats.left.weeklyAvg);
+                const rightStyle = getMuscleHeatStyle(mStats.right.weeklyAvg);
+                const bilateralStyle = getMuscleHeatStyle(mStats.weeklyAvg);
+
                 const svgGroups = document.querySelectorAll(`g[data-muscle="${muscleName}"]`);
                 svgGroups.forEach(g => {
                     const shapes = g.querySelectorAll('path, rect, polygon, circle');
                     shapes.forEach(shape => {
-                        shape.setAttribute('fill', style.fill);
+                        const sideAttr = shape.getAttribute('data-side');
+                        if (mStats.isAsymmetric && sideAttr === 'left') {
+                            shape.setAttribute('fill', leftStyle.fill);
+                        } else if (mStats.isAsymmetric && sideAttr === 'right') {
+                            shape.setAttribute('fill', rightStyle.fill);
+                        } else {
+                            shape.setAttribute('fill', bilateralStyle.fill);
+                        }
+
                         if (selectedDiagramMuscle === muscleName) {
                             shape.setAttribute('stroke', '#ffffff');
                             shape.setAttribute('stroke-width', '2.5');
@@ -1545,35 +1609,74 @@
             // Update Inspector Banner if a muscle is selected
             const nameEl = document.getElementById('inspected-muscle-name');
             const detailEl = document.getElementById('inspected-muscle-stats');
-            if (selectedDiagramMuscle && statsByMuscle[selectedDiagramMuscle]) {
-                const st = statsByMuscle[selectedDiagramMuscle];
-                nameEl.textContent = selectedDiagramMuscle;
-                detailEl.textContent = `${st.weeklyAvg} sets/wk (${st.fractionalTotal} total: ${st.primarySets}P + ${st.secondarySets}S)`;
-            } else {
-                nameEl.textContent = 'Tap any muscle on body map';
-                detailEl.textContent = '1.0 Primary • 0.5 Secondary';
+            if (nameEl && detailEl) {
+                if (selectedDiagramMuscle && statsByMuscle[selectedDiagramMuscle]) {
+                    const st = statsByMuscle[selectedDiagramMuscle];
+                    nameEl.textContent = selectedDiagramMuscle;
+                    if (st.isAsymmetric) {
+                        detailEl.textContent = `L: ${st.left.weeklyAvg}/wk (${st.left.fractionalTotal} sets) • R: ${st.right.weeklyAvg}/wk (${st.right.fractionalTotal} sets)`;
+                    } else {
+                        detailEl.textContent = `${st.weeklyAvg} sets/wk (${st.fractionalTotal} total: ${st.primarySets}P + ${st.secondarySets}S)`;
+                    }
+                } else {
+                    nameEl.textContent = 'Tap any muscle on body map';
+                    detailEl.textContent = '1.0 Primary • 0.5 Secondary';
+                }
             }
 
             // Render Muscle Volume Breakdown Grid sorted by weekly average descending
+            // When a muscle has different Left & Right volume, report it as two separate muscle entries: "(Left)" and "(Right)"
             const gridContainer = document.getElementById('muscle-volume-grid');
             if (gridContainer) {
-                const sortedMuscles = [...MUSCLE_GROUPS].sort((a, b) => statsByMuscle[b].weeklyAvg - statsByMuscle[a].weeklyAvg);
-                gridContainer.innerHTML = sortedMuscles.map(m => {
+                const displayItems = [];
+                MUSCLE_GROUPS.forEach(m => {
                     const st = statsByMuscle[m];
-                    const style = getMuscleHeatStyle(st.weeklyAvg);
-                    const isSelected = selectedDiagramMuscle === m;
+                    if (st.isAsymmetric) {
+                        displayItems.push({
+                            baseMuscle: m,
+                            displayName: `${m} (Left)`,
+                            weeklyAvg: st.left.weeklyAvg,
+                            fractionalTotal: st.left.fractionalTotal,
+                            primarySets: st.left.primarySets,
+                            secondarySets: st.left.secondarySets
+                        });
+                        displayItems.push({
+                            baseMuscle: m,
+                            displayName: `${m} (Right)`,
+                            weeklyAvg: st.right.weeklyAvg,
+                            fractionalTotal: st.right.fractionalTotal,
+                            primarySets: st.right.primarySets,
+                            secondarySets: st.right.secondarySets
+                        });
+                    } else {
+                        displayItems.push({
+                            baseMuscle: m,
+                            displayName: m,
+                            weeklyAvg: st.weeklyAvg,
+                            fractionalTotal: st.fractionalTotal,
+                            primarySets: st.primarySets,
+                            secondarySets: st.secondarySets
+                        });
+                    }
+                });
+
+                displayItems.sort((a, b) => b.weeklyAvg - a.weeklyAvg || a.displayName.localeCompare(b.displayName));
+
+                gridContainer.innerHTML = displayItems.map(item => {
+                    const isSelected = selectedDiagramMuscle === item.baseMuscle;
+                    const style = getMuscleHeatStyle(item.weeklyAvg);
                     return `
-                        <button onclick="selectMuscleOnDiagram('${m}')" class="text-left p-2.5 rounded-xl bg-surface-950 border ${isSelected ? 'border-white' : 'border-gray-800/90'} hover:border-gray-700 transition flex flex-col justify-between">
+                        <button onclick="selectMuscleOnDiagram('${item.baseMuscle}')" class="text-left p-2.5 rounded-xl bg-surface-950 border ${isSelected ? 'border-white' : 'border-gray-800/90'} hover:border-gray-700 transition flex flex-col justify-between">
                             <div class="flex items-center justify-between w-full gap-1">
-                                <span class="text-xs font-bold text-white truncate">${m}</span>
+                                <span class="text-xs font-bold text-white truncate">${item.displayName}</span>
                                 <span class="w-2.5 h-2.5 rounded-full shrink-0" style="background-color: ${style.fill}"></span>
                             </div>
                             <div class="mt-1.5 flex items-baseline justify-between w-full">
-                                <span class="font-mono text-sm font-extrabold ${style.textClass}">${st.weeklyAvg}<span class="text-[10px] font-normal text-gray-400">/wk</span></span>
-                                <span class="font-mono text-[10px] text-gray-400">${st.fractionalTotal} sets</span>
+                                <span class="font-mono text-sm font-extrabold ${style.textClass}">${item.weeklyAvg}<span class="text-[10px] font-normal text-gray-400">/wk</span></span>
+                                <span class="font-mono text-[10px] text-gray-400">${item.fractionalTotal} sets</span>
                             </div>
                             <div class="mt-0.5 text-[10px] text-gray-500 font-mono">
-                                ${st.primarySets} pri • ${st.secondarySets} sec
+                                ${item.primarySets} pri • ${item.secondarySets} sec
                             </div>
                         </button>
                     `;
@@ -1593,6 +1696,7 @@
             if (!container) return;
 
             container.innerHTML = exercises.map((ex, exIdx) => {
+                const lat = ex.laterality || 'bilateral';
                 const primary1Options = MUSCLE_GROUPS.map(m =>
                     `<option value="${m}" ${ex.primaryMuscle === m ? 'selected' : ''}>${m}</option>`
                 ).join('');
@@ -1629,6 +1733,18 @@
                                 <span class="text-xs font-extrabold text-white">${escapeHtml(ex.name)}</span>
                                 <span class="block text-[10px] text-gray-400">${escapeHtml(ex.category || 'Custom')}</span>
                             </div>
+                            <!-- Higher-level Laterality Option: Bilateral / Left / Right -->
+                            <div class="flex items-center bg-surface-900 p-1 rounded-xl border border-gray-800 gap-1">
+                                <button type="button" onclick="updateExerciseLaterality(${exIdx}, 'bilateral')" class="px-2 py-1 rounded-lg text-[10px] font-bold transition ${lat === 'bilateral' ? 'bg-brand-500 text-surface-950' : 'text-gray-400 hover:text-white'}">
+                                    Bilateral
+                                </button>
+                                <button type="button" onclick="updateExerciseLaterality(${exIdx}, 'left')" class="px-2 py-1 rounded-lg text-[10px] font-bold transition ${lat === 'left' ? 'bg-sky-500 text-surface-950' : 'text-gray-400 hover:text-white'}">
+                                    Left Side
+                                </button>
+                                <button type="button" onclick="updateExerciseLaterality(${exIdx}, 'right')" class="px-2 py-1 rounded-lg text-[10px] font-bold transition ${lat === 'right' ? 'bg-amber-500 text-surface-950' : 'text-gray-400 hover:text-white'}">
+                                    Right Side
+                                </button>
+                            </div>
                         </div>
                         <div class="grid grid-cols-2 gap-2">
                             <div>
@@ -1653,6 +1769,16 @@
                     </div>
                 `;
             }).join('');
+        }
+
+        function updateExerciseLaterality(exIndex, newLaterality) {
+            if (!exercises[exIndex]) return;
+            if (!['bilateral', 'left', 'right'].includes(newLaterality)) return;
+            exercises[exIndex].laterality = newLaterality;
+            saveToLocalStorage();
+            renderStatusPage();
+            const labelMap = { bilateral: 'Bilateral', left: 'Left Side Only', right: 'Right Side Only' };
+            showToast(`${exercises[exIndex].name}: ${labelMap[newLaterality]}`);
         }
 
         function updateExercisePrimaryMuscle(exIndex, newPrimary) {
@@ -1704,16 +1830,20 @@
                 if (def) {
                     return {
                         ...ex,
+                        laterality: def.laterality || 'bilateral',
                         primaryMuscle: def.primaryMuscle,
                         primaryMuscle2: def.primaryMuscle2 || '',
                         secondaryMuscles: [...def.secondaryMuscles]
                     };
                 }
-                return ex;
+                return {
+                    ...ex,
+                    laterality: 'bilateral'
+                };
             });
             saveToLocalStorage();
             renderStatusPage();
-            showToast('Default muscle mappings restored');
+            showToast('Default muscle mappings & bilateral settings restored');
         }
 
         // Epley Formula: Weight * (1 + Reps / 30)
@@ -1773,6 +1903,8 @@
 
         function openCustomExerciseModal() {
             document.getElementById('custom-ex-name').value = '';
+            const latSelect = document.getElementById('custom-ex-lat');
+            if (latSelect) latSelect.value = 'bilateral';
             document.getElementById('custom-exercise-modal').classList.remove('hidden');
             document.getElementById('custom-ex-name').focus();
         }
@@ -1784,6 +1916,7 @@
         function saveCustomExercise() {
             const nameInput = document.getElementById('custom-ex-name').value.trim();
             const catInput = document.getElementById('custom-ex-cat').value;
+            const latInput = (document.getElementById('custom-ex-lat') && document.getElementById('custom-ex-lat').value) || 'bilateral';
 
             if (!nameInput) {
                 showToast('Please enter an exercise name', true);
@@ -1799,6 +1932,7 @@
                 exercises.push({
                     name: nameInput,
                     category: catInput,
+                    laterality: latInput,
                     primaryMuscle: defaultPrimary,
                     primaryMuscle2: '',
                     secondaryMuscles: []
@@ -2978,9 +3112,10 @@
                 showToast('No data to export', true);
                 return;
             }
-            const headers = ['record_type', 'id', 'date', 'exercise', 'category', 'weight_kg', 'reps', 'volume_kg', 'estimated_1rm_kg', 'bodyweight_kg', 'primary_muscle_1', 'primary_muscle_2', 'secondary_muscles', 'notes'];
+            const headers = ['record_type', 'id', 'date', 'exercise', 'category', 'laterality', 'weight_kg', 'reps', 'volume_kg', 'estimated_1rm_kg', 'bodyweight_kg', 'primary_muscle_1', 'primary_muscle_2', 'secondary_muscles', 'notes'];
             const setRows = workoutLogs.map(s => {
                 const exObj = exercises.find(e => e.name === s.exercise);
+                const lat = exObj ? (exObj.laterality || 'bilateral') : 'bilateral';
                 const priM1 = exObj ? (exObj.primaryMuscle || '') : '';
                 const priM2 = exObj ? (exObj.primaryMuscle2 || '') : '';
                 const secM = exObj && Array.isArray(exObj.secondaryMuscles) ? exObj.secondaryMuscles.join(';') : '';
@@ -2990,6 +3125,7 @@
                     s.date,
                     `"${(s.exercise || '').replace(/"/g, '""')}"`,
                     `"${(s.category || '').replace(/"/g, '""')}"`,
+                    `"${lat}"`,
                     s.weight,
                     s.reps,
                     s.volume,
@@ -3012,6 +3148,7 @@
                 '',
                 '',
                 '',
+                '',
                 b.weight,
                 '',
                 '',
@@ -3025,6 +3162,7 @@
                 '',
                 `"${(ex.name || '').replace(/"/g, '""')}"`,
                 `"${(ex.category || '').replace(/"/g, '""')}"`,
+                `"${ex.laterality || 'bilateral'}"`,
                 '',
                 '',
                 '',
